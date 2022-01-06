@@ -14,7 +14,7 @@ const opts = {
 	channels: [  "mrkrummschnabel" ]
 };
 const bot = new tmi.client(opts);
-bot.connect().catch(console.error);
+bot.connect().then(console.log).catch(console.error);
 bot.on('message', messageHandler);
 
 function messageHandler(channel, userstate, message, self){
@@ -139,6 +139,5 @@ function selectRandomQuote(){
     }
 }
 
-bot.connect();
 
 
