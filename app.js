@@ -1,20 +1,28 @@
 const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
+const { log } = require('console');
+const { channel } = require('tmi.js/lib/utils');
 //const testi = require('./testi.js');
 const path = "./users.json";
-
+const botuserspath = "./botusers.json"
 var users = {}
+var botusers = {}
 try {
     if (fs.existsSync(path)) {
         let userfile = fs.readFileSync(path)
         //console.log(userfile)
         users = JSON.parse(userfile);
     }
+    if (fs.existsSync(botuserspath)) {
+        let botusersfile = fs.readFileSync(botuserspath)
+        //console.log(userfile)
+        botusers = JSON.parse(botusersfile);
+    }
 } catch(err) {
     console.error(err)
 }
-//console.log(testi.message())
+
 /*
 const Database = require('better-sqlite3');
 const db = new Database('database.db', { verbose: console.log });
@@ -38,17 +46,33 @@ const opts = {
 		username: process.env.BOT_NAME,
 		password: process.env.BOT_OAUTH
 	},
-	channels: [  "mrkrummschnabel" ]
+	channels: [  "krummibot" ]
 };
 const bot = new tmi.client(opts);
-bot.connect().then(console.log).catch(console.error);
+bot.connect().then(()=>{
+    for (const key in botusers) {
+        if(botusers[key].joined === true){
+            bot.join(key)
+            .then((data) => {
+            console.log(data);
+            }).catch((err) => {
+            console.log(err);
+            });
+        }
+    }
+},
+console.log).catch(console.error);
+
 bot.on('message', messageHandler);
 bot.on('raided', raidHandler)
 //Event Handler
 function raidHandler(channel, raider, viewers){
     bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
-    bot.say(channel, `!so ${raider}`)
+    setTimeout(async() => {
+        await bot.say(channel, `!so ${raider}`) 
+    }, 2000);
 }
+
 
 function messageHandler(channel, userstate, message, self){
     if (self) return;
@@ -64,7 +88,8 @@ function messageHandler(channel, userstate, message, self){
                 tries: "",
                 actualpoints: "",
                 pointstocatch: "",
-                runningRound: false
+                runningRound: false,
+                lvl: ""
             }
         }
     }else{
@@ -82,26 +107,39 @@ function commandHandler(channel, message, userstate){
     //console.log(userstate)
     //console.log(channel);
 
-    if(channel === "#mrkrummschnabel") {
+    if(channel === "#krummibot"|| channel === "#mrkrummschnabel") {
         if(command === "!joinchannel"){
+            if(!botusers[channel]){
+                botusers["#"+userstate.username] = {
+                    joined: true,
+                    channelcommands: {
+                        
+                    },
+                    allusecommands: ["!so" , "!pokemon", "!commands", "!love", "!games", "!coin", "!würfel"]
+                }
+            }
+            else{
+                return
+            }
+            fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
             bot.join(userstate.username)
             .then((data) => {
-                console.log(data);
+            console.log(data);
             }).catch((err) => {
-                console.log(err);
+            console.log(err);
             });
         }
         if(userstate.username === "mrkrummschnabel"){
             if(command === "!shutdown"){
-                bot.part(channel).then((data) => {
-                console.log(data);
-                }).catch((err) => {
-                console.error(err)
-                });
-                process.exit(0)          
-            }
-
+                shutdownbot()
+                process.exit(0)     
         
+     
+            }
+            if(command === "!getchannels"){
+                console.log(bot.getChannels())
+            }
+        }
     }
 
     if(userstate.username === "mrkrummschnabel"){
@@ -109,24 +147,25 @@ function commandHandler(channel, message, userstate){
             bot.say(channel, "!test")
 
         }
-        if(command.startsWith("!so")){
-            let so = command.split(" ")
-            if (so.length > 1){
-                bot.say(channel, `Schaut mal bei @${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1]}`)
-            }
+    }
+    if(command.startsWith("!so")){
+        let so = command.split(" ")
+        if (so.length > 1){
+            bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
         }
     }
-    if(userstate['mod']){  // check against bool dont need == true DANKE <3
+    
+    if(userstate['mod']){
         if(command.startsWith("!so")){
             let so = command.split(" ")
             if (so.length > 1){
-                bot.say(channel, `Schaut mal bei @${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1]}`)
+                bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
             }
         }
     }
     
     if(userstate.username === "pentiboy"){
-        if(command.includes("wie geht es dir")){
+        if(command.includes("wie geht es mir")){
             bot.say(channel, `@${userstate.username} ${pentiboy()}`)
         }
 
@@ -159,17 +198,53 @@ function commandHandler(channel, message, userstate){
     
     if(userstate['user-id'] === userstate['room-id']){
         if(command === "!leavechannel"){
-            bot.part(channel).then((data) => {
-            console.log(data);
-            }).catch((err) => {
-            console.error(err)
-            });
+            if(botusers["#"+userstate.username].joined === true){
+                botusers["#"+userstate.username].joined= false
+                fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
+            }
+            for (const key in botusers) {
+                if(botusers[key].joined === false){
+                    bot.part(channel).then((data) => {
+                        console.log(data);
+                        }).catch((err) => {
+                        console.error(err)
+                        });
+                }
+            }
+        }
+        if(command.startsWith("!addcommand")){
+            let addcommand = command.split(" ")
+            console.log(botusers[channel]);
+               botusers[channel].channelcommands[addcommand[1]] = ""
+            
+            fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
+        }
+        if(command.startsWith("!definecommand")){
+            let defiinecommand = command.split(" ")
+            if(defiinecommand[1] in botusers[channel].channelcommands){
+                console.log(true);
+                console.log(botusers[channel].channelcommands[defiinecommand[1]]);
+                botusers[channel].channelcommands[defiinecommand[1]] = {
+                    function: (defiinecommand[2] == "say"? `${"bot.say("+userstate.username+","+ [defiinecommand[3]]+")"}`: "test"), 
+                    
+                }
+                fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
+    
+            }
+        }
+        if(command.startsWith("!removecommand")){
+            let removecommand = command.split(" ")
+            if(removecommand[1] in botusers[channel].channelcommands){
+                delete botusers[channel].channelcommands[removecommand[1]]
+                
+            }
+            fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
         }
     }
     if(command === "!games"){
         bot.say(channel, "Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help")
     }
-}
+
 //Pokemon
     if(command === "!pokemon"){
         startpokemongame(channel, userstate)
@@ -184,15 +259,42 @@ function commandHandler(channel, message, userstate){
         bot.say(channel, "Mit !pokemon startest du eine Runde. Verwende !catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !index siehst du wie viele und welche Pokemons du bereits gefangen hast")
     }
 }
-    
+
+async function shutdownbot(){
+     bot.getChannels().forEach((element)=>{
+        bot.say(element, "Der Bot wird jetzt abgeschaltet. Bye Bye")
+        bot.part(element).then((data) => {
+            console.log(data);
+            }).catch((err) => {
+            console.error(err)
+            });
+    })
+}
 function startpokemongame(channel, userstate){
     let randomPook = pokemon.random('de');
         if(users[userstate["user-id"]].pokemon.runningRound == false){
-            bot.say(channel, `Einwildes ${randomPook} erscheint` )
+            users[userstate["user-id"]].pokemon.lvl = Math.floor(Math.random()*100)
+            bot.say(channel, `Ein wildes ${randomPook} mit LVL ${users[userstate["user-id"]].pokemon.lvl} erscheint` )
             users[userstate["user-id"]].pokemon.actualpoints = "";
             users[userstate["user-id"]].pokemon.current = randomPook;
             users[userstate["user-id"]].pokemon.catchable = true;
             users[userstate["user-id"]].pokemon.tries = Math.floor(Math.random()*5)
+            if(users[userstate["user-id"]].pokemon.tries == 0){
+                bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten denn ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
+                users[userstate["user-id"]].pokemon.tries = "";
+                users[userstate["user-id"]].pokemon.actualpoints = "";
+                users[userstate["user-id"]].pokemon.pointstocatch = "";
+                users[userstate["user-id"]].pokemon.catchable = false;
+                users[userstate["user-id"]].pokemon.runningRound = false
+                users[userstate["user-id"]].pokemon.current = "";
+                users[userstate["user-id"]].pokemon.lvl = "";
+                return
+            }
+            else{
+                setTimeout(async () => {
+                    await bot.say(channel, `@${userstate.username} du hast  ${users[userstate["user-id"]].pokemon.tries} Versuche`) 
+                }, 2000);
+            }
             users[userstate["user-id"]].pokemon.pointstocatch = Math.floor(Math.random()*100)
             users[userstate["user-id"]].pokemon.runningRound = true
         }
@@ -205,11 +307,13 @@ function startpokemongame(channel, userstate){
 function catchpokemon(channel, userstate){
     if (users[userstate["user-id"]].pokemon.catchable){
         // can try a catch            
-        if(users[userstate["user-id"]].pokemon.tries != 0){
+        if(users[userstate["user-id"]].pokemon.tries != 0 ){
             users[userstate["user-id"]].pokemon.actualpoints = Math.floor(Math.random()*50)
             if(users[userstate["user-id"]].pokemon.actualpoints == users[userstate["user-id"]].pokemon.pointstocatch || users[userstate["user-id"]].pokemon.actualpoints > users[userstate["user-id"]].pokemon.pointstocatch){
-                bot.say(channel, `Glückstrumpf du hast ${users[userstate["user-id"]].pokemon.current} gefangen.`)
+                bot.say(channel, `Glückstrumpf du hast ${users[userstate["user-id"]].pokemon.current} mit LVL ${users[userstate["user-id"]].pokemon.lvl + " "}gefangen.`)
                 users[userstate["user-id"]].pokemon.list.push(users[userstate["user-id"]].pokemon.current)
+                users[userstate["user-id"]].pokemon.lvl = ""
+                users[userstate["user-id"]].pokemon.current = "";
                 users[userstate["user-id"]].pokemon.actualpoints = "";
                 users[userstate["user-id"]].pokemon.pointstocatch = "";
                 users[userstate["user-id"]].pokemon.catchable = false;
@@ -217,21 +321,31 @@ function catchpokemon(channel, userstate){
                 users[userstate["user-id"]].pokemon.tries = "";
             }
             users[userstate["user-id"]].pokemon.tries --;
+
             if(users[userstate["user-id"]].pokemon.tries == 0){
+                users[userstate["user-id"]].pokemon.lvl = ""
                 users[userstate["user-id"]].pokemon.tries = "";
                 users[userstate["user-id"]].pokemon.actualpoints = "";
                 users[userstate["user-id"]].pokemon.pointstocatch = "";
                 users[userstate["user-id"]].pokemon.catchable = false;
                 users[userstate["user-id"]].pokemon.runningRound = false
                 bot.say(channel, `@${userstate.username}, ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
+                users[userstate["user-id"]].pokemon.current = "";
+
             }
+            if(users[userstate["user-id"]].pokemon.tries == -1){
+                users[userstate["user-id"]].pokemon.tries = "";
+            }
+
         }else{
             users[userstate["user-id"]].pokemon.tries = "";
-                users[userstate["user-id"]].pokemon.actualpoints = "";
-                users[userstate["user-id"]].pokemon.pointstocatch = "";
-                users[userstate["user-id"]].pokemon.catchable = false;
-                users[userstate["user-id"]].pokemon.runningRound = false
-                bot.say(channel, `@${userstate.username}, ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
+            users[userstate["user-id"]].pokemon.actualpoints = "";
+            users[userstate["user-id"]].pokemon.pointstocatch = "";
+            users[userstate["user-id"]].pokemon.catchable = false;
+            users[userstate["user-id"]].pokemon.runningRound = false
+            bot.say(channel, `@${userstate.username}, ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
+            users[userstate["user-id"]].pokemon.current = "";
+
 
         }
     }
@@ -239,6 +353,12 @@ function catchpokemon(channel, userstate){
         //not catchable
         if(users[userstate["user-id"]].pokemon.tries == 0 || users[userstate["user-id"]].pokemon.tries == ""){
             bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten`)
+            users[userstate["user-id"]].pokemon.tries = "";
+            users[userstate["user-id"]].pokemon.actualpoints = "";
+            users[userstate["user-id"]].pokemon.pointstocatch = "";
+            users[userstate["user-id"]].pokemon.catchable = false;
+            users[userstate["user-id"]].pokemon.runningRound = false
+            users[userstate["user-id"]].pokemon.current = "";
          }
     }
 }
@@ -252,7 +372,7 @@ function pokeindex(channel, userstate){
                 actualpok.push(pokedex[t])
             }
         }
-        bot.say(channel, `@${userstate.username}Du hast ${counter + " Pokemons und zwar " + actualpok } `)
+        bot.say(channel, `@${userstate.username}  ${counter + " Pokemons und zwar " + actualpok } `)
 }
 function throwCoin(channel){
     const sides = 2;
@@ -342,7 +462,7 @@ function selectRandomQuote(){
 
 function pentiboy(){
     let quote = [
-            "Die geht es Scheiße",
+            "Dir geht es Scheiße",
             "Weil du es bist sei still",
             "Nö, frag einfach nicht",
             "Kener hat die Absicht hier was gutes zu sagen.",

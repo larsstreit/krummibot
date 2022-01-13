@@ -1,4 +1,43 @@
 {
+	"56086906": {
+		"login": "butterzwerg",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
+	"88278782": {
+		"login": "superbadwoman",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
+	"95066520": {
+		"login": "lilamagenta",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"100135110": {
 		"login": "streamelements",
 		"pokemon": {
@@ -8,11 +47,12 @@
 			"tries": "",
 			"actualpoints": "",
 			"pointstocatch": "",
-			"runningRound": false
+			"runningRound": false,
+			"lvl": ""
 		}
 	},
-	"113344441": {
-		"login": "maxthevoodoo",
+	"134431131": {
+		"login": "nemesisboss",
 		"pokemon": {
 			"list": [],
 			"catchable": false,
@@ -20,11 +60,12 @@
 			"tries": "",
 			"actualpoints": "",
 			"pointstocatch": "",
-			"runningRound": false
+			"runningRound": false,
+			"lvl": ""
 		}
 	},
-	"216527497": {
-		"login": "soundalerts",
+	"135990496": {
+		"login": "dubdubwastaken",
 		"pokemon": {
 			"list": [],
 			"catchable": false,
@@ -32,11 +73,12 @@
 			"tries": "",
 			"actualpoints": "",
 			"pointstocatch": "",
-			"runningRound": false
+			"runningRound": false,
+			"lvl": ""
 		}
 	},
-	"253366808": {
-		"login": "liadala",
+	"519669212": {
+		"login": "raiizzbot",
 		"pokemon": {
 			"list": [],
 			"catchable": false,
@@ -44,41 +86,43 @@
 			"tries": "",
 			"actualpoints": "",
 			"pointstocatch": "",
-			"runningRound": false
-		}
-	},
-	"276286786": {
-		"login": "rudiballon",
-		"pokemon": {
-			"list": [
-				"Garados"
-			],
-			"catchable": false,
-			"current": "Garados",
-			"tries": -1,
-			"actualpoints": "",
-			"pointstocatch": "",
-			"runningRound": false
+			"runningRound": false,
+			"lvl": ""
 		}
 	},
 	"536841246": {
 		"login": "mrkrummschnabel",
 		"pokemon": {
 			"list": [
-				"Sharfax",
-				"Frubaila",
-				"Haspiror"
+				"Schlurp",
+				"Riolu"
 			],
-			"catchable": true,
-			"current": "Trombork",
-			"tries": 3,
+			"catchable": false,
+			"current": "",
+			"tries": "",
 			"actualpoints": "",
-			"pointstocatch": 22,
-			"runningRound": true
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
 		}
 	},
-	"675332182": {
-		"login": "krummibot",
+	"612788980": {
+		"login": "pentiboy",
+		"pokemon": {
+			"list": [
+				"Georok"
+			],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
+	"626939709": {
+		"login": "naruto9b",
 		"pokemon": {
 			"list": [],
 			"catchable": false,
@@ -86,7 +130,21 @@
 			"tries": "",
 			"actualpoints": "",
 			"pointstocatch": "",
-			"runningRound": false
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
+	"684126340": {
+		"login": "mrskrummschnabel",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
 		}
 	}
 }

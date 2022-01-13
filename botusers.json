@@ -1,0 +1,15 @@
+{
+	"#raiizz93": {
+		"joined": false,
+		"channelcommands": {}
+	},
+	"#mrkrummschnabel": {
+		"joined": true,
+		"channelcommands": {},
+		"allusecommands": [
+			"!so",
+			"!pokemon",
+			"!commands"
+		]
+	}
+}
