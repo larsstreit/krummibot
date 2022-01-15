@@ -171,7 +171,10 @@ function commandHandler(channel, message, userstate){
 
     }
     if(command === "!website"){
-        bot.say(channel, "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de")
+        bot.say(channel, "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de")    
+     }
+    if(command === "!Schnabelcoins"){
+        bot.say(channel, "Dieser Command ist noch in Arbeit | Später wird er mit !Coins funktionieren :)")
     }
     if(command === "!lurk"){
         bot.say(channel, "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3")
