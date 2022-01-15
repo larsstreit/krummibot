@@ -66,6 +66,6 @@ const pokegame = module.exports = {
                     actualpok.push(pokedex[t])
                 }
             }
-            bot.say(channel, `@${userstate.username}Du hast ${counter + " Pokemons und zwar " + actualpok } `)
+            bot.say(channel, `@${userstate.username}Du hast ${counter + " Pokémon " + actualpok } `)
     }
 }
