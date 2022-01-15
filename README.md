@@ -13,7 +13,7 @@
 ## Setup for Own Usage:
 
 - Download the latest Version from Github
-- After downloading edit the .env File with your own login details (This is needed for the Bot Account)
+- After downloading edit the .env File with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel (This is needed for the Bot) 
 - After this Step you're done and u can enjoy all Features from the Bot
 
 
