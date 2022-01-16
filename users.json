@@ -134,6 +134,19 @@
 			"lvl": ""
 		}
 	},
+	"675332182": {
+		"login": "krummibot",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"684126340": {
 		"login": "mrskrummschnabel",
 		"pokemon": {

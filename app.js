@@ -2,7 +2,6 @@ const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
 const { log } = require('console');
-const { channel } = require('tmi.js/lib/utils');
 //const testi = require('./testi.js');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
@@ -106,54 +105,59 @@ function commandHandler(channel, message, userstate){
     const command = message
     //console.log(userstate)
     //console.log(channel);
-
-    if(channel === "#krummibot"|| channel === "#mrkrummschnabel") {
-        if(command === "!joinchannel"){
-            if(!botusers[channel]){
-                botusers["#"+userstate.username] = {
-                    joined: true,
-                    channelcommands: {
-                        
-                    },
-                    allusecommands: ["!so" , "!pokemon", "!commands", "!love", "!games", "!coin", "!würfel"]
-                }
-            }
-            else{
-                return
-            }
-            fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
-            bot.join(userstate.username)
-            .then((data) => {
-            console.log(data);
-            }).catch((err) => {
-            console.log(err);
-            });
+    // let test = command.substring(command.indexOf(">"+1))
+    // log(test)
+    if(botusers[channel]){
+        if(command in botusers[channel].channelcommands){
+            // log(botusers[channel].channelcommands[command].function)
+            bot.say(channel, botusers[channel].channelcommands[command].say)
         }
-        if(userstate.username === "mrkrummschnabel"){
-            if(command === "!shutdown"){
-                shutdownbot()
-                process.exit(0)     
-        
-     
-            }
-            if(command === "!getchannels"){
-                console.log(bot.getChannels())
+    }
+    else{
+        if(channel === "#krummibot"|| channel === "#mrkrummschnabel") {
+            if(command === "!joinchannel"){
+                if(!botusers[channel]){
+                    botusers["#"+userstate.username] = {
+                        joined: true,
+                        channelcommands: {
+                            
+                        },
+                        allusecommands: ["!so" , "!pokemon", "!commands", "!love", "!games", "!coin", "!würfel"]
+                    }
+                }
+                else{
+                    return
+                }
+                fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
+                bot.join(userstate.username)
+                .then((data) => {
+                console.log(data);
+                }).catch((err) => {
+                console.log(err);
+                });
             }
         }
     }
+
 
     if(userstate.username === "mrkrummschnabel"){
-        if(command === "!test"){
-            bot.say(channel, "!test")
-
+        if(command === "!shutdown"){
+            shutdownbot().then(setTimeout(()=>{
+                process.exit(0)
+            },3000))
+ 
+        }
+        if(command === "!getchannels"){
+            console.log(bot.getChannels())
+        }
+        if(command.startsWith("!so")){
+            let so = command.split(" ")
+            if (so.length > 1){
+                bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
+            }
         }
     }
-    if(command.startsWith("!so")){
-        let so = command.split(" ")
-        if (so.length > 1){
-            bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
-        }
-    }
+    
     
     if(userstate['mod']){
         if(command.startsWith("!so")){
@@ -170,12 +174,12 @@ function commandHandler(channel, message, userstate){
         }
 
     }
-    if(command === "!website"){
-        bot.say(channel, "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de")    
-     }
-    if(command === "!Schnabelcoins"){
-        bot.say(channel, "Dieser Command ist noch in Arbeit | Später wird er mit !Schnabelcoins funktionieren :)")
-    }
+    // if(command === "!website"){
+    //     bot.say(channel, "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de")    
+    //  }
+    // if(command === "!Schnabelcoins"){
+    //     bot.say(channel, "Dieser Command ist noch in Arbeit | Später wird er mit !Schnabelcoins funktionieren :)")
+    // }
     if(command === "!lurk"){
         bot.say(channel, "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3")
     } 
@@ -224,11 +228,11 @@ function commandHandler(channel, message, userstate){
         }
         if(command.startsWith("!definecommand")){
             let defiinecommand = command.split(" ")
+            let say = command.substring(command.indexOf(">")+1)
             if(defiinecommand[1] in botusers[channel].channelcommands){
-                console.log(true);
-                console.log(botusers[channel].channelcommands[defiinecommand[1]]);
+                // log(botusers[channel].channelcommands[defiinecommand[1]]);
                 botusers[channel].channelcommands[defiinecommand[1]] = {
-                    function: (defiinecommand[2] == "say"? `${"bot.say("+userstate.username+","+ [defiinecommand[3]]+")"}`: "test"), 
+                    say: (defiinecommand[2] == "say"? `${say}`: ""), 
                     
                 }
                 fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
@@ -264,13 +268,9 @@ function commandHandler(channel, message, userstate){
 }
 
 async function shutdownbot(){
-     bot.getChannels().forEach((element)=>{
-        bot.say(element, "Der Bot wird jetzt abgeschaltet. Bye Bye")
-        bot.part(element).then((data) => {
-            console.log(data);
-            }).catch((err) => {
-            console.error(err)
-            });
+    return bot.getChannels().forEach(channel => {
+        bot.say(channel, "Bot wird ausgeschaltet")
+        bot.part(channel)
     })
 }
 function startpokemongame(channel, userstate){

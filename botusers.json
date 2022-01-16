@@ -5,11 +5,19 @@
 	},
 	"#mrkrummschnabel": {
 		"joined": true,
-		"channelcommands": {},
+		"channelcommands": {
+			"test": {
+				"say": "test"
+			}
+		},
 		"allusecommands": [
 			"!so",
 			"!pokemon",
-			"!commands"
+			"!commands",
+			"!love",
+			"!games",
+			"!coin",
+			"!würfel"
 		]
 	}
 }
