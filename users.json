@@ -77,6 +77,19 @@
 			"lvl": ""
 		}
 	},
+	"253366808": {
+		"login": "liadala",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"519669212": {
 		"login": "raiizzbot",
 		"pokemon": {

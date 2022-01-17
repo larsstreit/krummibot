@@ -2,7 +2,6 @@ const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
 const { log } = require('console');
-//const testi = require('./testi.js');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
 var users = {}
@@ -107,44 +106,58 @@ function commandHandler(channel, message, userstate){
     //console.log(channel);
     // let test = command.substring(command.indexOf(">"+1))
     // log(test)
-    if(botusers[channel]){
-        if(command in botusers[channel].channelcommands){
-            // log(botusers[channel].channelcommands[command].function)
-            bot.say(channel, botusers[channel].channelcommands[command].say)
-        }
-    }
-    else{
-        if(channel === "#krummibot"|| channel === "#mrkrummschnabel") {
-            if(command === "!joinchannel"){
-                if(!botusers[channel]){
-                    botusers["#"+userstate.username] = {
-                        joined: true,
-                        channelcommands: {
-                            
-                        },
-                        allusecommands: ["!so" , "!pokemon", "!commands", "!love", "!games", "!coin", "!würfel"]
-                    }
+
+    if(channel === "#krummibot"|| channel === "#mrkrummschnabel") {
+        if(command === "!joinchannel"){
+            if (!(`${"#"+userstate.username}` in botusers)){
+                console.log("user not exist")
+
+                botusers[`${"#"+userstate.username}`] = {
+                    joined: true,
+                    channelcommands: {
+                        
+                    },
+                    allusecommands: ["!so" , "!pokemon", "!commands", "!love", "!games", "!coin", "!würfel"]
+                
                 }
-                else{
-                    return
-                }
-                fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
-                bot.join(userstate.username)
-                .then((data) => {
-                console.log(data);
-                }).catch((err) => {
-                console.log(err);
-                });
+            }else{
+                //user exsist 
+                return
             }
+            fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
+                 bot.join(userstate.username)
+                 .then((data) => {
+                 console.log(data);
+                 }).catch((err) => {
+                 console.log(err);
+                 });
         }
     }
+
+
+
+
+     if(`${"#"+userstate.username}` in botusers){
+         log("#"+userstate.username)
+         if(botusers[`${"#"+userstate.username}`].channelcommands){
+             // log(botusers[channel].channelcommands[command].function)
+             if(botusers[`${"#"+userstate.username}`].channelcommands[command])
+                bot.say(channel, botusers[`${"#"+userstate.username}`].channelcommands[command].say)
+         }
+         else{
+             log("command else")
+         }
+     }
+     else{
+         log("User not exist in botuser")
+     }
 
 
     if(userstate.username === "mrkrummschnabel"){
         if(command === "!shutdown"){
             shutdownbot().then(setTimeout(()=>{
                 process.exit(0)
-            },3000))
+            },3000)).catch(err=>{log.error(err)})
  
         }
         if(command === "!getchannels"){
@@ -220,17 +233,17 @@ function commandHandler(channel, message, userstate){
         }
         if(command.startsWith("!addcommand")){
             let addcommand = command.split(" ")
-            console.log(botusers[channel]);
-               botusers[channel].channelcommands[addcommand[1]] = ""
+            console.log(botusers[`${"#"+userstate.username}`].channelcommands);
+                botusers[`${"#"+userstate.username}`].channelcommands[addcommand[1]] = ""
             
             fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
         }
         if(command.startsWith("!definecommand")){
             let defiinecommand = command.split(" ")
             let say = command.substring(command.indexOf(">")+1)
-            if(defiinecommand[1] in botusers[channel].channelcommands){
+            if(defiinecommand[1] in botusers[`${"#"+userstate.username}`].channelcommands){
                 // log(botusers[channel].channelcommands[defiinecommand[1]]);
-                botusers[channel].channelcommands[defiinecommand[1]] = {
+                botusers[`${"#"+userstate.username}`].channelcommands[defiinecommand[1]] = {
                     say: (defiinecommand[2] == "say"? `${say}`: ""), 
                     
                 }
@@ -240,8 +253,8 @@ function commandHandler(channel, message, userstate){
         }
         if(command.startsWith("!removecommand")){
             let removecommand = command.split(" ")
-            if(removecommand[1] in botusers[channel].channelcommands){
-                delete botusers[channel].channelcommands[removecommand[1]]
+            if(removecommand[1] in botusers[`${"#"+userstate.username}`].channelcommands){
+                delete botusers["#"+userstate.username].channelcommands[removecommand[1]]
                 
             }
             fs.writeFileSync(botuserspath,JSON.stringify(botusers, null, '\t'))
