@@ -158,7 +158,7 @@ function commandHandler(channel, message, userstate){
         }
     }
     
-    
+    test
     if(userstate['mod']){
         if(command.startsWith("!so")){
             let so = command.split(" ")
