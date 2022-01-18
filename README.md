@@ -20,8 +20,8 @@
 
 | Version |    Supported       |
 | ------- | ------------------ |
-| 1.1     | :white_check_mark: |
-| 1.0     | :white_check_mark: |
+| 0.0.2   | :white_check_mark: |
+| 0.0.1   | :white_check_mark: |
 
 
 ## Developer ##
@@ -30,4 +30,4 @@
 
 ## Twitch Livestream ##
 
-- You can also see the progress to this Project on Twitch: https://www.twitch.tv/mrkrummschnabel
+- You can also see the progress to this Project on Twitch: https://www.twitch.tv/mrkrummschnabel 
