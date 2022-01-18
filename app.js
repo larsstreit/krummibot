@@ -50,9 +50,9 @@ bot.connect().then(() => {
                         console.log(err);
                     });
                     joinedchannel.push(key)
-                    // setTimeout(()=>{
-                    //     bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
-                    // },3000)
+                    setTimeout(()=>{
+                        bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
+                    },3000)
                 
             }
             for(const t in botusers[`${key}`].channelcommands){

@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     options: {
         debug: true,
         messagesLogLevel: "info"
