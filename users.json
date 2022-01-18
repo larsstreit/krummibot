@@ -245,13 +245,13 @@
 				"Igelavar",
 				"Moorabbel"
 			],
-			"catchable": false,
-			"current": "",
-			"tries": "",
+			"catchable": true,
+			"current": "Enton",
+			"tries": 3,
 			"actualpoints": "",
-			"pointstocatch": "",
-			"runningRound": false,
-			"lvl": ""
+			"pointstocatch": 78,
+			"runningRound": true,
+			"lvl": 81
 		}
 	},
 	"612788980": {

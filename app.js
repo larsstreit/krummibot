@@ -50,9 +50,9 @@ bot.connect().then(() => {
                         console.log(err);
                     });
                     joinedchannel.push(key)
-                    setTimeout(()=>{
-                        bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
-                    },3000)
+                    // setTimeout(()=>{
+                    //     bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
+                    // },3000)
                 
             }
             for(const t in botusers[`${key}`].channelcommands){
@@ -126,8 +126,14 @@ function commandHandler(channel, message, userstate) {
 
                     },
                     allusecommands: [
+                        "!channelcommands",
+                        "!channelcommands help",
+                        "!krummi",
                         "!so",
                         "!pokemon",
+                        "!catch",
+                        "!index",
+                        "!pokemon help",
                         "!commands",
                         "!love",
                         "!games",
@@ -175,6 +181,13 @@ function commandHandler(channel, message, userstate) {
             if (botusers[`${channel}`].allusecommands.includes(alluse[0])) {
                 log(alluse)
                 switch (alluse[0]) {
+                    case "!channelcommands":
+                        if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " "+ alluse[1])) {
+                            bot.say(channel, "Mit !addcommand <'!'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <'!'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <'!'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll")
+                        }else{
+                            return
+                        }
+                    break;
                     case "!krummi":
                         bot.say(channel, "Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei")                  
                         break;

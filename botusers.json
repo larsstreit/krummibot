@@ -1,8 +1,11 @@
-{
+{	
 	"#raiizz93": {
 		"joined": true,
-		"channelcommands": {},
+		"channelcommands": {
+		},
 		"allusecommands": [
+			"!channelcommands",
+			"!channelcommands help",
 			"!krummi",
 			"!so",
 			"!pokemon",
@@ -16,6 +19,7 @@
 			"!würfel"
 		]
 	},
+
 	"#mrkrummschnabel": {
 		"joined": true,
 		"channelcommands": {
@@ -35,6 +39,7 @@
 			}
 		},
 		"allusecommands": [
+			"!channelcommands",
 			"!krummi",
 			"!so",
 			"!pokemon",
