@@ -16,6 +16,13 @@
 - After downloading edit the .env File with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel (This is needed for the Bot) 
 - After this Step you're done and u can enjoy all Features from the Bot
 
+## Supported Versions
+
+| Version |    Supported       |
+| ------- | ------------------ |
+| 1.1     | :white_check_mark: |
+| 1.0     | :white_check_mark: |
+
 
 ## Developer ##
 
