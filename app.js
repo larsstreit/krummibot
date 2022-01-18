@@ -1,9 +1,7 @@
 const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
-const {
-    log, count
-} = require('console');
+const {log} = require('console');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
 const packagepath ="./package.json"
@@ -78,7 +76,7 @@ bot.connect().then(() => {
 
 bot.on('message', messageHandler);
 bot.on('raided', raidHandler)
-
+bot.on("")
 
 
 //Event Handler
@@ -90,9 +88,10 @@ function raidHandler(channel, raider, viewers) {
 }
 
 
+
 function messageHandler(channel, userstate, message, self) {
     //log(userstate)
-    if (self) return;
+    if (self || userstate.username === "soundalerts" || userstate.username === "streamelements" || userstate.username === "streamlabs") return;
     // log(channel)
     if(botusers[channel]){
         if(!botusers[channel][userstate["user-id"]]){
@@ -108,7 +107,8 @@ function messageHandler(channel, userstate, message, self) {
                         pointstocatch: "",
                         runningRound: false,
                         lvl: ""
-                    }
+                    },
+                    schnabelcoins: 0
                 }
         }
         else{
@@ -199,8 +199,16 @@ function commandHandler(channel, message, userstate) {
                         bot.say(channel, "Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei")
                         break;
                     case "!so":
-                        if (alluse.length > 1)
+                        if (userstate['mod'] || userstate['user-id'] === userstate['room-id']) {
+                            if (alluse.length > 1){
                             bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace("@", "")}`)
+                            }
+                        }
+                        else{
+                            bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}}`)
+                        }
+                    
+                        
                         break;
                     case "!pokemon":
                         if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " " + alluse[1])) {
@@ -289,12 +297,6 @@ function commandHandler(channel, message, userstate) {
 
 
     if (userstate['user-id'] === userstate['room-id']) {
-        // if (command.startsWith("!so")) {
-        //     let so = command.split(" ")
-        //     if (so.length > 1) {
-        //         bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
-        //     }
-        // }
         if (command === "!leavechannel") {
             if (botusers["#" + userstate.username].joined === true) {
                 botusers["#" + userstate.username].joined = false

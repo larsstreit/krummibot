@@ -1,5 +1,18 @@
 {
 	"#raiizz93": {
+		"536841246": {
+			"login": "mrkrummschnabel",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			}
+		},
 		"joined": false,
 		"channelcommands": {},
 		"allusecommands": [
