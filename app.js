@@ -1,9 +1,7 @@
 const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
-const {
-    log
-} = require('console');
+const {log} = require('console');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
 const packagepath = "./package.json"
@@ -16,7 +14,6 @@ var package = {}
 try {
     if (fs.existsSync(path)) {
         let userfile = fs.readFileSync(path)
-        //console.log(userfile)
         users = JSON.parse(userfile);
     }
     if (fs.existsSync(botuserspath)) {
@@ -46,7 +43,6 @@ require('dotenv').config();
 
 const opts = require("./config")
 const bot = new tmi.client(opts);
-// botusers[`${channel}`].channelcommands[command].timer*60*10)
 bot.connect().then(() => {
         for (const key in botusers) {
             if (botusers[key].joined === true) {
@@ -91,9 +87,7 @@ function raidHandler(channel, raider, viewers) {
 
 
 function messageHandler(channel, userstate, message, self) {
-    //log(userstate)
     if (self || userstate.username === "soundalerts" || userstate.username === "streamelements" || userstate.username === "streamlabs") return;
-    // log(channel)
     if (botusers[channel]) {
         if (!botusers[channel][userstate["user-id"]]) {
             console.log("user not exist")
@@ -118,7 +112,6 @@ function messageHandler(channel, userstate, message, self) {
         return
     }
     commandHandler(channel, message, userstate)
-    //console.log(users[userstate["user-id"]])
     fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
 }
 
@@ -160,7 +153,6 @@ function commandHandler(channel, message, userstate) {
 
                 } else {
                     bot.say(`${"#"+userstate.username}`, "du hast mich bereits aktiviert")
-                    //return log("botuser exsits")
                 }
             }
             fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
@@ -484,7 +476,6 @@ function makelove(userstate, channel, checklove) {
         userA += iterator.charCodeAt(0)
     }
     usersplit = checklove.slice(checklove.indexOf(" ")).toString().replace("@", "");
-    //console.log(usersplit);
     for (const iterator of usersplit) {
         userB += iterator.charCodeAt(0)
     }
@@ -534,8 +525,6 @@ function selectRandomQuote() {
     };
     let a = Math.floor(Math.random() * 2);
     let randomNumber;
-    //console.log(a);
-
     switch (a) {
         case 0:
             randomNumber = Math.floor(Math.random() * (quote.yes.length));
@@ -559,7 +548,6 @@ function pentiboy() {
         "Sprich mit meiner Hand.",
     ]
     let randomNumber;
-    //console.log(a);
     randomNumber = Math.floor(Math.random() * (quote.length));
     return `${quote[randomNumber]}`
 }
