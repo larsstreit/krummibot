@@ -66,6 +66,20 @@
 				"lvl": ""
 			}
 		},
+		"749590610": {
+			"login": "idefix65",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"joined": true,
 		"channelcommands": {
 			"test": {
