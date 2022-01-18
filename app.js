@@ -64,7 +64,9 @@ bot.connect().then(() => {
                         console.log(err);
                     });
                     joinedchannel.push(key)
-                    bot.say(key, "Hallo i bims online")
+                    setTimeout(()=>{
+                        bot.say(key, "Hallo i bims online")
+                    },3000)
                 
             }
             for(const t in botusers[`${key}`].channelcommands){
@@ -83,6 +85,9 @@ bot.connect().then(() => {
 
 bot.on('message', messageHandler);
 bot.on('raided', raidHandler)
+
+
+
 //Event Handler
 function raidHandler(channel, raider, viewers) {
     bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);

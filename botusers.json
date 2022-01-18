@@ -1,7 +1,7 @@
-{	"#raiizz93": {
-		"joined": true,
-		"channelcommands": {
-		},
+{
+	"#raiizz93": {
+		"joined": false,
+		"channelcommands": {},
 		"allusecommands": [
 			"!krummi",
 			"!so",
