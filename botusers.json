@@ -20,6 +20,39 @@
 		]
 	},
 	"#mrkrummschnabel": {
+		"85658617": {
+			"login": "mrmartinimo",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			}
+		},
+		"536841246": {
+			"login": "mrkrummschnabel",
+			"poke": {
+				"list": [
+					"(Panzaeron , 46)",
+					"(Zapdos , 71)",
+					"(Purmel , 57)",
+					"(Pliprin , 50)",
+					"(Bisofank , 84)",
+					"(Schlingking , 1)"
+				],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			}
+		},
 		"joined": true,
 		"channelcommands": {
 			"test": {

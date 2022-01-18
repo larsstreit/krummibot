@@ -2,7 +2,7 @@ const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
 const {
-    log
+    log, count
 } = require('console');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
@@ -93,29 +93,34 @@ function raidHandler(channel, raider, viewers) {
 function messageHandler(channel, userstate, message, self) {
     //log(userstate)
     if (self) return;
-    if (!(userstate["user-id"] in users)) {
-        console.log("user not exist")
-
-        users[userstate["user-id"]] = {
-            login: userstate["username"],
-            pokemon: {
-                list: [],
-                catchable: false,
-                current: "",
-                tries: "",
-                actualpoints: "",
-                pointstocatch: "",
-                runningRound: false,
-                lvl: ""
-            }
+    // log(channel)
+    if(botusers[channel]){
+        if(!botusers[channel][userstate["user-id"]]){
+                console.log("user not exist")
+                botusers[channel][userstate["user-id"]] = {
+                    login: userstate["username"],
+                    poke: {
+                        list: [],
+                        catchable: false,
+                        current: "",
+                        tries: "",
+                        actualpoints: "",
+                        pointstocatch: "",
+                        runningRound: false,
+                        lvl: ""
+                    }
+                }
         }
-    } else {
-        users[userstate["user-id"]].login = userstate["username"];
+        else{
+            botusers[channel][userstate["user-id"]].login = userstate.username
+        }
     }
-
+    else{
+        return
+    }
     commandHandler(channel, message, userstate)
     //console.log(users[userstate["user-id"]])
-    fs.writeFileSync(path, JSON.stringify(users, null, '\t'))
+    fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
 }
 
 function commandHandler(channel, message, userstate) {
@@ -364,30 +369,29 @@ async function shutdownbot() {
 
 function startpokemongame(channel, userstate) {
     let randomPook = pokemon.random('de');
-    if (users[userstate["user-id"]].pokemon.runningRound == false) {
-        users[userstate["user-id"]].pokemon.lvl = Math.floor(Math.random() * 100)
-        bot.say(channel, `Ein wildes ${randomPook} mit LVL ${users[userstate["user-id"]].pokemon.lvl} erscheint`)
-        users[userstate["user-id"]].pokemon.actualpoints = "";
-        users[userstate["user-id"]].pokemon.current = randomPook;
-        users[userstate["user-id"]].pokemon.catchable = true;
-        users[userstate["user-id"]].pokemon.tries = Math.floor(Math.random() * 5)
-        if (users[userstate["user-id"]].pokemon.tries == 0) {
-            bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten denn ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
-            users[userstate["user-id"]].pokemon.tries = "";
-            users[userstate["user-id"]].pokemon.actualpoints = "";
-            users[userstate["user-id"]].pokemon.pointstocatch = "";
-            users[userstate["user-id"]].pokemon.catchable = false;
-            users[userstate["user-id"]].pokemon.runningRound = false
-            users[userstate["user-id"]].pokemon.current = "";
-            users[userstate["user-id"]].pokemon.lvl = "";
-            return
+    if (botusers[channel][userstate["user-id"]].poke.runningRound == false) {
+        botusers[channel][userstate["user-id"]].poke.lvl = Math.floor(Math.random() * 100)
+        bot.say(channel, `Ein wildes ${randomPook} mit LVL ${botusers[channel][userstate["user-id"]].poke.lvl} erscheint`)
+        botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+        botusers[channel][userstate["user-id"]].poke.current = randomPook;
+        botusers[channel][userstate["user-id"]].poke.catchable = true;
+        botusers[channel][userstate["user-id"]].poke.tries = Math.floor(Math.random() * 5)
+        if (botusers[channel][userstate["user-id"]].poke.tries == 0) {
+            bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten denn ${botusers[channel][userstate["user-id"]].poke.current} ist verschwunden`)
+            botusers[channel][userstate["user-id"]].poke.tries = "";
+            botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+            botusers[channel][userstate["user-id"]].poke.pointstocatch = "";
+            botusers[channel][userstate["user-id"]].poke.catchable = false;
+            botusers[channel][userstate["user-id"]].poke.runningRound = false
+            botusers[channel][userstate["user-id"]].poke.current = "";
+            botusers[channel][userstate["user-id"]].poke.lvl = "";
         } else {
             setTimeout(async () => {
-                await bot.say(channel, `@${userstate.username} du hast  ${users[userstate["user-id"]].pokemon.tries} Versuche`)
+                await bot.say(channel, `@${userstate.username} du hast  ${botusers[channel][userstate["user-id"]].poke.tries} Versuche`)
             }, 2000);
         }
-        users[userstate["user-id"]].pokemon.pointstocatch = Math.floor(Math.random() * 100)
-        users[userstate["user-id"]].pokemon.runningRound = true
+        botusers[channel][userstate["user-id"]].poke.pointstocatch = Math.floor(Math.random() * 100)
+        botusers[channel][userstate["user-id"]].poke.runningRound = true
     } else {
         bot.say(channel, "Du befindest dich schon in einer Runde")
     }
@@ -396,74 +400,73 @@ function startpokemongame(channel, userstate) {
 }
 
 function catchpokemon(channel, userstate) {
-    if (users[userstate["user-id"]].pokemon.catchable) {
+    if (botusers[channel][userstate["user-id"]].poke.catchable) {
         // can try a catch            
-        if (users[userstate["user-id"]].pokemon.tries != 0) {
-            users[userstate["user-id"]].pokemon.actualpoints = Math.floor(Math.random() * 50)
-            if (users[userstate["user-id"]].pokemon.actualpoints == users[userstate["user-id"]].pokemon.pointstocatch || users[userstate["user-id"]].pokemon.actualpoints > users[userstate["user-id"]].pokemon.pointstocatch) {
-                bot.say(channel, `Glückstrumpf du hast ${users[userstate["user-id"]].pokemon.current} mit LVL ${users[userstate["user-id"]].pokemon.lvl + " "}gefangen.`)
-                users[userstate["user-id"]].pokemon.list.push(users[userstate["user-id"]].pokemon.current)
-                users[userstate["user-id"]].pokemon.lvl = ""
-                users[userstate["user-id"]].pokemon.current = "";
-                users[userstate["user-id"]].pokemon.actualpoints = "";
-                users[userstate["user-id"]].pokemon.pointstocatch = "";
-                users[userstate["user-id"]].pokemon.catchable = false;
-                users[userstate["user-id"]].pokemon.runningRound = false
-                users[userstate["user-id"]].pokemon.tries = "";
+        if (botusers[channel][userstate["user-id"]].poke.tries != 0) {
+            botusers[channel][userstate["user-id"]].poke.actualpoints = Math.floor(Math.random() * 50)
+            if (botusers[channel][userstate["user-id"]].poke.actualpoints == botusers[channel][userstate["user-id"]].poke.pointstocatch || botusers[channel][userstate["user-id"]].poke.actualpoints > botusers[channel][userstate["user-id"]].poke.pointstocatch) {
+                bot.say(channel, `Glückstrumpf du hast ${botusers[channel][userstate["user-id"]].poke.current} mit LVL ${botusers[channel][userstate["user-id"]].poke.lvl + " "}gefangen.`)
+                botusers[channel][userstate["user-id"]].poke.list.push(`${"("+botusers[channel][userstate["user-id"]].poke.current+ " , "+ botusers[channel][userstate["user-id"]].poke.lvl+")"}`)
+                botusers[channel][userstate["user-id"]].poke.lvl = ""
+                botusers[channel][userstate["user-id"]].poke.current = "";
+                botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+                botusers[channel][userstate["user-id"]].poke.pointstocatch = "";
+                botusers[channel][userstate["user-id"]].poke.catchable = false;
+                botusers[channel][userstate["user-id"]].poke.runningRound = false
+                botusers[channel][userstate["user-id"]].poke.tries = "";
             }
-            users[userstate["user-id"]].pokemon.tries--;
+            botusers[channel][userstate["user-id"]].poke.tries--;
 
-            if (users[userstate["user-id"]].pokemon.tries == 0) {
-                users[userstate["user-id"]].pokemon.lvl = ""
-                users[userstate["user-id"]].pokemon.tries = "";
-                users[userstate["user-id"]].pokemon.actualpoints = "";
-                users[userstate["user-id"]].pokemon.pointstocatch = "";
-                users[userstate["user-id"]].pokemon.catchable = false;
-                users[userstate["user-id"]].pokemon.runningRound = false
-                bot.say(channel, `@${userstate.username}, ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
-                users[userstate["user-id"]].pokemon.current = "";
+            if (botusers[channel][userstate["user-id"]].poke.tries == 0) {
+                botusers[channel][userstate["user-id"]].poke.lvl = ""
+                botusers[channel][userstate["user-id"]].poke.tries = "";
+                botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+                botusers[channel][userstate["user-id"]].poke.pointstocatch = "";
+                botusers[channel][userstate["user-id"]].poke.catchable = false;
+                botusers[channel][userstate["user-id"]].poke.runningRound = false
+                bot.say(channel, `@${userstate.username}, ${botusers[channel][userstate["user-id"]].poke.current} ist verschwunden`)
+                botusers[channel][userstate["user-id"]].poke.current = "";
 
             }
-            if (users[userstate["user-id"]].pokemon.tries == -1) {
-                users[userstate["user-id"]].pokemon.tries = "";
+            if (botusers[channel][userstate["user-id"]].poke.tries == -1) {
+                botusers[channel][userstate["user-id"]].poke.tries = "";
             }
 
         } else {
-            users[userstate["user-id"]].pokemon.tries = "";
-            users[userstate["user-id"]].pokemon.actualpoints = "";
-            users[userstate["user-id"]].pokemon.pointstocatch = "";
-            users[userstate["user-id"]].pokemon.catchable = false;
-            users[userstate["user-id"]].pokemon.runningRound = false
-            bot.say(channel, `@${userstate.username}, ${users[userstate["user-id"]].pokemon.current} ist verschwunden`)
-            users[userstate["user-id"]].pokemon.current = "";
+            botusers[channel][userstate["user-id"]].poke.tries = "";
+            botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+            botusers[channel][userstate["user-id"]].poke.pointstocatch = "";
+            botusers[channel][userstate["user-id"]].poke.catchable = false;
+            botusers[channel][userstate["user-id"]].poke.runningRound = false
+            bot.say(channel, `@${userstate.username}, ${botusers[channel][userstate["user-id"]].poke.current} ist verschwunden`)
+            botusers[channel][userstate["user-id"]].poke.current = "";
 
 
         }
     } else {
         //not catchable
-        if (users[userstate["user-id"]].pokemon.tries == 0 || users[userstate["user-id"]].pokemon.tries == "") {
+        if (botusers[channel][userstate["user-id"]].poke.tries == 0 || botusers[channel][userstate["user-id"]].poke.tries == "") {
             bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten`)
-            users[userstate["user-id"]].pokemon.tries = "";
-            users[userstate["user-id"]].pokemon.actualpoints = "";
-            users[userstate["user-id"]].pokemon.pointstocatch = "";
-            users[userstate["user-id"]].pokemon.catchable = false;
-            users[userstate["user-id"]].pokemon.runningRound = false
-            users[userstate["user-id"]].pokemon.current = "";
+            botusers[channel][userstate["user-id"]].poke.tries = "";
+            botusers[channel][userstate["user-id"]].poke.actualpoints = "";
+            botusers[channel][userstate["user-id"]].poke.pointstocatch = "";
+            botusers[channel][userstate["user-id"]].poke.catchable = false;
+            botusers[channel][userstate["user-id"]].poke.runningRound = false
+            botusers[channel][userstate["user-id"]].poke.current = "";
         }
     }
 }
 
 function pokeindex(channel, userstate) {
-    let pokedex = pokemon.all('de')
+    let pokedex = botusers[channel][userstate["user-id"]].poke.list
+    log(pokedex)
     let counter = 0
     let actualpok = []
     for (t in pokedex) {
-        if (users[userstate["user-id"]].pokemon.list.includes(pokedex[t])) {
-            counter++;
-            actualpok.push(pokedex[t])
-        }
+        counter++
+        actualpok.push(pokedex[t])
     }
-    bot.say(channel, `@${userstate.username}  ${counter + " Pokemons und zwar " + actualpok } `)
+    bot.say(channel, `@${userstate.username} ${counter + " Pokemons und zwar " + actualpok } `)
 }
 
 function throwCoin(channel) {
