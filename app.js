@@ -37,21 +37,7 @@ const db = new Database('database.db', { verbose: console.log });
 
 require('dotenv').config();
 
-const opts = {
-    options: {
-        debug: true,
-        messagesLogLevel: "info"
-    },
-    connection: {
-        reconnect: true,
-        secure: true
-    },
-    identity: {
-        username: process.env.BOT_NAME,
-        password: process.env.BOT_OAUTH
-    },
-    channels: ["krummibot"]
-};
+const opts = require("./config")
 const bot = new tmi.client(opts);
 // botusers[`${channel}`].channelcommands[command].timer*60*10)
 bot.connect().then(() => {
@@ -65,7 +51,7 @@ bot.connect().then(() => {
                     });
                     joinedchannel.push(key)
                     setTimeout(()=>{
-                        bot.say(key, "Hallo i bims online")
+                        bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
                     },3000)
                 
             }

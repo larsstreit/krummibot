@@ -38,6 +38,21 @@
 			"lvl": ""
 		}
 	},
+	"88710431": {
+		"login": "raiizz93",
+		"pokemon": {
+			"list": [
+				"Iscalar"
+			],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"95066520": {
 		"login": "lilamagenta",
 		"pokemon": {
@@ -227,7 +242,8 @@
 				"Schlurp",
 				"Riolu",
 				"Klingplim",
-				"Igelavar"
+				"Igelavar",
+				"Moorabbel"
 			],
 			"catchable": false,
 			"current": "",
