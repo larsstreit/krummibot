@@ -1,12 +1,16 @@
 const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
-const {log} = require('console');
+const {
+    log
+} = require('console');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
+const packagepath ="./package.json"
 var users = {}
 var botusers = {}
 var joinedchannel = []
+var package ={}
 
 
 try {
@@ -19,6 +23,11 @@ try {
         let botusersfile = fs.readFileSync(botuserspath)
         //console.log(userfile)
         botusers = JSON.parse(botusersfile);
+    }
+    if (fs.existsSync(botuserspath)) {
+        let packagefile = fs.readFileSync(packagepath)
+        //console.log(userfile)
+        package = JSON.parse(packagefile);
     }
 } catch (err) {
     console.error(err)
@@ -49,24 +58,24 @@ bot.connect().then(() => {
                     }).catch((err) => {
                         console.log(err);
                     });
-                    joinedchannel.push(key)
-                    setTimeout(()=>{
-                        bot.say(key, `Hallo @${key.replace("#", "")} ich bin online und start klar`)
-                    },3000)
-                
+                joinedchannel.push(key)
+                setTimeout(() => {
+                    bot.say(key, `Hallo @${key.replace("#", "")}`)
+                    bot.say(key, `Running ${package.name} version ${package.version}`)
+                }, 3000)
             }
-            for(const t in botusers[`${key}`].channelcommands){
-               if(botusers[`${key}`].channelcommands[t].timer){
-                setInterval(()=>{
-                    bot.say(`${key}`, botusers[`${key}`].channelcommands[t].say)
-    
-                   
-                   },botusers[`${key}`].channelcommands[t].timer* 60000)
-               }
+            for (const t in botusers[`${key}`].channelcommands) {
+                if (botusers[`${key}`].channelcommands[t].timer) {
+                    setInterval(() => {
+                        bot.say(`${key}`, botusers[`${key}`].channelcommands[t].say)
+
+
+                    }, botusers[`${key}`].channelcommands[t].timer * 60000)
+                }
             }
         }
     },
-    
+
     console.log).catch(console.error);
 
 bot.on('message', messageHandler);
@@ -78,7 +87,7 @@ bot.on('raided', raidHandler)
 function raidHandler(channel, raider, viewers) {
     bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
     setTimeout(async () => {
-        await bot.say(channel, `!so ${raider}`)
+        await bot.say(channel, `Schaut mal bei ${raider} vorbei. twitch.tv/${raider.replace("@", "")}`)
     }, 2000);
 }
 
@@ -138,7 +147,8 @@ function commandHandler(channel, message, userstate) {
                         "!love",
                         "!games",
                         "!coin",
-                        "!würfel"
+                        "!würfel",
+                        "!miesmuschel"
                     ]
 
                 }
@@ -167,38 +177,32 @@ function commandHandler(channel, message, userstate) {
     if (`${channel}` in botusers) {
         alluse = command.split(" ")
         log("check if channel exist in botuser")
-        // log(botusers[channel].channelcommands[command].function)
         if (botusers[`${channel}`].channelcommands[command]) {
             log("check if command exist in botuser")
-            //log(botusers[`${channel}`].channelcommands[command].say)
 
             bot.say(channel, botusers[`${channel}`].channelcommands[command].say)
-           
-            // t = parseInt(botusers[`${channel}`].channelcommands[command].timer)
-            // log(t)
         } else {
-            //log(botusers[`${channel}`].allusecommands)
             if (botusers[`${channel}`].allusecommands.includes(alluse[0])) {
                 log(alluse)
                 switch (alluse[0]) {
                     case "!channelcommands":
-                        if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " "+ alluse[1])) {
+                        if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " " + alluse[1])) {
                             bot.say(channel, "Mit !addcommand <'!'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <'!'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <'!'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll")
-                        }else{
+                        } else {
                             return
                         }
-                    break;
+                        break;
                     case "!krummi":
-                        bot.say(channel, "Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei")                  
+                        bot.say(channel, "Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei")
                         break;
                     case "!so":
                         if (alluse.length > 1)
                             bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace("@", "")}`)
                         break;
                     case "!pokemon":
-                        if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " "+ alluse[1])) {
+                        if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " " + alluse[1])) {
                             bot.say(channel, "Mit !pokemon startest du eine Runde. Verwende !catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !index siehst du wie viele und welche Pokemons du bereits gefangen hast")
-                        }else{
+                        } else {
                             startpokemongame(channel, userstate)
                         }
                         break;
@@ -225,14 +229,21 @@ function commandHandler(channel, message, userstate) {
                     case "!coin":
                         throwCoin(channel)
                         break
-                        
+                    case "!miesmuschel":
+                        if (command.slice(0, message.indexOf(" ")) === "!miesmuschel") {
+                            bot.say(channel, `@${userstate.username} ${selectRandomQuote()}`);
+                        }  
+                        break;
+                          
+
+
                     default:
                         break;
                 }
             }
-            //  else{
-            //      return log("command not exist maybe normal message")
-            //  }
+            else{
+                return log("command not exist maybe normal message")
+            }
 
         }
 
@@ -260,7 +271,7 @@ function commandHandler(channel, message, userstate) {
         if (command.startsWith("!so")) {
             let so = command.split(" ")
             if (so.length > 1) {
-                bot.say(channel, ``)
+                bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
             }
         }
     }
@@ -272,9 +283,6 @@ function commandHandler(channel, message, userstate) {
             }
 
         }
-    }
-    if (command.slice(0, message.indexOf(" ")) === "!miesmuschel") {
-        bot.say(channel, `@${userstate.username} ${selectRandomQuote()}`);
     }
 
 
@@ -304,33 +312,33 @@ function commandHandler(channel, message, userstate) {
             let addcommand = command.split(" ")
             console.log(botusers[`${"#"+userstate.username}`].channelcommands);
             botusers[`${"#"+userstate.username}`].channelcommands[addcommand[1]] = {
-				say: "",
-				timer:  ""
-			},
-            fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
+                    say: "",
+                    timer: ""
+                },
+                fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
         }
         if (command.startsWith("!definecommand")) {
             let definecommand = command.split(" ")
             let say = command.substring(command.indexOf(">") + 1)
             if (definecommand[1] in botusers[`${"#"+userstate.username}`].channelcommands) {
-                switch(definecommand[2]){
+                switch (definecommand[2]) {
                     case "say":
                         botusers[`${"#"+userstate.username}`].channelcommands[definecommand[1]].say = say
                         break;
                     case "timer":
                         botusers[`${"#"+userstate.username}`].channelcommands[definecommand[1]].timer = parseInt(say)
                         break;
-                    default: 
+                    default:
                         break
 
                 }
-                    
+
             }
-            
-                fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
+
+            fs.writeFileSync(botuserspath, JSON.stringify(botusers, null, '\t'))
 
         }
-        
+
         if (command.startsWith("!removecommand")) {
             let removecommand = command.split(" ")
             if (removecommand[1] in botusers[`${"#"+userstate.username}`].channelcommands) {

@@ -25,6 +25,19 @@
 			"lvl": ""
 		}
 	},
+	"85658617": {
+		"login": "mrmartinimo",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"88278782": {
 		"login": "superbadwoman",
 		"pokemon": {

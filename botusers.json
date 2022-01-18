@@ -1,7 +1,42 @@
-{	
+{
 	"#raiizz93": {
 		"joined": false,
+		"channelcommands": {},
+		"allusecommands": [
+			"!channelcommands",
+			"!channelcommands help",
+			"!krummi",
+			"!so",
+			"!pokemon",
+			"!catch",
+			"!index",
+			"!pokemon help",
+			"!commands",
+			"!love",
+			"!games",
+			"!coin",
+			"!würfel",
+			"!miesmuschel"
+		]
+	},
+	"#mrkrummschnabel": {
+		"joined": true,
 		"channelcommands": {
+			"test": {
+				"say": "Testing functions",
+				"timer": 10
+			},
+			"!dc": {
+				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb",
+				"timer": 25
+			},
+			"!website": {
+				"say": "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de",
+				"timer": 25
+			},
+			"!lurk": {
+				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
+			}
 		},
 		"allusecommands": [
 			"!channelcommands",
@@ -16,41 +51,8 @@
 			"!love",
 			"!games",
 			"!coin",
-			"!würfel"
-		]
-	},
-
-	"#mrkrummschnabel": {
-		"joined": true,
-		"channelcommands": {
-			"test": {
-				"say": "25",
-				"timer": 10
-			},
-			"!dc": {
-				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb",
-				"timer": 25
-			},
-			"!website": {
-				"say": "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de"
-			},
-			"!lurk": {
-				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
-			}
-		},
-		"allusecommands": [
-			"!channelcommands",
-			"!krummi",
-			"!so",
-			"!pokemon",
-			"!catch",
-			"!index",
-			"!pokemon help",
-			"!commands",
-			"!love",
-			"!games",
-			"!coin",
-			"!würfel"
+			"!würfel",
+			"!miesmuschel"
 		]
 	}
 }
