@@ -63,7 +63,7 @@ bot.connect().then(() => {
                 }, 3000)
             }
             for (const t in botusers[`${key}`].channelcommands) {
-                if (botusers[`${key}`].channelcommands[t].timer) {
+                if (botusers[`${key}`].channelcommands[t].timer && botusers[`${key}`].channelcommands[t].timer === typeof Number ) {
                     setInterval(() => {
                         bot.say(`${key}`, botusers[`${key}`].channelcommands[t].say)
 
@@ -78,7 +78,6 @@ bot.connect().then(() => {
 
 bot.on('message', messageHandler);
 bot.on('raided', raidHandler)
-bot.on("")
 
 
 //Event Handler
