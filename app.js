@@ -21,12 +21,10 @@ try {
     }
     if (fs.existsSync(botuserspath)) {
         let botusersfile = fs.readFileSync(botuserspath)
-        //console.log(userfile)
         botusers = JSON.parse(botusersfile);
     }
-    if (fs.existsSync(botuserspath)) {
+    if (fs.existsSync(packagepath)) {
         let packagefile = fs.readFileSync(packagepath)
-        //console.log(userfile)
         package = JSON.parse(packagefile);
     }
 } catch (err) {
@@ -234,16 +232,15 @@ function commandHandler(channel, message, userstate) {
                             bot.say(channel, `@${userstate.username} ${selectRandomQuote()}`);
                         }  
                         break;
-                          
-
+                        
 
                     default:
                         break;
                 }
             }
-            else{
-                return log("command not exist maybe normal message")
-            }
+            // else{
+            //     return log("command not exist maybe normal message")
+            // }
 
         }
 
@@ -287,12 +284,12 @@ function commandHandler(channel, message, userstate) {
 
 
     if (userstate['user-id'] === userstate['room-id']) {
-        if (command.startsWith("!so")) {
-            let so = command.split(" ")
-            if (so.length > 1) {
-                bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
-            }
-        }
+        // if (command.startsWith("!so")) {
+        //     let so = command.split(" ")
+        //     if (so.length > 1) {
+        //         bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
+        //     }
+        // }
         if (command === "!leavechannel") {
             if (botusers["#" + userstate.username].joined === true) {
                 botusers["#" + userstate.username].joined = false

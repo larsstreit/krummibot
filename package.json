@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "test",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node app.js"
   },
   "author": "MrKrummschnabel",
   "license": "ISC",
@@ -17,8 +16,5 @@
     "os": "^0.1.2",
     "pokemon": "^2.3.0",
     "tmi.js": "^1.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
   }
 }

@@ -36,6 +36,10 @@
 			},
 			"!lurk": {
 				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
+			},
+			"!version": {
+				"say": "0.0.1",
+				"timer": ""
 			}
 		},
 		"allusecommands": [
