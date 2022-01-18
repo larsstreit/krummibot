@@ -1,23 +1,33 @@
 {
-	"#raiizz93": {
-		"joined": false,
-		"channelcommands": {}
-	},
 	"#mrkrummschnabel": {
 		"joined": true,
 		"channelcommands": {
 			"test": {
 				"say": " baum"
+			},
+			"!dc": {
+				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb"
+			},
+			"!website": {
+				"say": "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de"
+			},
+			"!lurk": {
+				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
 			}
 		},
 		"allusecommands": [
-			"!so",
+			"!krummi",
+			"!so" ,
 			"!pokemon",
+			"!catch",
+			"!index",
+			"!pokemon help",
 			"!commands",
-			"!love",
+			"!love", 
 			"!games",
 			"!coin",
 			"!würfel"
+			
 		]
 	}
 }
