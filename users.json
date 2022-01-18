@@ -168,6 +168,19 @@
 			"lvl": ""
 		}
 	},
+	"400911872": {
+		"login": "scyactive",
+		"pokemon": {
+			"list": [],
+			"catchable": false,
+			"current": "",
+			"tries": "",
+			"actualpoints": "",
+			"pointstocatch": "",
+			"runningRound": false,
+			"lvl": ""
+		}
+	},
 	"467654978": {
 		"login": "officialgapman",
 		"pokemon": {

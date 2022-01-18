@@ -1,12 +1,31 @@
-{
+{	"#raiizz93": {
+		"joined": true,
+		"channelcommands": {
+		},
+		"allusecommands": [
+			"!krummi",
+			"!so",
+			"!pokemon",
+			"!catch",
+			"!index",
+			"!pokemon help",
+			"!commands",
+			"!love",
+			"!games",
+			"!coin",
+			"!würfel"
+		]
+	},
 	"#mrkrummschnabel": {
 		"joined": true,
 		"channelcommands": {
 			"test": {
-				"say": " baum"
+				"say": "25",
+				"timer": 10
 			},
 			"!dc": {
-				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb"
+				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb",
+				"timer": 25
 			},
 			"!website": {
 				"say": "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de"
@@ -17,17 +36,16 @@
 		},
 		"allusecommands": [
 			"!krummi",
-			"!so" ,
+			"!so",
 			"!pokemon",
 			"!catch",
 			"!index",
 			"!pokemon help",
 			"!commands",
-			"!love", 
+			"!love",
 			"!games",
 			"!coin",
 			"!würfel"
-			
 		]
 	}
 }
