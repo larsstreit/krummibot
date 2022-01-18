@@ -1,14 +1,16 @@
 const tmi = require('tmi.js');
 const pokemon = require('pokemon');
 const fs = require('fs');
-const {log} = require('console');
+const {
+    log
+} = require('console');
 const path = "./users.json";
 const botuserspath = "./botusers.json"
-const packagepath ="./package.json"
+const packagepath = "./package.json"
 var users = {}
 var botusers = {}
 var joinedchannel = []
-var package ={}
+var package = {}
 
 
 try {
@@ -93,29 +95,27 @@ function messageHandler(channel, userstate, message, self) {
     //log(userstate)
     if (self || userstate.username === "soundalerts" || userstate.username === "streamelements" || userstate.username === "streamlabs") return;
     // log(channel)
-    if(botusers[channel]){
-        if(!botusers[channel][userstate["user-id"]]){
-                console.log("user not exist")
-                botusers[channel][userstate["user-id"]] = {
-                    login: userstate["username"],
-                    poke: {
-                        list: [],
-                        catchable: false,
-                        current: "",
-                        tries: "",
-                        actualpoints: "",
-                        pointstocatch: "",
-                        runningRound: false,
-                        lvl: ""
-                    },
-                    schnabelcoins: 0
-                }
-        }
-        else{
+    if (botusers[channel]) {
+        if (!botusers[channel][userstate["user-id"]]) {
+            console.log("user not exist")
+            botusers[channel][userstate["user-id"]] = {
+                login: userstate["username"],
+                poke: {
+                    list: [],
+                    catchable: false,
+                    current: "",
+                    tries: "",
+                    actualpoints: "",
+                    pointstocatch: "",
+                    runningRound: false,
+                    lvl: ""
+                },
+                schnabelcoins: 0
+            }
+        } else {
             botusers[channel][userstate["user-id"]].login = userstate.username
         }
-    }
-    else{
+    } else {
         return
     }
     commandHandler(channel, message, userstate)
@@ -200,15 +200,14 @@ function commandHandler(channel, message, userstate) {
                         break;
                     case "!so":
                         if (userstate['mod'] || userstate['user-id'] === userstate['room-id']) {
-                            if (alluse.length > 1){
-                            bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace("@", "")}`)
+                            if (alluse.length > 1) {
+                                bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace("@", "")}`)
                             }
-                        }
-                        else{
+                        } else {
                             bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}}`)
                         }
-                    
-                        
+
+
                         break;
                     case "!pokemon":
                         if (botusers[`${channel}`].allusecommands.includes(alluse[0] + " " + alluse[1])) {
@@ -243,9 +242,9 @@ function commandHandler(channel, message, userstate) {
                     case "!miesmuschel":
                         if (command.slice(0, message.indexOf(" ")) === "!miesmuschel") {
                             bot.say(channel, `@${userstate.username} ${selectRandomQuote()}`);
-                        }  
+                        }
                         break;
-                        
+
 
                     default:
                         break;
@@ -277,14 +276,6 @@ function commandHandler(channel, message, userstate) {
         }
     }
 
-    if (userstate['mod']) {
-        if (command.startsWith("!so")) {
-            let so = command.split(" ")
-            if (so.length > 1) {
-                bot.say(channel, `Schaut mal bei ${so[1]} vorbei und verschenkt Liebe. https://twitch.tv/${so[1].replace("@", "")}`)
-            }
-        }
-    }
 
     if (channel === "#mrkrummschnabel") {
         if (userstate.username === "pentiboy") {
