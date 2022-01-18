@@ -7,7 +7,8 @@
 - Pokémon Catch Feature ✔️
 - Multiple Stream Commands ✔️
 - Roll Dice Function ✔️
-- 
+- Add / remove your own comments ✔️
+-
 
 
 ## Setup for Own Usage:
