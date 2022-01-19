@@ -114,6 +114,20 @@
 				"lvl": ""
 			}
 		},
+		"549112855": {
+			"login": "jvpeek",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"687957603": {
 			"login": "ibot1tobi",
 			"poke": {
@@ -166,6 +180,10 @@
 			"!socials": {
 				"say": "Twitch: twitch.tv/mrkrummschnabel , TikTok: tiktok.com/@mrkrummschnabel , Instagram: instagram.com/mrkrummschnabel",
 				"timer": 20
+			},
+			"!soundboard": {
+				"say": "https://jvpeek.de/ext/sb/sounds/soundlist.php?channel=MrKrummschnabel",
+				"timer": ""
 			}
 		},
 		"allusecommands": [
