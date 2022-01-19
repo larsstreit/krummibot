@@ -33,6 +33,34 @@
 		]
 	},
 	"#mrkrummschnabel": {
+		"29497230": {
+			"login": "dypox",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"60569383": {
+			"login": "thareslul",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"85658617": {
 			"login": "mrmartinimo",
 			"poke": {
@@ -46,6 +74,23 @@
 				"lvl": ""
 			}
 		},
+		"148134471": {
+			"login": "firebullmonkey",
+			"poke": {
+				"list": [
+					"(Aranestro , 84)",
+					"(Tuska , 53)"
+				],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"536841246": {
 			"login": "mrkrummschnabel",
 			"poke": {
@@ -55,7 +100,10 @@
 					"(Purmel , 57)",
 					"(Pliprin , 50)",
 					"(Bisofank , 84)",
-					"(Schlingking , 1)"
+					"(Schlingking , 1)",
+					"(Kindwurm , 81)",
+					"(Flemmli , 56)",
+					"(Shuppet , 40)"
 				],
 				"catchable": false,
 				"current": "",
@@ -65,6 +113,20 @@
 				"runningRound": false,
 				"lvl": ""
 			}
+		},
+		"687957603": {
+			"login": "ibot1tobi",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
 		},
 		"749590610": {
 			"login": "idefix65",
@@ -87,7 +149,7 @@
 				"timer": 10
 			},
 			"!dc": {
-				"say": "Tritt doch meinem Discord-Serber bei: https://discord.gg/azAFTNTACb",
+				"say": "Tritt doch meinem Discord-Server bei: https://discord.gg/azAFTNTACb",
 				"timer": 25
 			},
 			"!website": {
@@ -98,7 +160,7 @@
 				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
 			},
 			"!version": {
-				"say": "0.0.1",
+				"say": "0.0.2",
 				"timer": ""
 			}
 		},
