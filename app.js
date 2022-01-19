@@ -9,8 +9,6 @@ try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath) && fs.existsSync(filepath.logpath)) {
 		let botusersfile = fs.readFileSync(filepath.botuserspath);
 		objvar.botusers = JSON.parse(botusersfile);
-		let logfile = fs.readFileSync(filepath.logpath);
-		objvar.logentry = objvar.logentry.push(logfile);
 		let packagefile = fs.readFileSync(filepath.packagepath);
 		objvar.package = JSON.parse(packagefile);
 	}
