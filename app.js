@@ -5,19 +5,19 @@ const filepath = require('./path.js');
 const commandHandler = require('./commandHandler');
 const opts = require('./config');
 require('dotenv').config();
-
 try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath) && fs.existsSync(filepath.logpath)) {
 		let botusersfile = fs.readFileSync(filepath.botuserspath);
-		let packagefile = fs.readFileSync(filepath.packagepath);
-		let logfile = fs.readFileSync(filepath.logpath);
 		objvar.botusers = JSON.parse(botusersfile);
-		objvar.package = JSON.parse(packagefile);
+		let logfile = fs.readFileSync(filepath.logpath);
 		objvar.logentry = objvar.logentry.push(logfile);
+		let packagefile = fs.readFileSync(filepath.packagepath);
+		objvar.package = JSON.parse(packagefile);
 	}
 } catch (err) {
 	console.error(err);
 }
+
 const bot = new tmi.client(opts);
 bot.connect().then(() => {
 	for (const key in objvar.botusers) {

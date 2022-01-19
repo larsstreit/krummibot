@@ -106,17 +106,17 @@ module.exports = {
 						break;
 					case '!love':
 						if (command.slice(0, message.indexOf(' ')) === '!love') {
-							botfunctions.makelove(userstate, channel, checklove);
+							botfunctions.makelove(userstate, channel, checklove, bot);
 						}
 						break;
 					case '!games':
 						bot.say(channel, 'Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help');
 						break;
 					case '!würfel':
-						botfunctions.rollDice(channel);
+						botfunctions.rollDice(channel, bot );
 						break;
 					case '!coin':
-						botfunctions.throwCoin(channel);
+						botfunctions.throwCoin(channel, bot);
 						break;
 					case '!miesmuschel':
 						if (command.slice(0, message.indexOf(' ')) === '!miesmuschel') {
@@ -184,7 +184,6 @@ module.exports = {
 			}
 			if (command.startsWith('!addcommand')) {
 				let addcommand = command.split(' ');
-				console.log(botusers[`${'#'+userstate.username}`].channelcommands);
 				botusers[`${'#'+userstate.username}`].channelcommands[addcommand[1]] = {
 					say: '',
 					timer: ''
@@ -226,6 +225,14 @@ module.exports = {
 
 
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(botusers, null, '\t'));
+			}
+			if (command === '!restart') {
+				bot.say(channel, 'Ich starte kurz neu...Bitte warten');
+				bot.part(channel).then(setTimeout(()=>{
+					bot.join(channel).then(log=>(console.log(log))).catch(err=>(console.log(err)));
+					bot.say(channel, 'ich habe einen Neustart durchgerführt');
+				},10000)).catch(err=>(console.error(err)));
+                
 			}
 		}
 

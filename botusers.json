@@ -162,6 +162,10 @@
 			"!version": {
 				"say": "0.0.2",
 				"timer": ""
+			},
+			"!socials": {
+				"say": "Twitch: twitch.tv/mrkrummschnabel , TikTok: tiktok.com/@mrkrummschnabel , Instagram: instagram.com/mrkrummschnabel",
+				"timer": 20
 			}
 		},
 		"allusecommands": [
