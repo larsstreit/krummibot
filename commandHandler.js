@@ -3,7 +3,7 @@ const objvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
 module.exports = {
-	commandHandler: function(channel, message, userstate, botusers, bot, fs) {
+	commandHandler: function (channel, message, userstate, botusers, bot, fs) {
 		const checklove = message.split(' ');
 		const command = message;
 
@@ -113,7 +113,7 @@ module.exports = {
 						bot.say(channel, 'Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help');
 						break;
 					case '!würfel':
-						botfunctions.rollDice(channel, bot );
+						botfunctions.rollDice(channel, bot);
 						break;
 					case '!coin':
 						botfunctions.throwCoin(channel, bot);
@@ -142,7 +142,7 @@ module.exports = {
 		//can be used in everychannel
 		if (userstate.username === 'mrkrummschnabel') {
 			if (command === '!shutdown') {
-			//eventueller fehler beim "no rsponse from twitch"
+				//eventueller fehler beim "no rsponse from twitch"
 				botfunctions.shutdownbot().then(setTimeout(() => {
 					process.exit(0);
 				}, 3000)).catch(err => {
@@ -228,11 +228,11 @@ module.exports = {
 			}
 			if (command === '!restart') {
 				bot.say(channel, 'Ich starte kurz neu...Bitte warten');
-				bot.part(channel).then(setTimeout(()=>{
-					bot.join(channel).then(log=>(console.log(log))).catch(err=>(console.log(err)));
+				bot.part(channel).then(setTimeout(() => {
+					bot.join(channel).then(log => (console.log(log))).catch(err => (console.log(err)));
 					bot.say(channel, 'ich habe einen Neustart durchgerführt');
-				},10000)).catch(err=>(console.error(err)));
-                
+				}, 10000)).catch(err => (console.error(err)));
+
 			}
 		}
 
