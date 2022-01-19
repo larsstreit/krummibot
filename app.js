@@ -4,6 +4,7 @@ const objvar = require('./var');
 const filepath = require('./path.js');
 const commandHandler = require('./commandHandler');
 const opts = require('./config');
+console.log(opts);
 require('dotenv').config();
 try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath) && fs.existsSync(filepath.logpath)) {
