@@ -2,11 +2,54 @@ const filepath = require('./path');
 const objvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
+const bannedwords = [
+	'simp',
+	'Airport',
+	'Al Qaeda',
+	'Alcohol Tobacco and Firearms (ATF)',
+	'Al-Shabaab',
+	'Ammonium nitrate',
+	'AMTRAK.',
+	'Anthrax',
+	'Antiviral',
+	'AQAP.',
+	'AQIM',
+	'Arellano-Felix',
+	'Artistic Assassins',
+	'Assassination',
+	'Attack',
+	'Attack',
+	'Authorities',
+	'Avalanche',
+	'Avian',
+	'Black out',
+	'Blister agent',
+	'Blizzard',
+	'Body scanner',
+	'Bomb (squad or threat)',
+	'Border',
+	'Border Patrol',
+	'Botnet',
+	'Breach',
+	'Bridge',
+	'Brown out',
+	'Brown out',
+	'Brush fire',
+	'Brute forcing',
+	'Burn',
+	'Burst',
+	'Bust'
+];
+
 module.exports = {
 	commandHandler: function (channel, message, userstate, botusers, bot, fs) {
 		const checklove = message.split(' ');
 		const command = message;
 
+
+		/**
+		 * Check for channel // only these two let bot join to channel 
+		 */
 		if (channel === '#krummibot' || channel === '#mrkrummschnabel') {
 			if (command === '!joinchannel') {
 				if (!(`${'#'+userstate.username}` in botusers)) {
@@ -55,19 +98,28 @@ module.exports = {
 
 
 
-
+		/**
+		 * Check for exisiting channel // every channel might have his own commands
+		 */
 		if (`${channel}` in botusers) {
 			let alluse = command.split(' ');
+
 			console.log('check if channel exist in botuser');
 			if (botusers[`${channel}`].channelcommands[command]) {
 				console.log('check if command exist in botuser');
-
 				bot.say(channel, botusers[`${channel}`].channelcommands[command].say);
-			} else {
+			}
+			/**
+			 * Check for commands useable for alll 
+			 */
+			else {
 				if (botusers[`${channel}`].allusecommands.includes(alluse[0])) {
 					console.log(alluse);
 					switch (alluse[0]) {
 					case '!channelcommands':
+						/**
+						 * check if there is "help" in command
+						 */
 						if (botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 							bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
 						} else {
@@ -83,12 +135,13 @@ module.exports = {
 								bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace('@', '')}`);
 							}
 						} else {
-							bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}}`);
+							bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}`);
 						}
-
-
 						break;
 					case '!pokemon':
+						/**
+						 * check if there is "help" in command
+						 */
 						if (botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 							bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !index siehst du wie viele und welche Pokemons du bereits gefangen hast');
 						} else {
@@ -102,7 +155,16 @@ module.exports = {
 						pokeMethods.pokeindex(channel, userstate, bot);
 						break;
 					case '!commands':
-						bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games');
+						(() => {
+							let s = ' ';
+							for (const key in botusers[channel].channelcommands) {
+								s += key + ', ';
+							}
+							s = s.slice(0, (s.lastIndexOf(',')));
+							//console.log(s);
+							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games ' + s);
+						})();
+
 						break;
 					case '!love':
 						if (command.slice(0, message.indexOf(' ')) === '!love') {
@@ -129,9 +191,15 @@ module.exports = {
 						break;
 					}
 				}
-				// else{
-				//     return log("command not exist maybe normal message")
-				// }
+				/**
+				 * Check for blocked words // These words are not allowed
+				 */
+				else if (bannedwords.includes(command.toLowerCase()) || bannedwords.includes(command)) {
+					bot.deletemessage(channel, userstate.id);
+					bot.say(channel, 'das Wort darfst du nicht verwenden');
+					
+					
+				}
 
 			}
 

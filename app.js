@@ -4,6 +4,8 @@ const objvar = require('./var');
 const filepath = require('./path.js');
 const commandHandler = require('./commandHandler');
 const opts = require('./config');
+
+
 require('dotenv').config();
 try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath) && fs.existsSync(filepath.logpath)) {
@@ -18,34 +20,60 @@ try {
 
 const bot = new tmi.client(opts);
 bot.connect().then(() => {
-	for (const key in objvar.botusers) {
-		if (objvar.botusers[key].joined === true) {
+	for (const [key, value] of Object.entries(objvar.botusers)) {
+		// shows the value of botusers[key] console.log(objvar.botusers[key]) does the same as console.log(value);
+		// key => #channelname etc. console.log(key)
+		if (value.joined === true) {
 			bot.join(key)
 				.then((data) => {
+					//shows which channel was joined
 					console.log(data);
 				}).catch((err) => {
 					console.log(err);
 				});
+			//need if bot gets shutdown on every channel
 			objvar.joinedchannel.push(key);
-			setTimeout(() => {
-				bot.say(key, `Hallo @${key.replace('#', '')}`);
-				bot.say(key, `testing ${objvar.package.name} version ${objvar.package.version}`);
-			}, 3000);
+			setTimeout(async() => {
+				await bot.say(key, `Hallo @${key.replace('#', '')}`);
+				await bot.say(key, `testing ${objvar.package.name} version ${objvar.package.version}`);
+			}, 2000);
 		}
-		for (const t in objvar.botusers[`${key}`].channelcommands) {
-			if (objvar.botusers[`${key}`].channelcommands[t].timer && objvar.botusers[`${key}`].channelcommands[t].timer === typeof Number) {
-				setInterval(() => {
-					bot.say(`${key}`, objvar.botusers[`${key}`].channelcommands[t].say);
-
-
-				}, objvar.botusers[`${key}`].channelcommands[t].timer * 60000);
+		/*for (const [, comm] of Object.entries(value.channelcommands)){
+			//console.log(comm);
+			if(!objvar.test[comm.timer]){
+				objvar.test[comm.timer] = [];
+			}
+			objvar.test[comm.timer].push(comm);
+			
+		}*/		
+	}
+	
+	/*let timercount = 1;
+	setInterval(()=>{
+		if(objvar.test[timercount]){
+			console.log(objvar.test[timercount]);
+			if(objvar.test[timercount].length > 1 ){
+				//bot.say()
+				setTimeout(()=>{
+					
+				},60000*2);
 			}
 		}
-	}
-},console.log).catch(console.error);
+
+		timercount++;
+		if(timercount == 60){
+			timercount = 0;
+		}
+	},10000);
+	*/
+	
+}).catch(console.error);
+
 
 bot.on('message', messageHandler);
 bot.on('raided', raidHandler);
+
+
 
 
 //Event Handler
@@ -55,8 +83,6 @@ function raidHandler(channel, raider, viewers) {
 		await bot.say(channel, `Schaut mal bei ${raider} vorbei. twitch.tv/${raider.replace('@', '')}`);
 	}, 2000);
 }
-
-
 
 function messageHandler(channel, userstate, message, self) {
 	if (self || userstate.username === 'soundalerts' || userstate.username === 'streamelements' || userstate.username === 'streamlabs') return;

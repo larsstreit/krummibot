@@ -1,5 +1,5 @@
 {
-	"#raiizz93": {
+	"#thethunderplaysx": {
 		"536841246": {
 			"login": "mrkrummschnabel",
 			"poke": {
@@ -14,7 +14,16 @@
 			}
 		},
 		"joined": false,
-		"channelcommands": {},
+		"channelcommands": {
+			"!dc": {
+				"say": "Tritt doch meinem Discord-Server bei: https://discord.gg/azAFTNTACb",
+				"timer": 3
+			},
+			"!test": {
+				"say": "test",
+				"timer": 1
+			}
+		},
 		"allusecommands": [
 			"!channelcommands",
 			"!channelcommands help",
@@ -61,6 +70,20 @@
 			},
 			"schnabelcoins": 0
 		},
+		"68631100": {
+			"login": "koopa1338",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"85658617": {
 			"login": "mrmartinimo",
 			"poke": {
@@ -74,6 +97,76 @@
 				"lvl": ""
 			}
 		},
+		"95703532": {
+			"login": "iseven",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"107031085": {
+			"login": "lordrepha",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"113344441": {
+			"login": "maxthevoodoo",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"118948901": {
+			"login": "shinyhunter2109",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"133229465": {
+			"login": "matzeaustria",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"148134471": {
 			"login": "firebullmonkey",
 			"poke": {
@@ -81,6 +174,90 @@
 					"(Aranestro , 84)",
 					"(Tuska , 53)"
 				],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"154142734": {
+			"login": "blowfishfugu",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"206130928": {
+			"login": "technik_tueftler",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"212827130": {
+			"login": "raumatom",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"216309718": {
+			"login": "wollewolle99",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"234061037": {
+			"login": "schnitzelboy_",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"431398422": {
+			"login": "knollemv",
+			"poke": {
+				"list": [],
 				"catchable": false,
 				"current": "",
 				"tries": "",
@@ -103,7 +280,8 @@
 					"(Schlingking , 1)",
 					"(Kindwurm , 81)",
 					"(Flemmli , 56)",
-					"(Shuppet , 40)"
+					"(Shuppet , 40)",
+					"(Stolloss , 44)"
 				],
 				"catchable": false,
 				"current": "",
@@ -116,6 +294,50 @@
 		},
 		"549112855": {
 			"login": "jvpeek",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"612788980": {
+			"login": "pentiboy",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
+		"682999588": {
+			"login": "itsdarkiiitime",
+			"poke": {
+				"list": [
+					"(Kingler , 95)"
+				],
+				"catchable": true,
+				"current": "Krawumms",
+				"tries": 3,
+				"actualpoints": 38,
+				"pointstocatch": 57,
+				"runningRound": false,
+				"lvl": 19
+			},
+			"schnabelcoins": 0
+		},
+		"684126340": {
+			"login": "mrskrummschnabel",
 			"poke": {
 				"list": [],
 				"catchable": false,
@@ -156,22 +378,37 @@
 			},
 			"schnabelcoins": 0
 		},
+		"766405844": {
+			"login": "kaja1439",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"joined": true,
 		"channelcommands": {
 			"test": {
 				"say": "Testing functions",
-				"timer": 10
+				"timer": 1
 			},
 			"!dc": {
 				"say": "Tritt doch meinem Discord-Server bei: https://discord.gg/azAFTNTACb",
-				"timer": 25
+				"timer": 1
 			},
 			"!website": {
 				"say": "Schaut mal auf meiner Website oder meinem Shop vorbei. Website: krummschnabel.de / Shop: shop.krummschnabel.de",
-				"timer": 25
+				"timer": 2
 			},
 			"!lurk": {
-				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3"
+				"say": "mrkrummschnabel ist jetzt im Lurk, er / sie benötigt noch ein paar Äste für seinen / ihren Nistplatz. Sie / Er lässt aber Fische für dich hier <3",
+				"timer": ""
 			},
 			"!version": {
 				"say": "0.0.2",
@@ -179,10 +416,18 @@
 			},
 			"!socials": {
 				"say": "Twitch: twitch.tv/mrkrummschnabel , TikTok: tiktok.com/@mrkrummschnabel , Instagram: instagram.com/mrkrummschnabel",
-				"timer": 20
+				"timer": 3
 			},
 			"!soundboard": {
 				"say": "https://jvpeek.de/ext/sb/sounds/soundlist.php?channel=MrKrummschnabel",
+				"timer": ""
+			},
+			"!minecraft": {
+				"say": "Du willst auch mitspielen? Dann tritt doch dem Server von Raiizz93 bei. IP: 45.132.88.240:25565",
+				"timer": 4
+			},
+			"!GG": {
+				"say": " Ihr habt lust auf Merchandise von GamersGear? Wenn ihr über diesen Link einkauft unterstützt ihr mich und ihr bekommt gleichzeitig 15% Rabatt: https://gamersgear.de/?sca_ref=1566827.3DWw4xzTcy Alternativ könnt ihr beim Kauf auch einfach den Rabattcode \"KRUMMI\" verwenden um 15% Rabatt zu bekommen :)",
 				"timer": ""
 			}
 		},

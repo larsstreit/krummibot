@@ -96,8 +96,8 @@ module.exports ={
 		let actualpok = [];
 		for (let t in pokedex) {
 			counter++;
-			actualpok.push(pokedex[t]);
-		}
+			actualpok.push(pokedex[t]);	
+		}		
 		bot.say(channel, `@${userstate.username} ${counter + ' Pokemons und zwar ' + actualpok } `);
 	}
 };
