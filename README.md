@@ -8,6 +8,7 @@
 - Multiple Stream Commands ✔️
 - Roll Dice Function ✔️
 - Add / remove your own comments ✔️
+- Bannedwords List ✔️
 -
 
 
