@@ -10,7 +10,7 @@ module.exports =  {
 	},
 	identity: {
 		username: process.env.BOT_NAME,
-		password: process.env.BOT_OAUTH
+		password: process.env.BOT_OAUTH 
 	},
 	channels: ['krummibot']
 };
