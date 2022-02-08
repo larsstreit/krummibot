@@ -77,6 +77,7 @@ function messageHandler(channel, userstate, message, self) {
         } else {
             objvar.botusers[channel][userstate['user-id']].login = userstate.username;
         }
+        commandHandler.commandHandler(channel, message, userstate, bot, fs);
     } else {
         commandHandler.commandHandler(channel, message, userstate, bot, fs);
     }

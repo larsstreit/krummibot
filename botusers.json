@@ -255,13 +255,13 @@
 					"(Shuppet , 40)",
 					"(Stolloss , 44)"
 				],
-				"catchable": true,
-				"current": "Klikk",
-				"tries": 4,
+				"catchable": false,
+				"current": "",
+				"tries": "",
 				"actualpoints": "",
-				"pointstocatch": 24,
+				"pointstocatch": 46,
 				"runningRound": false,
-				"lvl": 90
+				"lvl": ""
 			}
 		},
 		"549112855": {
