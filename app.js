@@ -2,10 +2,9 @@ const tmi = require('tmi.js');
 const fs = require('fs');
 const objvar = require('./var');
 const filepath = require('./path');
-const eventhandler = require('./handler')
 const opts = require('./config');
-const bot = new tmi.client(opts);
-
+const commandHandler = require('./commandHandler');
+const bot = new tmi.Client(opts)
 try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath)) {
 		let botusersfile = fs.readFileSync(filepath.botuserspath);
@@ -19,7 +18,7 @@ try {
 
 bot.connect().then(() => {
 	for (const [key, value] of Object.entries(objvar.botusers)) {
-		console.log(value);s
+		console.log(value);
 		console.log(key);
 		// shows the value of botusers[key] console.log(objvar.botusers[key]) does the same as console.log(value);
 		// key => #channelname etc. console.log(key)
@@ -41,7 +40,45 @@ bot.connect().then(() => {
 	}
 }).catch(console.error);
 
-bot.on('message', eventhandler.messageHandler);
-bot.on('raided', eventhandler.raidHandler);
-bot.on('subscription', eventhandler.subscriptionHandler);
+bot.on('message', messageHandler);
+bot.on('raided', raidHandler);
+bot.on('subscription', subscriptionHandler);
 
+
+function  subscriptionHandler(channel, username, method, message, userstate){
+    console.log(channel, username, method, message, userstate);
+}
+function raidHandler(channel, raider, viewers) {
+    bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
+    setTimeout(async () => {
+        await bot.say(channel, `Schaut mal bei ${raider} vorbei. twitch.tv/${raider.replace('@', '')}`);
+    }, 2000);
+}
+function messageHandler(channel, userstate, message, self) {
+    if (self || userstate.username === 'soundalerts' || userstate.username === 'streamelements' || userstate.username === 'streamlabs') return;
+    if (objvar.botusers[channel]) {
+        if (!objvar.botusers[channel][userstate['user-id']]) {
+            console.log('user not exist');
+            objvar.botusers[channel][userstate['user-id']] = {
+                login: userstate['username'],
+                poke: {
+                    list: [],
+                    catchable: false,
+                    current: '',
+                    tries: '',
+                    actualpoints: '',
+                    pointstocatch: '',
+                    runningRound: false,
+                    lvl: ''
+                },
+                schnabelcoins: 0
+            };
+        } else {
+            objvar.botusers[channel][userstate['user-id']].login = userstate.username;
+        }
+    } else {
+        return;
+    }
+    commandHandler.commandHandler(channel, message, userstate, objvar.botusers, bot);
+    fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+}

@@ -2,6 +2,7 @@ const filepath = require('./path');
 const objvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
+const fs = require('fs');
 const bannedwords = [
 	'simp',
 	'Airport',
