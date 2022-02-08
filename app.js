@@ -41,10 +41,7 @@ bot.connect().then(() => {
 	}
 }).catch(console.error);
 
-
 bot.on('message', eventhandler.messageHandler);
 bot.on('raided', eventhandler.raidHandler);
 bot.on('subscription', eventhandler.subscriptionHandler);
-
-
 
