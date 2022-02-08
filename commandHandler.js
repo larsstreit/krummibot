@@ -43,7 +43,7 @@ const bannedwords = [
 ];
 
 module.exports = {
-	commandHandler: function (channel, message, userstate, botusers, bot, fs) {
+	commandHandler: function (channel, message, userstate, botusers, bot) {
 		const checklove = message.split(' ');
 		const command = message;
 
