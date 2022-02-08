@@ -80,14 +80,15 @@ module.exports = {
 
 					};
 				} else {
-					if (botusers[`${'#'+userstate.username}`].joined === false) {
-						botusers[`${'#'+userstate.username}`].joined = true;
+					
+					if (botusers['#' + userstate.username].joined === false) {
+						botusers['#' + userstate.username].joined = true;
 
 					} else {
 						bot.say(`${'#'+userstate.username}`, 'du hast mich bereits aktiviert');
 					}
 				}
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(file.botusers, null, '\t'));
 				bot.join(userstate.username)
 					.then((data) => {
 						console.log(data);
