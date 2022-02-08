@@ -3,8 +3,8 @@ const fs = require('fs');
 const objvar = require('./var');
 const filepath = require('./path');
 const opts = require('./config');
-const commandHandler = require('./commandHandler');
-const bot = new tmi.Client(opts)
+const commandHandler = require('./commandHandler')
+const bot = new tmi.client(opts);
 try {
 	if(fs.existsSync(filepath.botuserspath) && fs.existsSync(filepath.packagepath)) {
 		let botusersfile = fs.readFileSync(filepath.botuserspath);
@@ -32,10 +32,10 @@ bot.connect().then(() => {
 				});
 			//need if bot gets shutdown on every channel
 			objvar.joinedchannel.push(key);
-			setTimeout(async () => {
-				await bot.say(key, `Hallo @${key.replace('#', '')}`);
-				await bot.say(key, `testing ${objvar.package.name} version ${objvar.package.version}`);
-			}, 2000);
+			// setTimeout(async () => {
+			// 	await bot.say(key, `Hallo @${key.replace('#', '')}`);
+			// 	await bot.say(key, `testing ${objvar.package.name} version ${objvar.package.version}`);
+			// }, 2000);
 		}	
 	}
 }).catch(console.error);
@@ -55,6 +55,7 @@ function raidHandler(channel, raider, viewers) {
     }, 2000);
 }
 function messageHandler(channel, userstate, message, self) {
+	
     if (self || userstate.username === 'soundalerts' || userstate.username === 'streamelements' || userstate.username === 'streamlabs') return;
     if (objvar.botusers[channel]) {
         if (!objvar.botusers[channel][userstate['user-id']]) {
@@ -77,8 +78,7 @@ function messageHandler(channel, userstate, message, self) {
             objvar.botusers[channel][userstate['user-id']].login = userstate.username;
         }
     } else {
-        return;
+        commandHandler.commandHandler(channel, message, userstate, bot, fs);
     }
-    commandHandler.commandHandler(channel, message, userstate, objvar.botusers, bot);
     fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
 }

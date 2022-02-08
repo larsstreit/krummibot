@@ -1,46 +1,4 @@
 {
-	"#thethunderplaysx": {
-		"536841246": {
-			"login": "mrkrummschnabel",
-			"poke": {
-				"list": [],
-				"catchable": false,
-				"current": "",
-				"tries": "",
-				"actualpoints": "",
-				"pointstocatch": "",
-				"runningRound": false,
-				"lvl": ""
-			}
-		},
-		"joined": false,
-		"channelcommands": {
-			"!dc": {
-				"say": "Tritt doch meinem Discord-Server bei: https://discord.gg/azAFTNTACb",
-				"timer": 3
-			},
-			"!test": {
-				"say": "test",
-				"timer": 1
-			}
-		},
-		"allusecommands": [
-			"!channelcommands",
-			"!channelcommands help",
-			"!krummi",
-			"!so",
-			"!pokemon",
-			"!catch",
-			"!index",
-			"!pokemon help",
-			"!commands",
-			"!love",
-			"!games",
-			"!coin",
-			"!würfel",
-			"!miesmuschel"
-		]
-	},
 	"#mrkrummschnabel": {
 		"29497230": {
 			"login": "dypox",
@@ -96,6 +54,20 @@
 				"runningRound": false,
 				"lvl": ""
 			}
+		},
+		"88710431": {
+			"login": "raiizz93",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
 		},
 		"95703532": {
 			"login": "iseven",
@@ -283,13 +255,13 @@
 					"(Shuppet , 40)",
 					"(Stolloss , 44)"
 				],
-				"catchable": false,
-				"current": "",
-				"tries": "",
+				"catchable": true,
+				"current": "Klikk",
+				"tries": 4,
 				"actualpoints": "",
-				"pointstocatch": "",
+				"pointstocatch": 24,
 				"runningRound": false,
-				"lvl": ""
+				"lvl": 90
 			}
 		},
 		"549112855": {
