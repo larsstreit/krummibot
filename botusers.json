@@ -292,6 +292,20 @@
 			},
 			"schnabelcoins": 0
 		},
+		"675332182": {
+			"login": "krummibot",
+			"poke": {
+				"list": [],
+				"catchable": false,
+				"current": "",
+				"tries": "",
+				"actualpoints": "",
+				"pointstocatch": "",
+				"runningRound": false,
+				"lvl": ""
+			},
+			"schnabelcoins": 0
+		},
 		"682999588": {
 			"login": "itsdarkiiitime",
 			"poke": {
