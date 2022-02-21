@@ -6,7 +6,7 @@ const opts = require('./config');
 const commandHandler = require('./commandHandler')
 const bot = new tmi.client(opts);
 const express = require('express');
-const { botusers } = require('./var');
+const https = require('https');
 prestart();
 
 function prestart(){
@@ -36,7 +36,14 @@ function prestart(){
                 
             });
               
-              app.listen(3000)
+            const httpsServer = https.createServer({
+                key: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/privkey.pem'),
+                cert: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/fullchain.pem'),
+              }, app);
+              
+              httpsServer.listen(443, () => {
+                  console.log('HTTPS Server running on port 443');
+              });
         }
         else{
             prestart();
