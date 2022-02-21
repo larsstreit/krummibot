@@ -2,5 +2,6 @@ module.exports = {
 	botusers: {},
 	joinedchannel: [],
 	package: {},
-	test: []
+	test: [],
+	messages: []
 };

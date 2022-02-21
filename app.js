@@ -35,15 +35,37 @@ function prestart(){
 
                 
             });
-              
-            const httpsServer = https.createServer({
-                key: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/privkey.pem'),
-                cert: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/fullchain.pem'),
-              }, app);
-              
-              httpsServer.listen(443, () => {
-                  console.log('HTTPS Server running on port 443');
-              });
+            app.get('/messages', (req, res) => {
+                //reload page to show new messages 
+                res.send(`${JSON.stringify(objvar.messages)} <script>setTimeout(()=>{location.reload()},10000)</script>`)
+
+
+            });
+            try {
+                if(fs.existsSync('/etc/letsencrypt/live/krummibot.de/fullchain.pem') && fs.existsSync('/etc/letsencrypt/live/krummibot.de/privkey.pem')){
+                    const httpsServer = https.createServer({
+                        key: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/privkey.pem'),
+                        cert: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/fullchain.pem'),
+                      }, app);
+                      
+                      httpsServer.listen(443, () => {
+                          console.log('HTTPS Server running on port 443');
+                      });
+                }else{
+                    const httpsServer = https.createServer({
+                        key: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/privkey.pem'),
+                        cert: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/fullchain.pem'),
+                      }, app);
+                      
+                      httpsServer.listen(443, () => {
+                          console.log('HTTPS Server running on port 443');
+                      });
+                }
+                
+            } catch (error) {
+                console.log(error);
+            }
+            
         }
         else{
             prestart();
@@ -97,7 +119,7 @@ function raidHandler(channel, raider, viewers) {
         await bot.say(channel, `Schaut mal bei ${raider} vorbei. twitch.tv/${raider.replace('@', '')}`);
     }, 2000);
 }
-function messageHandler(channel, userstate, message, self) {
+function messageHandler(channel, userstate, message, self, app) {
 	
     if (self || userstate.username === 'soundalerts' || userstate.username === 'streamelements' || userstate.username === 'streamlabs') return;
     if (objvar.botusers[channel]) {
@@ -125,4 +147,5 @@ function messageHandler(channel, userstate, message, self) {
         commandHandler.commandHandler(channel, message, userstate, bot, fs);
     }
     fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+    objvar.messages.push({channel: channel, userstate: userstate, message: message})
 }
