@@ -37,8 +37,8 @@ function prestart(){
             });
               
             const httpsServer = https.createServer({
-                key: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/privkey.pem'),
-                cert: fs.readFileSync('/etc/letsencrypt/live/krummibot.de/fullchain.pem'),
+                key: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/privkey.pem'),
+                cert: fs.readFileSync('./etc/letsencrypt/live/krummibot.de/fullchain.pem'),
               }, app);
               
               httpsServer.listen(443, () => {
