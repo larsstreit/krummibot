@@ -18,6 +18,20 @@ function prestart(){
             objvar.package = JSON.parse(packagefile);
             startbot();
             const app = express()
+            app.set('view engine', 'ejs');
+            app.get('/', (req,res)=>{
+                res.redirect('login')
+
+            });
+            app.get('/login', (req,res)=>{
+                res.render('login')
+            })
+            app.post('/login', (req,res)=>{
+                res.redirect('account')
+            })
+            app.get('/account', (req,res)=>{
+                res.render('account')
+            })
             app.get('/user/:channel', (req, res) => {
                 req.params; 
                 console.log(req.params.channel);
@@ -35,12 +49,34 @@ function prestart(){
 
                 
             });
-            app.get('/messages', (req, res) => {
-                //reload page to show new messages 
-                res.send(`${JSON.stringify(objvar.messages)} <script>setTimeout(()=>{location.reload()},10000)</script>`)
+            app.get('/messages/:channel', (req, res) => {
 
+                
+                // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
+                if(bot.getChannels().includes('#'+req.params.channel)){
+                    let element = [];
+                    if(objvar.messages.length == 0){
+                        res.send(element)
+                    }else{
+                        for (let i = 0; i < objvar.messages.length; i++) {
+                            if(objvar.messages[i].channel == '#'+req.params.channel){
+                                element.push({username: objvar.messages[i].user, message: objvar.messages[i].message})
+                            }
+                        }
+                        res.send(element)
+                    }
+                    
+                    
+                }else{
+                    res.send("Not listening to channel" +req.params.channel)
+                }
+                    
+                
+                
+                            
 
             });
+
             try {
                 if(fs.existsSync('/etc/letsencrypt/live/krummibot.de/fullchain.pem') && fs.existsSync('/etc/letsencrypt/live/krummibot.de/privkey.pem')){
                     const httpsServer = https.createServer({
@@ -68,6 +104,7 @@ function prestart(){
             
         }
         else{
+            fs.writeFileSync('botusers.json', '{}')
             prestart();
         }
     } catch (err) {
@@ -147,5 +184,5 @@ function messageHandler(channel, userstate, message, self, app) {
         commandHandler.commandHandler(channel, message, userstate, bot, fs);
     }
     fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
-    objvar.messages.push({channel: channel, userstate: userstate, message: message})
+    objvar.messages.push({channel: channel, user: userstate.username, message: message})
 }
