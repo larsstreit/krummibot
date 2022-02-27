@@ -7,6 +7,7 @@ const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
 const express = require("express");
 const https = require("https");
+const axios = require("axios");
 prestart();
 
 function prestart() {
@@ -69,6 +70,7 @@ function prestart() {
           res.send("Not listening to channel" + req.params.channel);
         }
       });
+
 
       try {
         if (
