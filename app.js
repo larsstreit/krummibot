@@ -92,7 +92,9 @@ function prestart() {
           httpsServer.listen(443, () => {
             console.log("HTTPS Server running on port 443");
           });
-        } else {
+        } 
+        //for local files while testing 
+        else {
           const httpsServer = https.createServer(
             {
               key: fs.readFileSync(
