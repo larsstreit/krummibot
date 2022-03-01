@@ -48,7 +48,7 @@ module.exports = {
 
 
 		/**
-		 * Check for channel // only these two let bot join to channel 
+		 * Check for channel // only these two let bot join to channel
 		 */
 		if (channel === '#krummibot' || channel === '#mrkrummschnabel') {
 			console.log(channel, true);
@@ -57,7 +57,7 @@ module.exports = {
 				if (!(`${'#'+userstate.username}` in objvar.botusers)) {
 					console.log('user not exist');
 					setTimeout(async () => {
-						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel Werbung gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat');
+						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen!');
 					}, 2000);
 				
 						objvar.botusers[`${'#'+userstate.username}`] = {
@@ -115,7 +115,7 @@ module.exports = {
 				bot.say(channel, objvar.botusers[`${channel}`].channelcommands[command].say);
 			}
 			/**
-			 * Check for commands useable for alll 
+			 * Check for commands useable for all
 			 */
 			else {
 				if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
@@ -166,7 +166,6 @@ module.exports = {
 								s += key + ', ';
 							}
 							s = s.slice(0, (s.lastIndexOf(',')));
-							//console.log(s);
 							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games ' + s);
 						})();
 
@@ -190,8 +189,6 @@ module.exports = {
 							bot.say(channel, `@${userstate.username} ${botfunctions.selectRandomQuote()}`);
 						}
 						break;
-
-
 					default:
 						break;
 					}
@@ -212,7 +209,7 @@ module.exports = {
 			console.log('User not exist in botuser');
 		}
 
-		//can be used in everychannel
+		//can be used in everychannel only by mrkrummschnabel
 		if (userstate.username === 'mrkrummschnabel') {
 			if (command === '!shutdown') {
 				//eventueller fehler beim "no rsponse from twitch"
@@ -224,21 +221,11 @@ module.exports = {
 
 			}
 			if (command === '!getchannels') {
-				console.log(bot.getChannels());
+				bot.say(channel, bot.getChannels())
 			}
 		}
 
-
-		if (channel === '#mrkrummschnabel') {
-			if (userstate.username === 'pentiboy') {
-				if (command.includes('wie geht es mir')) {
-					bot.say(channel, `@${userstate.username} ${botfunctions.pentiboy()}`);
-				}
-
-			}
-		}
-
-
+		//can only be used by channelowner / broadcaster
 		if (userstate['user-id'] === userstate['room-id']) {
 			if (command === '!leavechannel') {
 				if (objvar.botusers['#' + userstate.username].joined === true) {

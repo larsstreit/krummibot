@@ -93,6 +93,7 @@ function prestart() {
             console.log("HTTPS Server running on port 443");
           });
         } 
+
         //for local files while testing 
         else {
           const httpsServer = https.createServer(
@@ -128,8 +129,6 @@ function startbot() {
     .connect()
     .then(() => {
       for (const [key, value] of Object.entries(objvar.botusers)) {
-        //console.log(value);
-        //console.log(key);
         // shows the value of botusers[key] console.log(objvar.botusers[key]) does the same as console.log(value);
         // key => #channelname etc. console.log(key)
         if (value.joined === true) {
@@ -138,6 +137,9 @@ function startbot() {
             .then((data) => {
               //shows which channel was joined
               console.log(data);
+              setTimeout(() => {
+                bot.say(key, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei')
+              }, 60000*10*4);
             })
             .catch((err) => {
               console.log(err);
@@ -166,7 +168,7 @@ function raidHandler(channel, raider, viewers) {
   setTimeout(async () => {
     await bot.say(
       channel,
-      `Schaut mal bei ${raider} vorbei. twitch.tv/${raider.replace("@", "")}`
+      `Schaut mal bei ${raider} vorbei. https://www.twitch.tv/${raider.replace("@", "")}`
     );
   }, 2000);
 }
@@ -212,4 +214,3 @@ function messageHandler(channel, userstate, message, self, app) {
     message: message,
   });
 }
-
