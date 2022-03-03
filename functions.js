@@ -94,19 +94,4 @@ module.exports = {
 			return 'something went wrong';
 		}
 	},
-    
-	pentiboy: function () {
-		let quote = [
-			'Dir geht es Scheiße',
-			'Weil du es bist sei still',
-			'Nö, frag einfach nicht',
-			'Kener hat die Absicht hier was gutes zu sagen.',
-			'Gegenfrage würdest du nackt und mit Fleisch behängt vor einem hungrigen Tiger tanzen?',
-			'du stinkst geh dich erstmal waschen!',
-			'Sprich mit meiner Hand.',
-		];
-		let randomNumber;
-		randomNumber = Math.floor(Math.random() * (quote.length));
-		return `${quote[randomNumber]}`;
-	}
 };

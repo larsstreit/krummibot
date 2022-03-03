@@ -8,6 +8,9 @@ const bot = new tmi.client(opts);
 const express = require("express");
 const https = require("https");
 const axios = require("axios");
+const app = express();
+
+
 prestart();
 
 function prestart() {
@@ -21,7 +24,6 @@ function prestart() {
       let packagefile = fs.readFileSync(filepath.packagepath);
       objvar.package = JSON.parse(packagefile);
       startbot();
-      const app = express();
       app.set("view engine", "ejs");
       app.get("/", (req, res) => {
         res.render('home');
@@ -167,12 +169,10 @@ function raidHandler(channel, raider, viewers) {
   bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
   setTimeout(async () => {
     await bot.say(
-      channel,
-      `Schaut mal bei ${raider} vorbei. https://www.twitch.tv/${raider.replace("@", "")}`
-    );
+      channel, `Schaut mal bei ${raider} vorbei. https://www.twitch.tv/${raider.replace("@", "")}`)
   }, 2000);
 }
-function messageHandler(channel, userstate, message, self, app) {
+function messageHandler(channel, userstate, message, self) {  
   if (
     self ||
     userstate.username === "soundalerts" ||

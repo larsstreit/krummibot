@@ -57,7 +57,7 @@ module.exports = {
 				if (!(`${'#'+userstate.username}` in objvar.botusers)) {
 					console.log('user not exist');
 					setTimeout(async () => {
-						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen!');
+						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
 					}, 2000);
 				
 						objvar.botusers[`${'#'+userstate.username}`] = {
