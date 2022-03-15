@@ -9,6 +9,8 @@ const express = require("express");
 const https = require("https");
 const axios = require("axios");
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 prestart();
@@ -24,15 +26,25 @@ function prestart() {
       let packagefile = fs.readFileSync(filepath.packagepath);
       objvar.package = JSON.parse(packagefile);
       startbot();
+      app.set('./views')
       app.set("view engine", "ejs");
       app.get("/", (req, res) => {
         res.render('home');
       });
       app.get("/login", (req, res) => {
+        //if user has acoount login with twitch
         res.render("login");
+
       });
       app.post("/login", (req, res) => {
-        res.redirect("account");
+        const login = req.body
+      if(req.body.email && req.body.password){
+        res.send(login)
+        req.body = ""
+        }
+      });
+      app.get("/register", (req, res)=>{
+        res.send("hier kommt der registerbereich hin")
       });
       app.get("/account", (req, res) => {
         res.render("account");
@@ -69,7 +81,7 @@ function prestart() {
             res.send(element);
           }
         } else {
-          res.send("Not listening to channel" + req.params.channel);
+          res.send("Not listening to channel " + req.params.channel);
         }
       });
 
@@ -96,7 +108,7 @@ function prestart() {
           });
         } 
 
-        //for local files while testing 
+        //for local testing 
         else {
           const httpsServer = https.createServer(
             {
@@ -115,7 +127,8 @@ function prestart() {
           });
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        prestart();
       }
     } else {
       fs.writeFileSync("botusers.json", "{}");
@@ -123,6 +136,7 @@ function prestart() {
     }
   } catch (err) {
     console.error(err);
+    prestart();
   }
 }
 

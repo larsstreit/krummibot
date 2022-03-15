@@ -16,6 +16,7 @@
 
 - Download the latest Version from Github
 - After downloading create and edit the .env File with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel (This is needed for the Bot) 
+- for https cert go to letsencrypt
 - After this Step you're done and u can enjoy all Features from the Bot
 
 ## Supported Versions
@@ -25,6 +26,8 @@
 | 0.0.2   | :white_check_mark: |
 | 0.0.1   |       [ x ]        |
 
+## Dependencies
+Needs tmi.js till I work on doing the same with own code
 
 ## Developer ##
 
