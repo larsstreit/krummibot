@@ -66,20 +66,21 @@ module.exports = {
 
 						},
 						allusecommands: [
+							'!help',
 							'!channelcommands',
 							'!channelcommands help',
 							'!krummi',
 							'!so',
-							'!pokemon',
-							'!catch',
-							'!index',
+							'!pokemon', //TODO: can be disabled 
+							'!pokemon catch',
+							'!pokemon index',
 							'!pokemon help',
 							'!commands',
-							'!love',
-							'!games',
-							'!coin',
-							'!würfel',
-							'!miesmuschel'
+							'!love', //TODO: can be disabled 
+							'!games',	
+							'!coin',	 //TODO: can be disabled 
+							'!würfel',	 //TODO: can be disabled 
+							'!miesmuschel' //TODO: can be disabled 
 						]
 
 					};
@@ -121,6 +122,9 @@ module.exports = {
 				if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
 					console.log(alluse);
 					switch (alluse[0]) {
+					case '!help':
+						bot.say(channel, 'Wobei brauchst du Hilfe?...')
+						break;
 					case '!channelcommands':
 						/**
 						 * check if there is "help" in command
@@ -150,14 +154,15 @@ module.exports = {
 						if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 							bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !index siehst du wie viele und welche Pokemons du bereits gefangen hast');
 						} else {
-							pokeMethods.startpokemongame(channel, userstate, bot);
+							if(alluse[1] === 'catch'){
+								pokeMethods.catchpokemon(channel, userstate, bot);	
+							}
+							else if(alluse[1] === 'index'){
+								pokeMethods.pokeindex(channel, userstate, bot);
+							}
+							else
+								pokeMethods.startpokemongame(channel, userstate, bot);
 						}
-						break;
-					case '!catch':
-						pokeMethods.catchpokemon(channel, userstate, bot);
-						break;
-					case '!index':
-						pokeMethods.pokeindex(channel, userstate, bot);
 						break;
 					case '!commands':
 						(() => {
