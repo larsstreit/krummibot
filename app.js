@@ -12,6 +12,7 @@ const helmet = require("helmet");
 const https = require("https");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
+var csrfProtection = csrf({ cookie: true })
 
 const app = express();
 const session = require('express-session');
@@ -44,7 +45,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 
 });
-app.post("/login", (req, res) => {
+app.post("/login", csrfProtection , (req, res) => {
   if (users.find(obj => obj.email === req.body.email) && users.find(obj => obj.password === req.body.password) ){
     		// Execute SQL query that'll select the account from the database based on the specified username and password
 				// Authenticate the user
@@ -57,7 +58,7 @@ app.post("/login", (req, res) => {
 		res.end();
 	}
 });
-app.get("/logout", (req,res)=>{
+app.get("/logout", csrfProtection, (req,res)=>{
   if(req.session.loggedin){
     req.session.loggedin = false
     res.send("loged out")
@@ -69,7 +70,7 @@ app.get("/logout", (req,res)=>{
 app.get("/register", (req, res)=>{
   res.render("register")
 });
-app.post("/register" , (req, res)=>{
+app.post("/register",csrfProtection , (req, res)=>{
   req.session.loggedin = true;
   req.session.email = req.body.email
   if(users.find(obj => obj.email === req.body.email)){
@@ -86,7 +87,7 @@ app.post("/register" , (req, res)=>{
     res.redirect("account")
   }
 })
-app.get("/loggers", (req, res)=>{
+app.get("/loggers",csrfProtection, (req, res)=>{
   if(req.session.loggedin && req.session.email === "admin@admin"){
     res.send(users)
   }
@@ -94,7 +95,7 @@ app.get("/loggers", (req, res)=>{
     res.send("you are not permitted")
   }
 })
-app.get("/account", (req, res) => {
+app.get("/account",csrfProtection, (req, res) => {
   if(req.session.loggedin){
     res.render("account", {name: users.find(obj => obj.email === req.session.email).name})
   }
@@ -102,7 +103,7 @@ app.get("/account", (req, res) => {
     res.render("login")
   }
 });
-app.get("/user/:channel", (req, res) => {
+app.get("/user/:channel",csrfProtection, (req, res) => {
   if(req.session.loggedin){
     req.params;
     console.log(req.params.channel);
@@ -117,7 +118,7 @@ app.get("/user/:channel", (req, res) => {
     res.render("login")
   }
 });
-app.get("/users/", (req, res) => {
+app.get("/users/",csrfProtection, (req, res) => {
   if(req.session.loggedin){
     res.json(Object.keys(objvar.botusers));
     res.end();
@@ -126,7 +127,7 @@ app.get("/users/", (req, res) => {
     res.render("login")
   }
 });
-app.get("/messages/:channel", (req, res) => {
+app.get("/messages/:channel",csrfProtection, (req, res) => {
   if(req.session.loggedin){
     var params = req.params.channel
     // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
