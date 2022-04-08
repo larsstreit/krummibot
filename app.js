@@ -8,6 +8,7 @@ const bot = new tmi.client(opts);
 const express = require("express");
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const helmet = require("helmet");
 const https = require("https");
 const app = express();
 const session = require('express-session');
@@ -17,6 +18,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 app.use(morgan('tiny'));
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('./views')
