@@ -11,14 +11,12 @@ const morgan = require('morgan');
 const helmet = require("helmet");
 const https = require("https");
 const cookieParser = require("cookie-parser");
-const csrf = require("csurf");
-const csrfProtection = csrf({ cookie: true })
 const escape = require('escape-html');
 
 
 const app = express();
 const session = require('express-session');
-app.use(csrf({ cookie: true }));
+
 app.use(cookieParser());
 
 app.use(session({
@@ -27,7 +25,6 @@ app.use(session({
 	saveUninitialized: true
 }));
 app.use(morgan('tiny'));
-
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,15 +36,15 @@ const login = {
   password: process.env.ADMIN_PASSWORD
 }
 var users = [login];
-app.get("/",csrfProtection, (req, res) => {
+app.get("/", (req, res) => {
   res.render('home');
 });
-app.get("/login",csrfProtection, (req, res) => {
+app.get("/login", (req, res) => {
   //if user has acoount login with twitch
   res.render("login");
 
 });
-app.post("/login", csrfProtection , (req, res) => {
+app.post("/login" , (req, res) => {
   if (users.find(obj => obj.email === req.body.email) && users.find(obj => obj.password === req.body.password) ){
     		// Execute SQL query that'll select the account from the database based on the specified username and password
 				// Authenticate the user
@@ -60,7 +57,7 @@ app.post("/login", csrfProtection , (req, res) => {
 		res.end();
 	}
 });
-app.get("/logout", csrfProtection, (req,res)=>{
+app.get("/logout", (req,res)=>{
   if(req.session.loggedin){
     req.session.loggedin = false
     res.send("loged out")
@@ -72,7 +69,7 @@ app.get("/logout", csrfProtection, (req,res)=>{
 app.get("/register", (req, res)=>{
   res.render("register")
 });
-app.post("/register",csrfProtection , (req, res)=>{
+app.post("/register" , (req, res)=>{
   req.session.loggedin = true;
   req.session.email = req.body.email
   if(users.find(obj => obj.email === req.body.email)){
@@ -89,7 +86,7 @@ app.post("/register",csrfProtection , (req, res)=>{
     res.redirect("account")
   }
 })
-app.get("/loggers",csrfProtection, (req, res)=>{
+app.get("/loggers", (req, res)=>{
   if(req.session.loggedin && req.session.email === "admin@admin"){
     res.send(users)
   }
@@ -97,7 +94,7 @@ app.get("/loggers",csrfProtection, (req, res)=>{
     res.send("you are not permitted")
   }
 })
-app.get("/account",csrfProtection, (req, res) => {
+app.get("/account", (req, res) => {
   if(req.session.loggedin){
     res.render("account", {name: users.find(obj => obj.email === req.session.email).name})
   }
@@ -105,7 +102,7 @@ app.get("/account",csrfProtection, (req, res) => {
     res.render("login")
   }
 });
-app.get("/user/:channel",csrfProtection, (req, res) => {
+app.get("/user/:channel", (req, res) => {
   if(req.session.loggedin){
     req.params;
     console.log(req.params.channel);
@@ -120,7 +117,7 @@ app.get("/user/:channel",csrfProtection, (req, res) => {
     res.render("login")
   }
 });
-app.get("/users/",csrfProtection, (req, res) => {
+app.get("/users/", (req, res) => {
   if(req.session.loggedin){
     res.json(Object.keys(objvar.botusers));
     res.end();
@@ -129,7 +126,7 @@ app.get("/users/",csrfProtection, (req, res) => {
     res.render("login")
   }
 });
-app.get("/messages/:channel",csrfProtection, (req, res) => {
+app.get("/messages/:channel", (req, res) => {
   if(req.session.loggedin){
     var params = escape(req.params.channel)
     // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
