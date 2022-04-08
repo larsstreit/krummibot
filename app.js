@@ -12,7 +12,9 @@ const helmet = require("helmet");
 const https = require("https");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
-var csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({ cookie: true })
+const escape = require('escape-html');
+
 
 const app = express();
 const session = require('express-session');
@@ -37,10 +39,10 @@ const login = {
   password: process.env.ADMIN_PASSWORD
 }
 var users = [login];
-app.get("/", (req, res) => {
+app.get("/",csrfProtection, (req, res) => {
   res.render('home');
 });
-app.get("/login", (req, res) => {
+app.get("/login",csrfProtection, (req, res) => {
   //if user has acoount login with twitch
   res.render("login");
 
@@ -147,7 +149,7 @@ app.get("/messages/:channel",csrfProtection, (req, res) => {
         res.send(element);
       }
     } else {
-      res.send("Not listening to channel " + params);
+      res.send("Not listening to channel " + escape(params));
     }
   }
   else{
