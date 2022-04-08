@@ -6,86 +6,125 @@ const opts = require("./config");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
 const express = require("express");
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const https = require("https");
-const axios = require("axios");
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const session = require('express-session');
+app.use(session({
+	secret: process.env.SESSION_SECRET,
+	resave: true,
+	saveUninitialized: true
+}));
+app.use(morgan('tiny'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('./views')
+app.set("view engine", "ejs");
+const login = {
+  email: "admin@admin",
+  password: process.env.ADMIN_PASSWORD
+}
+app.get("/", (req, res) => {
+  res.render('home');
+});
+app.get("/login", (req, res) => {
+  //if user has acoount login with twitch
+  res.render("login");
 
-
-prestart();
-
-function prestart() {
-  try {
-    if (
-      fs.existsSync(filepath.botuserspath) &&
-      fs.existsSync(filepath.packagepath)
-    ) {
-      let botusersfile = fs.readFileSync(filepath.botuserspath);
-      objvar.botusers = JSON.parse(botusersfile);
-      let packagefile = fs.readFileSync(filepath.packagepath);
-      objvar.package = JSON.parse(packagefile);
-      startbot();
-      app.set('./views')
-      app.set("view engine", "ejs");
-      app.get("/", (req, res) => {
-        res.render('home');
-      });
-      app.get("/login", (req, res) => {
-        //if user has acoount login with twitch
-        res.render("login");
-
-      });
-      app.post("/login", (req, res) => {
-        const login = req.body
-      if(req.body.email && req.body.password){
-        res.send(login)
-        req.body = ""
-        }
-      });
-      app.get("/register", (req, res)=>{
-        res.send("hier kommt der registerbereich hin")
-      });
-      app.get("/account", (req, res) => {
-        res.render("account");
-      });
-      app.get("/user/:channel", (req, res) => {
-        req.params;
-        console.log(req.params.channel);
-        if ("#" + req.params.channel in objvar.botusers) {
-          res.json(objvar.botusers[`#${req.params.channel}`]);
-        } else {
-          res.status(404);
-          res.send("User not exist");
-        }
-      });
-      app.get("/users/", (req, res) => {
-        res.json(Object.keys(objvar.botusers));
-        res.end();
-      });
-      app.get("/messages/:channel", (req, res) => {
-        // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
-        if (bot.getChannels().includes("#" + req.params.channel)) {
-          let element = [];
-          if (objvar.messages.length == 0) {
-            res.send(element);
-          } else {
-            for (let i = 0; i < objvar.messages.length; i++) {
-              if (objvar.messages[i].channel == "#" + req.params.channel) {
-                element.push({
-                  username: objvar.messages[i].user,
-                  message: objvar.messages[i].message,
-                });
-              }
-            }
-            res.send(element);
+});
+app.post("/login", (req, res) => {
+  if (req.body.email == login.email && req.body.password== login.password) {
+		// Execute SQL query that'll select the account from the database based on the specified username and password
+				// Authenticate the user
+				req.session.loggedin = true;
+				req.session.username = req.body.email;
+				// Redirect to home page
+				res.redirect('/account');
+			} else {
+		res.send('Please enter Username and Password!');
+		res.end();
+	}
+});
+app.get("/logout", (req,res)=>{
+  if(req.session.loggedin){
+    req.session.loggedin = false
+    res.send("loged out")
+  }
+  else{
+    res.send('you are not logged in')
+  }
+})
+app.get("/register", (req, res)=>{
+  res.send("hier kommt der register bereich hin")
+});
+app.get("/account", (req, res) => {
+  if(req.session.loggedin){
+    res.render("account", {name: login.email.slice(0,login.email.indexOf('@'))})
+  }
+  else{
+    res.render("login")
+  }
+});
+app.get("/user/:channel", (req, res) => {
+  if(req.session.loggedin){
+    req.params;
+    console.log(req.params.channel);
+    if ("#" + req.params.channel in objvar.botusers) {
+      res.json(objvar.botusers[`#${req.params.channel}`]);
+    } else {
+      res.status(404);
+      res.send("User not exist");
+    }
+  }
+  else{
+    res.render("login")
+  }
+});
+app.get("/users/", (req, res) => {
+  if(req.session.loggedin){
+    res.json(Object.keys(objvar.botusers));
+    res.end();
+  }
+  else{
+    res.render("login")
+  }
+});
+app.get("/messages/:channel", (req, res) => {
+  if(req.session.loggedin){
+    // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
+    if (bot.getChannels().includes("#" + req.params.channel)) {
+      let element = [];
+      if (objvar.messages.length == 0) {
+        res.send(element);
+      } else {
+        for (let i = 0; i < objvar.messages.length; i++) {
+          if (objvar.messages[i].channel == "#" + req.params.channel) {
+            element.push({
+              username: objvar.messages[i].user,
+              message: objvar.messages[i].message,
+            });
           }
-        } else {
-          res.send("Not listening to channel " + req.params.channel);
         }
-      });
+        res.send(element);
+      }
+    } else {
+      res.send("Not listening to channel " + req.params.channel);
+    }
+  }
+  else{
+    res.render("login")
+  }
+});
 
 
+startapp();
+
+function startapp() {
+  startserver();
+  startbot();
+}
+function startserver(){
       try {
         if (
           fs.existsSync("/etc/letsencrypt/live/krummibot.de/fullchain.pem") &&
@@ -128,19 +167,29 @@ function prestart() {
         }
       } catch (error) {
         console.error(error);
-        prestart();
+        startserver();
       }
-    } else {
+    }
+
+function startbot() {
+  try {
+    if (
+      fs.existsSync(filepath.botuserspath) &&
+      fs.existsSync(filepath.packagepath)
+    ) {
+      let botusersfile = fs.readFileSync(filepath.botuserspath);
+      objvar.botusers = JSON.parse(botusersfile);
+      let packagefile = fs.readFileSync(filepath.packagepath);
+      objvar.package = JSON.parse(packagefile);
+    }else {
       fs.writeFileSync("botusers.json", "{}");
-      prestart();
+      startapp();
     }
   } catch (err) {
     console.error(err);
-    prestart();
+    startapp();
   }
-}
 
-function startbot() {
   bot
     .connect()
     .then(() => {
@@ -165,7 +214,10 @@ function startbot() {
         }
       }
     })
-    .catch(console.error);
+    .catch(()=>{
+      console.error
+      startbot()
+    });
 
   bot.on("message", messageHandler);
   bot.on("raided", raidHandler);
@@ -175,9 +227,6 @@ function startbot() {
 
 function subscriptionHandler(channel, username, method, message, userstate) {
   console.log(channel, username, method, message, userstate);
-}
-function subscriptionHandler(channel, numbOfSubs, methods, userstate) {
-  console.log(channel, numbOfSubs, methods, userstate);
 }
 function raidHandler(channel, raider, viewers) {
   bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
@@ -189,9 +238,7 @@ function raidHandler(channel, raider, viewers) {
 function messageHandler(channel, userstate, message, self) {  
   if (
     self ||
-    userstate.username === "soundalerts" ||
-    userstate.username === "streamelements" ||
-    userstate.username === "streamlabs"
+    userstate.username === "streamelements" 
   )
     return;
   if (objvar.botusers[channel]) {

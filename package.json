@@ -10,10 +10,12 @@
   "author": "MrKrummschnabel",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.26.0",
+    "body-parser": "^1.19.2",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "morgan": "^1.10.0",
     "pokemon": "^2.3.0",
     "tmi.js": "^1.8.5"
   },
