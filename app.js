@@ -2,7 +2,7 @@ const tmi = require("tmi.js");
 const fs = require("fs");
 const objvar = require("./var");
 const filepath = require("./path");
-const opts = require("./config");
+const opts = require("./botconfig");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
 const express = require("express");
@@ -25,8 +25,10 @@ app.set('./views')
 app.set("view engine", "ejs");
 const login = {
   email: "admin@admin",
+  name: "MrKrummschnabel",
   password: process.env.ADMIN_PASSWORD
 }
+var users = [login];
 app.get("/", (req, res) => {
   res.render('home');
 });
@@ -36,11 +38,11 @@ app.get("/login", (req, res) => {
 
 });
 app.post("/login", (req, res) => {
-  if (req.body.email == login.email && req.body.password== login.password) {
-		// Execute SQL query that'll select the account from the database based on the specified username and password
+  if (users.find(obj => obj.email === req.body.email) && users.find(obj => obj.password === req.body.password) ){
+    		// Execute SQL query that'll select the account from the database based on the specified username and password
 				// Authenticate the user
 				req.session.loggedin = true;
-				req.session.username = req.body.email;
+				req.session.email = users.find(obj => obj.email === req.body.email).email ;
 				// Redirect to home page
 				res.redirect('/account');
 			} else {
@@ -58,11 +60,36 @@ app.get("/logout", (req,res)=>{
   }
 })
 app.get("/register", (req, res)=>{
-  res.send("hier kommt der register bereich hin")
+  res.render("register")
 });
+app.post("/register" , (req, res)=>{
+  req.session.loggedin = true;
+  req.session.email = req.body.email
+  if(users.find(obj => obj.email === req.body.email)){
+    res.send("email already existing")
+  }
+  else{
+    temp= {
+        email: req.body.email,
+        name: req.body.twitchname,
+        password: req.body.password
+      
+    }
+    users.push(temp)
+    res.redirect("account")
+  }
+})
+app.get("/loggers", (req, res)=>{
+  if(req.session.loggedin && req.session.email === "admin@admin"){
+    res.send(users)
+  }
+  else{
+    res.send("you are not permitted")
+  }
+})
 app.get("/account", (req, res) => {
   if(req.session.loggedin){
-    res.render("account", {name: login.email.slice(0,login.email.indexOf('@'))})
+    res.render("account", {name: users.find(obj => obj.email === req.session.email).name})
   }
   else{
     res.render("login")
@@ -94,6 +121,7 @@ app.get("/users/", (req, res) => {
 });
 app.get("/messages/:channel", (req, res) => {
   if(req.session.loggedin){
+    var params = req.params.channel
     // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
     if (bot.getChannels().includes("#" + req.params.channel)) {
       let element = [];
@@ -111,7 +139,7 @@ app.get("/messages/:channel", (req, res) => {
         res.send(element);
       }
     } else {
-      res.send("Not listening to channel " + req.params.channel);
+      res.send("Not listening to channel " + params);
     }
   }
   else{
@@ -176,6 +204,7 @@ function startserver(){
 function startbot() {
   try {
     if (
+      //path to json database
       fs.existsSync(filepath.botuserspath) &&
       fs.existsSync(filepath.packagepath)
     ) {
@@ -191,7 +220,7 @@ function startbot() {
     console.error(err);
     startapp();
   }
-
+  
   bot
     .connect()
     .then(() => {
