@@ -10,14 +10,21 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const helmet = require("helmet");
 const https = require("https");
+const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
+
 const app = express();
 const session = require('express-session');
+app.use(csrf({ cookie: true }));
+app.use(cookieParser());
+
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: true
 }));
 app.use(morgan('tiny'));
+
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
