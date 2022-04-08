@@ -131,7 +131,7 @@ app.get("/users/",csrfProtection, (req, res) => {
 });
 app.get("/messages/:channel",csrfProtection, (req, res) => {
   if(req.session.loggedin){
-    var params = req.params.channel
+    var params = escape(req.params.channel)
     // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
     if (bot.getChannels().includes("#" + req.params.channel)) {
       let element = [];
@@ -149,7 +149,7 @@ app.get("/messages/:channel",csrfProtection, (req, res) => {
         res.send(element);
       }
     } else {
-      res.send("Not listening to channel " + escape(params));
+      res.send("Not listening to channel " + params);
     }
   }
   else{
