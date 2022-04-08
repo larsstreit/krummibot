@@ -2,6 +2,12 @@
 
 ## Welcome to the Krummibot wiki!
 
+## WARNING:
+
+- use of the bot at your own risk
+- I am not liable for damages of any kind
+- for this project it cannot be guaranteed that everything is safe to use
+
 ## Features:
 
 - Pokémon Catch Feature ✔️
