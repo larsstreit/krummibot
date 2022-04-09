@@ -1,6 +1,6 @@
 # krummibot #
 
-## Welcome to the Krummibot wiki!
+## Welcome to Krummibot!
 
 ## WARNING:
 
@@ -32,6 +32,7 @@
 | 0.0.3   | :white_check_mark: |
 | 0.0.2   |       [ x ]        |
 | 0.0.1   |       [ x ]        |
+
 
 ## Dependencies
 Needs tmi.js till I work on doing the same with own code
