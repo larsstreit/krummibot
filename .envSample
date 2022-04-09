@@ -1,0 +1,6 @@
+BOT_NAME=<example>
+BOT_OAUTH=<oauth:example>
+CLIENT_ID=<example>
+CLIENT_TOKEN=<example>
+ADMIN_PASSWORD=<example>
+SESSION_SECRET=<example>
