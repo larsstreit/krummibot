@@ -17,7 +17,7 @@ const session = require('express-session');
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
-	saveUninitialized: true,
+	saveUninitialized: false,
   cookie: { secure: true }
 }));
 app.use(bodyParser.json());
@@ -95,8 +95,7 @@ app.get("/loggers", (req, res)=>{
 app.get("/account", (req, res) => {
   if(req.session.loggedin){
     res.render("account", {
-      name: users.find(obj => obj.email === req.session.email).name,
-      botcheck: appvar.botusers["#mrkrummschnabel"].joined
+      name: users.find(obj => obj.email === req.session.email).name
     })
   }
   else{

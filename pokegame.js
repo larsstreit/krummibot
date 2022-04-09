@@ -9,6 +9,7 @@ module.exports ={
 			objvar.botusers[channel][userstate['user-id']].poke.actualpoints = '';
 			objvar.botusers[channel][userstate['user-id']].poke.current = randomPook;
 			objvar.botusers[channel][userstate['user-id']].poke.catchable = true;
+			objvar.botusers[channel][userstate['user-id']].poke.runningRound = true;
 			objvar.botusers[channel][userstate['user-id']].poke.tries = Math.floor(Math.random() * 5);
 			if (objvar.botusers[channel][userstate['user-id']].poke.tries == 0) {
 				bot.say(channel, `@${userstate.username} Du musst erst eine neue runde Starten denn ${objvar.botusers[channel][userstate['user-id']].poke.current} ist verschwunden`);
