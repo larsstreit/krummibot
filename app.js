@@ -1,11 +1,10 @@
 const tmi = require("tmi.js");
 const fs = require("fs");
-const objvar = require("./var");
+const appvar = require("./var");
 const filepath = require("./path");
 const opts = require("./botconfig");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
-
 const express = require("express");
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -44,7 +43,6 @@ app.get("/login", (req, res) => {
 });
 app.post("/login" , (req, res) => {
   if (users.find(obj => obj.email === req.body.email) && users.find(obj => obj.password === req.body.password) ){
-    		// Execute SQL query that'll select the account from the database based on the specified username and password
 				// Authenticate the user
 				req.session.loggedin = true;
 				req.session.email = users.find(obj => obj.email === req.body.email).email ;
@@ -95,7 +93,10 @@ app.get("/loggers", (req, res)=>{
 })
 app.get("/account", (req, res) => {
   if(req.session.loggedin){
-    res.render("account", {name: users.find(obj => obj.email === req.session.email).name})
+    res.render("account", {
+      name: users.find(obj => obj.email === req.session.email).name,
+      botcheck: appvar.botusers["#mrkrummschnabel"].joined
+    })
   }
   else{
     res.render("login")
@@ -105,8 +106,8 @@ app.get("/user/:channel", (req, res) => {
   if(req.session.loggedin){
     req.params;
     console.log(req.params.channel);
-    if ("#" + req.params.channel in objvar.botusers) {
-      res.json(objvar.botusers[`#${req.params.channel}`]);
+    if ("#" + req.params.channel in appvar.botusers) {
+      res.json(appvar.botusers[`#${req.params.channel}`]);
     } else {
       res.status(404);
       res.send("User not exist");
@@ -118,7 +119,7 @@ app.get("/user/:channel", (req, res) => {
 });
 app.get("/users/", (req, res) => {
   if(req.session.loggedin){
-    res.json(Object.keys(objvar.botusers));
+    res.json(Object.keys(appvar.botusers));
     res.end();
   }
   else{
@@ -131,14 +132,14 @@ app.get("/messages/:channel", (req, res) => {
     // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
     if (bot.getChannels().includes("#" + req.params.channel)) {
       let element = [];
-      if (objvar.messages.length == 0) {
+      if (appvar.messages.length == 0) {
         res.send(element);
       } else {
-        for (let i = 0; i < objvar.messages.length; i++) {
-          if (objvar.messages[i].channel == "#" + req.params.channel) {
+        for (let i = 0; i < appvar.messages.length; i++) {
+          if (appvar.messages[i].channel == "#" + req.params.channel) {
             element.push({
-              username: objvar.messages[i].user,
-              message: objvar.messages[i].message,
+              username: appvar.messages[i].user,
+              message: appvar.messages[i].message,
             });
           }
         }
@@ -215,9 +216,9 @@ function startbot() {
       fs.existsSync(filepath.packagepath)
     ) {
       let botusersfile = fs.readFileSync(filepath.botuserspath);
-      objvar.botusers = JSON.parse(botusersfile);
+      appvar.botusers = JSON.parse(botusersfile);
       let packagefile = fs.readFileSync(filepath.packagepath);
-      objvar.package = JSON.parse(packagefile);
+      appvar.package = JSON.parse(packagefile);
     }else {
       fs.writeFileSync("botusers.json", "{}");
       startapp();
@@ -230,8 +231,8 @@ function startbot() {
   bot
     .connect()
     .then(() => {
-      for (const [key, value] of Object.entries(objvar.botusers)) {
-        // shows the value of botusers[key] console.log(objvar.botusers[key]) does the same as console.log(value);
+      for (const [key, value] of Object.entries(appvar.botusers)) {
+        // shows the value of botusers[key] console.log(appvar.botusers[key]) does the same as console.log(value);
         // key => #channelname etc. console.log(key)
         if (value.joined === true) {
           bot
@@ -247,7 +248,7 @@ function startbot() {
               console.log(err);
             });
           //need when bot gets shutdown on every channel
-          objvar.joinedchannel.push(key);
+          appvar.joinedchannel.push(key);
         }
       }
     })
@@ -278,10 +279,10 @@ function messageHandler(channel, userstate, message, self) {
     userstate.username === "streamelements" 
   )
     return;
-  if (objvar.botusers[channel]) {
-    if (!objvar.botusers[channel][userstate["user-id"]]) {
+  if (appvar.botusers[channel]) {
+    if (!appvar.botusers[channel][userstate["user-id"]]) {
       console.log("user not exist");
-      objvar.botusers[channel][userstate["user-id"]] = {
+      appvar.botusers[channel][userstate["user-id"]] = {
         login: userstate["username"],
         poke: {
           list: [],
@@ -296,7 +297,7 @@ function messageHandler(channel, userstate, message, self) {
         schnabelcoins: 0,
       };
     } else {
-      objvar.botusers[channel][userstate["user-id"]].login = userstate.username;
+      appvar.botusers[channel][userstate["user-id"]].login = userstate.username;
     }
     commandHandler.commandHandler(channel, message, userstate, bot, fs);
   } else {
@@ -304,9 +305,9 @@ function messageHandler(channel, userstate, message, self) {
   }
   fs.writeFileSync(
     filepath.botuserspath,
-    JSON.stringify(objvar.botusers, null, "\t")
+    JSON.stringify(appvar.botusers, null, "\t")
   );
-  objvar.messages.push({
+  appvar.messages.push({
     channel: channel,
     user: userstate.username,
     message: message,
