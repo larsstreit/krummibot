@@ -12,7 +12,8 @@ const helmet = require("helmet");
 const https = require("https");
 const cookieParser = require("cookie-parser");
 const escape = require('escape-html');
-
+var csrf = require('csurf')
+const csrfProtection = csrf({ cookie: true })
 
 const app = express();
 const session = require('express-session');
@@ -25,6 +26,8 @@ app.use(session({
 	saveUninitialized: true,
   cookie: { secure: true }
 }));
+
+app.use(csrfProtection)
 app.use(morgan('tiny'));
 app.use(helmet());
 app.use(bodyParser.json());
@@ -40,9 +43,9 @@ var users = [login];
 app.get("/", (req, res) => {
   res.render('home');
 });
-app.get("/login", (req, res) => {
+app.get("/login",csrfProtection, (req, res) => {
   //if user has acoount login with twitch
-  res.render("login");
+  res.render("login",{ csrfToken: req.csrfToken() });
 
 });
 app.post("/login" , (req, res) => {
@@ -68,7 +71,7 @@ app.get("/logout", (req,res)=>{
     res.send('you are not logged in')
   }
 })
-app.get("/register", (req, res)=>{
+app.get("/register",csrfProtection, (req, res)=>{
   res.render("register")
 });
 app.post("/register" , (req, res)=>{
