@@ -5,6 +5,7 @@ const filepath = require("./path");
 const opts = require("./botconfig");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
+
 const express = require("express");
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -12,26 +13,19 @@ const helmet = require("helmet");
 const https = require("https");
 const cookieParser = require("cookie-parser");
 const escape = require('escape-html');
-var csrf = require('csurf')
-const csrfProtection = csrf({ cookie: true })
-
 const app = express();
 const session = require('express-session');
-
-app.use(cookieParser());
-
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: true,
   cookie: { secure: true }
 }));
-
-app.use(csrfProtection)
-app.use(morgan('tiny'));
-app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(morgan('tiny'));
+app.use(helmet());
 app.set('./views')
 app.set("view engine", "ejs");
 const login = {
@@ -43,9 +37,9 @@ var users = [login];
 app.get("/", (req, res) => {
   res.render('home');
 });
-app.get("/login",csrfProtection, (req, res) => {
+app.get("/login", (req, res) => {
   //if user has acoount login with twitch
-  res.render("login",{ csrfToken: req.csrfToken() });
+  res.render("login");
 
 });
 app.post("/login" , (req, res) => {
@@ -71,8 +65,8 @@ app.get("/logout", (req,res)=>{
     res.send('you are not logged in')
   }
 })
-app.get("/register",csrfProtection, (req, res)=>{
-  res.render("register")
+app.get("/register", (req, res)=>{
+  res.render("register");
 });
 app.post("/register" , (req, res)=>{
   req.session.loggedin = true;
