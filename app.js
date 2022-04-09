@@ -21,8 +21,9 @@ app.use(cookieParser());
 
 app.use(session({
 	secret: process.env.SESSION_SECRET,
-	resave: true,
-	saveUninitialized: true
+	resave: false,
+	saveUninitialized: true,
+  cookie: { secure: true }
 }));
 app.use(morgan('tiny'));
 app.use(helmet());
@@ -59,8 +60,9 @@ app.post("/login" , (req, res) => {
 });
 app.get("/logout", (req,res)=>{
   if(req.session.loggedin){
-    req.session.loggedin = false
+    req.session.loggedin = null
     res.send("loged out")
+    res.end()
   }
   else{
     res.send('you are not logged in')
