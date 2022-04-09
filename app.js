@@ -57,6 +57,7 @@ app.get("/logout", (req,res)=>{
   if(req.session.loggedin){
     req.session.loggedin = null
     res.send("loged out")
+    users = [login]
     res.end()
   }
   else{
