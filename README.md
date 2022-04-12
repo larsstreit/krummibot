@@ -15,7 +15,7 @@
 - Roll Dice Function ✔️
 - Add / remove your own comments ✔️
 - Bannedwords List ✔️
--
+- ..
 
 
 ## Setup for Own Usage:
@@ -44,3 +44,7 @@ Needs tmi.js till I work on doing the same with own code
 ## Twitch Livestream ##
 
 - You can also see the progress to this Project on Twitch: https://www.twitch.tv/mrkrummschnabel 
+
+## imprint and privacy policy
+https://www.krummibot.de/dsgvo
+https://www.krummibot.de/impressum
