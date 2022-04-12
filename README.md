@@ -46,5 +46,7 @@ Needs tmi.js till I work on doing the same with own code
 - You can also see the progress to this Project on Twitch: https://www.twitch.tv/mrkrummschnabel 
 
 ## imprint and privacy policy
+
+- only in german, i hope i did not forget to mention something or named something thats not true 
 https://www.krummibot.de/dsgvo
 https://www.krummibot.de/impressum
