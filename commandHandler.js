@@ -3,42 +3,7 @@ const objvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
 const bannedwords = [
-	'simp',
-	'Airport',
-	'Al Qaeda',
-	'Alcohol Tobacco and Firearms (ATF)',
-	'Al-Shabaab',
-	'Ammonium nitrate',
-	'AMTRAK.',
-	'Anthrax',
-	'Antiviral',
-	'AQAP.',
-	'AQIM',
-	'Arellano-Felix',
-	'Artistic Assassins',
-	'Assassination',
-	'Attack',
-	'Attack',
-	'Authorities',
-	'Avalanche',
-	'Avian',
-	'Black out',
-	'Blister agent',
-	'Blizzard',
-	'Body scanner',
-	'Bomb (squad or threat)',
-	'Border',
-	'Border Patrol',
-	'Botnet',
-	'Breach',
-	'Bridge',
-	'Brown out',
-	'Brown out',
-	'Brush fire',
-	'Brute forcing',
-	'Burn',
-	'Burst',
-	'Bust'
+	'simp'
 ];
 
 module.exports = {
