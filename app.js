@@ -41,7 +41,12 @@ var users = [login];
 app.get("/", (req, res) => {
   res.render('home');
 });
-
+app.get("/impressum",(req, res)=>{
+  res.render("impressum")
+})
+app.get("/dsgvo",(req, res)=>{
+  res.render("dsgvo")
+})
 app.get("/login", (req, res) => {
   res.render("login");
 
