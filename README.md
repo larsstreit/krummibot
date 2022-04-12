@@ -10,7 +10,7 @@
 
 ## Features:
 
-- Pokémon Catch Feature ✔️
+- Pokémon like game ✔️
 - Multiple Stream Commands ✔️
 - Roll Dice Function ✔️
 - Add / remove your own comments ✔️
@@ -21,7 +21,7 @@
 ## Setup for Own Usage:
 
 - Download the latest Version from Github
-- After downloading create and edit the .env File with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel (This is needed for the Bot) 
+- After downloading create and edit the .env file (e.g .envSample) with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel, last mentioned is to use the bot with my server
 - for https cert go to letsencrypt
 - After this Step you're done and u can enjoy all Features from the Bot
 
