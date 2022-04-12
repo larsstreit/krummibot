@@ -1,0 +1,17 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 15px 0px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    
+}
+input{
+    border: 1px solid black;
+    font-size: 15px;
+}
