@@ -6,7 +6,6 @@ const opts = require("./botconfig");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
 const express = require("express");
-const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const helmet = require("helmet");
 const https = require("https");
@@ -14,19 +13,25 @@ const cookieParser = require("cookie-parser");
 const escape = require('escape-html');
 const app = express();
 const session = require('express-session');
+const cors = require('cors');
+//app settings
+app.set('./views')
+app.set("view engine", "ejs");
+app.use("/styles",express.static(__dirname + "/styles"));
+
+
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
   cookie: { secure: true }
 }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('tiny'));
 app.use(helmet());
-app.set('./views')
-app.set("view engine", "ejs");
 const login = {
   email: "admin@admin",
   name: "MrKrummschnabel",
@@ -36,8 +41,8 @@ var users = [login];
 app.get("/", (req, res) => {
   res.render('home');
 });
+
 app.get("/login", (req, res) => {
-  //if user has acoount login with twitch
   res.render("login");
 
 });
@@ -49,7 +54,7 @@ app.post("/login" , (req, res) => {
 				// Redirect to home page
 				res.redirect('/account');
 			} else {
-		res.send('Please enter Username and Password!');
+		res.send('Please enter correct Username and Password!');
 		res.end();
 	}
 });
@@ -95,7 +100,8 @@ app.get("/loggers", (req, res)=>{
 app.get("/account", (req, res) => {
   if(req.session.loggedin){
     res.render("account", {
-      name: users.find(obj => obj.email === req.session.email).name
+      name: users.find(obj => obj.email === req.session.email).name,
+      title: "Account"
     })
   }
   else{
