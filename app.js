@@ -78,11 +78,14 @@ app.get("/auth/twitch/callback", async (req,res)=>{
   req.session.loggedin = true;
   req.session.email =  login.data.data[0].email
   
+
   var temp={
-    email:  login.data.data[0].email,
+    email:  login.data.email,
     name:   login.data.data[0].login,
     id:   login.data.data[0].id
   }
+  console.log(login.data)
+
   users.push(temp)
   if (!(`${'#'+login.data.data[0].login}` in appvar.botusers)){
     appvar.botusers[`${'#'+login.data.data[0].login}`] = {
@@ -132,7 +135,7 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 app.post("/login" , (req, res) => {
-  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}`)
+  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email`)
 })
 app.get("/logout", (req,res)=>{
   if(req.session.loggedin){
