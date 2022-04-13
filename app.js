@@ -6,6 +6,7 @@ const opts = require("./botconfig");
 const commandHandler = require("./commandHandler");
 const bot = new tmi.client(opts);
 const express = require("express");
+const axios = require("axios")
 const morgan = require('morgan');
 const helmet = require("helmet");
 const https = require("https");
@@ -14,13 +15,15 @@ const escape = require('escape-html');
 const app = express();
 const session = require('express-session');
 const cors = require('cors');
+const passport       = require("passport");
+const { response } = require("express");
 //app settings
 app.set('./views')
 app.set("view engine", "ejs");
 app.use("/styles",express.static(__dirname + "/styles"));
 
 
-
+app.use(passport.initialize());
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -33,65 +36,56 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('tiny'));
 app.use(helmet());
-const login = {
-  email: "admin@admin",
-  name: "MrKrummschnabel",
-  password: process.env.ADMIN_PASSWORD
+app.use(function (req, res, next) {
+  res.setHeader(
+    'Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; frame-src 'self'"
+  );
+  next();
+});
+
+login = {
+  email: "",
+  name: "",
+  id: ""
 }
 var users = [login];
+
 app.get("/", (req, res) => {
   res.render('home');
-});
-app.get("/impressum",(req, res)=>{
-  res.render("impressum")
-})
-app.get("/dsgvo",(req, res)=>{
-  res.render("dsgvo")
-})
-app.get("/login", (req, res) => {
-  res.render("login");
 
 });
-app.post("/login" , (req, res) => {
-  if (users.find(obj => obj.email === req.body.email) && users.find(obj => obj.password === req.body.password) ){
-				// Authenticate the user
-				req.session.loggedin = true;
-				req.session.email = users.find(obj => obj.email === req.body.email).email ;
-				// Redirect to home page
-				res.redirect('/account');
-			} else {
-		res.send('Please enter correct Username and Password!');
-		res.end();
-	}
-});
-app.get("/logout", (req,res)=>{
-  if(req.session.loggedin){
-    req.session.loggedin = null
-    res.send("loged out")
-    users = [login]
-    res.end()
-  }
-  else{
-    res.send('you are not logged in')
-  }
+app.get("/auth/twitch", async (req,res)=>{
+  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=https://localhost/auth/twitch/callback&scope=user:read:email&state=`)
+
 })
-app.get("/register", (req, res)=>{
-  res.render("register");
-});
-app.post("/register" , (req, res)=>{
-  req.session.loggedin = true;
-  req.session.email = req.body.email
-  if(users.find(obj => obj.email === req.body.email)){
-    res.send("email already existing")
-  }
-  else{
-    temp= {
-        email: req.body.email,
-        name: req.body.twitchname,
-        password: req.body.password
-      
+app.get("/auth/twitch/callback", async (req,res)=>{
+  code = req.query.code
+  var response = await axios({
+    method: "post",
+    url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=https://localhost/auth/twitch/callback`
+  })
+  //console.log(response);
+  var login = await axios({
+    url: 'https://api.twitch.tv/helix/users',
+    method: 'GET',
+    headers: {
+      'Client-ID': process.env.CLIENT_ID,
+      'Accept': 'application/vnd.twitchtv.v5+json',
+      'Authorization': 'Bearer ' + response.data.access_token
     }
-    appvar.botusers[`${'#'+req.body.twitchname.toLowerCase()}`] = {
+  })
+
+  req.session.loggedin = true;
+  req.session.email =  login.data.data[0].email
+  
+  var temp={
+    email:  login.data.data[0].email,
+    name:   login.data.data[0].login,
+    id:   login.data.data[0].id
+  }
+  users.push(temp)
+  if (!(`${'#'+login.data.data[0].login}` in appvar.botusers)){
+    appvar.botusers[`${'#'+login.data.data[0].login}`] = {
       joined: false,
       channelcommands: {
 
@@ -118,12 +112,41 @@ app.post("/register" , (req, res)=>{
       filepath.botuserspath,
       JSON.stringify(appvar.botusers, null, "\t")
     );
-    users.push(temp)
-    res.redirect("account")
+  }
+  else{
+    console.log("bereits im symstem")
+  }
+  res.redirect("../../account")
+})
+app.get("/impressum",(req, res)=>{
+  res.render("impressum")
+})
+app.get("/dsgvo",(req, res)=>{
+  res.render("dsgvo")
+})
+app.get("/login", (req, res) => {
+  if(req.session.loggedin){
+    res.redirect("/account")
+  }
+  else
+    res.render("login");
+});
+app.post("/login" , (req, res) => {
+  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=https://localhost/auth/twitch/callback&scope=user:read:email&state=`)
+})
+app.get("/logout", (req,res)=>{
+  if(req.session.loggedin){
+    req.session.loggedin = null
+    res.send("loged out")
+    users = [login]
+    res.end()
+  }
+  else{
+    res.send('you are not logged in')
   }
 })
 app.get("/loggers", (req, res)=>{
-  if(req.session.loggedin && req.session.email === "admin@admin"){
+  if(req.session.loggedin && req.session.email === "ls.larsstreit@t-online.de"){
     res.send(users)
   }
   else{
@@ -131,9 +154,9 @@ app.get("/loggers", (req, res)=>{
   }
 })
 app.post("/account", (req, res)=>{
-  if(req.body.activatebot){
-    channelname = users.find(obj => obj.email === req.session.email).name.toLowerCase()
-  
+  channelname = users.find(obj => obj.email === req.session.email).name
+
+  if(req.body.activatebot){  
   if(req.body.activatebot === "Remove Bot"){
   appvar.botusers["#"+channelname].joined = false;
   bot.part("#"+channelname).then().catch(err => console.log(err))
@@ -156,11 +179,11 @@ app.get("/account", (req, res) => {
     res.render("account", {
       name: users.find(obj => obj.email === req.session.email).name,
       title: "Account",
-      value: appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name.toLowerCase()].joined === true ? "Remove Bot" : "Add Bot"
+      value: appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name].joined === true ? "Remove Bot" : "Add Bot"
     })
   }
   else{
-    res.render("login")
+    res.redirect("login")
   }
 });
 app.get("/user/:channel", (req, res) => {
@@ -282,11 +305,11 @@ function startbot() {
       appvar.package = JSON.parse(packagefile);
     }else {
       fs.writeFileSync("botusers.json", "{}");
-      startapp();
+      startbot();
     }
   } catch (err) {
     console.error(err);
-    startapp();
+    startbot();
   }
   
   bot
