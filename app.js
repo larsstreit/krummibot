@@ -16,7 +16,7 @@ const app = express();
 const session = require('express-session');
 const cors = require('cors');
 const passport       = require("passport");
-const { response } = require("express");
+const redUri = "https://localhost/auth/twitch/callback&scope=user:read:email&state " || "https://www.krummibot.de/auth/twitch/callback"
 //app settings
 app.set('./views')
 app.set("view engine", "ejs");
@@ -55,14 +55,14 @@ app.get("/", (req, res) => {
 
 });
 app.get("/auth/twitch", async (req,res)=>{
-  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=https://localhost/auth/twitch/callback&scope=user:read:email&state=`)
+  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email&state=`)
 
 })
 app.get("/auth/twitch/callback", async (req,res)=>{
   code = req.query.code
   var response = await axios({
     method: "post",
-    url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=https://localhost/auth/twitch/callback`
+    url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
   })
   //console.log(response);
   var login = await axios({
@@ -132,7 +132,7 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 app.post("/login" , (req, res) => {
-  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=https://localhost/auth/twitch/callback&scope=user:read:email&state=`)
+  res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}`)
 })
 app.get("/logout", (req,res)=>{
   if(req.session.loggedin){
