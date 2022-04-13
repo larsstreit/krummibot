@@ -16,7 +16,7 @@ const app = express();
 const session = require('express-session');
 const cors = require('cors');
 const passport       = require("passport");
-const redUri = "https://localhost/auth/twitch/callback&scope=user:read:email&state " || "https://www.krummibot.de/auth/twitch/callback"
+const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibot.de/auth/twitch/callback"
 //app settings
 app.set('./views')
 app.set("view engine", "ejs");
@@ -146,7 +146,7 @@ app.get("/logout", (req,res)=>{
   }
 })
 app.get("/loggers", (req, res)=>{
-  if(req.session.loggedin && req.session.email === "ls.larsstreit@t-online.de"){
+  if(req.session.loggedin && req.session.email == "ls.larsstreit@t-online.de"){
     res.send(users)
   }
   else{
@@ -154,7 +154,7 @@ app.get("/loggers", (req, res)=>{
   }
 })
 app.post("/account", (req, res)=>{
-  channelname = users.find(obj => obj.email === req.session.email).name
+  channelname = users.find(obj => obj.email == req.session.email).name
 
   if(req.body.activatebot){  
   if(req.body.activatebot === "Remove Bot"){
