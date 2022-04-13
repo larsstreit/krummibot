@@ -20,6 +20,7 @@ app.set("view engine", "ejs");
 app.use("/styles",express.static(__dirname + "/styles"));
 
 
+
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -90,6 +91,33 @@ app.post("/register" , (req, res)=>{
         password: req.body.password
       
     }
+    appvar.botusers[`${'#'+req.body.twitchname.toLowerCase()}`] = {
+      joined: false,
+      channelcommands: {
+
+      },
+      allusecommands: [
+        '!help',
+        '!channelcommands',
+        '!channelcommands help',
+        '!krummi',
+        '!so',
+        '!pokemon', //TODO: can be disabled 
+        '!pokemon catch',
+        '!pokemon index',
+        '!pokemon help',
+        '!commands',
+        '!love', //TODO: can be disabled 
+        '!games',	
+        '!coin',	 //TODO: can be disabled 
+        '!würfel',	 //TODO: can be disabled 
+        '!miesmuschel' //TODO: can be disabled 
+      ]
+    }
+    fs.writeFileSync(
+      filepath.botuserspath,
+      JSON.stringify(appvar.botusers, null, "\t")
+    );
     users.push(temp)
     res.redirect("account")
   }
@@ -108,11 +136,11 @@ app.post("/account", (req, res)=>{
   
   if(req.body.activatebot === "Remove Bot"){
   appvar.botusers["#"+channelname].joined = false;
-  bot.part("#"+channelname)
+  bot.part("#"+channelname).then().catch(err => console.log(err))
   }
   else{
     appvar.botusers["#"+channelname].joined = true;
-    bot.join("#"+channelname)
+    bot.join("#"+channelname).then().catch(err => console.log(err))
 
   }
   }
@@ -123,6 +151,7 @@ app.post("/account", (req, res)=>{
   res.redirect("account")
 })
 app.get("/account", (req, res) => {
+  // when first register user is not in botuser.json
   if(req.session.loggedin){
     res.render("account", {
       name: users.find(obj => obj.email === req.session.email).name,

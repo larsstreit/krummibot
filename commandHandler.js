@@ -1,5 +1,5 @@
 const filepath = require('./path');
-const objvar = require('./var');
+const appvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
 const bannedwords = [
@@ -19,13 +19,13 @@ module.exports = {
 			console.log(channel, true);
 			
 			if (command === '!joinchannel') {
-				if (!(`${'#'+userstate.username}` in objvar.botusers)) {
+				if (!(`${'#'+userstate.username}` in appvar.botusers)) {
 					console.log('user not exist');
 					setTimeout(async () => {
 						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
 					}, 2000);
 				
-						objvar.botusers[`${'#'+userstate.username}`] = {
+						appvar.botusers[`${'#'+userstate.username}`] = {
 						joined: true,
 						channelcommands: {
 
@@ -50,14 +50,14 @@ module.exports = {
 
 					};
 				} else {
-					if (objvar.botusers[`${'#'+userstate.username}`].joined === false) {
-						objvar.botusers[`${'#'+userstate.username}`].joined = true;
+					if (appvar.botusers[`${'#'+userstate.username}`].joined === false) {
+						appvar.botusers[`${'#'+userstate.username}`].joined = true;
 
 					} else {
 						bot.say(`${'#'+userstate.username}`, 'du hast mich bereits aktiviert');
 					}
 				}
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 				bot.join(userstate.username)
 					.then((data) => {
 						console.log(data);
@@ -72,19 +72,19 @@ module.exports = {
 		/**
 		 * Check for exisiting channel // every channel might have his own commands
 		 */
-		if (`${channel}` in objvar.botusers) {
+		if (`${channel}` in appvar.botusers) {
 			let alluse = command.split(' ');
 
 			console.log('check if channel exist in botuser');
-			if (objvar.botusers[`${channel}`].channelcommands[command]) {
+			if (appvar.botusers[`${channel}`].channelcommands[command]) {
 				console.log('check if command exist in botuser');
-				bot.say(channel, objvar.botusers[`${channel}`].channelcommands[command].say);
+				bot.say(channel, appvar.botusers[`${channel}`].channelcommands[command].say);
 			}
 			/**
 			 * Check for commands useable for all
 			 */
 			else {
-				if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
+				if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
 					console.log(alluse);
 					switch (alluse[0]) {
 					case '!help':
@@ -94,7 +94,7 @@ module.exports = {
 						/**
 						 * check if there is "help" in command
 						 */
-						if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 							bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
 						} else {
 							return;
@@ -116,7 +116,7 @@ module.exports = {
 						/**
 						 * check if there is "help" in command
 						 */
-						if (objvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 							bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !pokemon catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !pokemon index siehst du wie viele und welche Pokemons du bereits gefangen hast');
 						} else {
 							if(alluse[1] === 'catch'){
@@ -132,7 +132,7 @@ module.exports = {
 					case '!commands':
 						(() => {
 							let s = ' ';
-							for (const key in objvar.botusers[channel].channelcommands) {
+							for (const key in appvar.botusers[channel].channelcommands) {
 								s += key + ', ';
 							}
 							s = s.slice(0, (s.lastIndexOf(',')));
@@ -198,12 +198,12 @@ module.exports = {
 		//can only be used by channelowner / broadcaster
 		if (userstate['user-id'] === userstate['room-id']) {
 			if (command === '!leavechannel') {
-				if (objvar.botusers['#' + userstate.username].joined === true) {
-					objvar.botusers['#' + userstate.username].joined = false;
-					fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				if (appvar.botusers['#' + userstate.username].joined === true) {
+					appvar.botusers['#' + userstate.username].joined = false;
+					fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 				}
-				for (const key in objvar.botusers) {
-					if (objvar.botusers[key].joined === false) {
+				for (const key in appvar.botusers) {
+					if (appvar.botusers[key].joined === false) {
 						bot.part(channel).then((data) => {
 							console.log(data);
 						}).catch((err) => {
@@ -214,22 +214,22 @@ module.exports = {
 			}
 			if (command.startsWith('!addcommand')) {
 				let addcommand = command.split(' ');
-				objvar.botusers[`${'#'+userstate.username}`].channelcommands[addcommand[1]] = {
+				appvar.botusers[`${'#'+userstate.username}`].channelcommands[addcommand[1]] = {
 					say: '',
 					timer: ''
 				},
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
 			if (command.startsWith('!definecommand')) {
 				let definecommand = command.split(' ');
 				let say = command.substring(command.indexOf('>') + 1);
-				if (definecommand[1] in objvar.botusers[`${'#'+userstate.username}`].channelcommands) {
+				if (definecommand[1] in appvar.botusers[`${'#'+userstate.username}`].channelcommands) {
 					switch (definecommand[2]) {
 					case 'say':
-						objvar.botusers[`${'#'+userstate.username}`].channelcommands[definecommand[1]].say = say;
+						appvar.botusers[`${'#'+userstate.username}`].channelcommands[definecommand[1]].say = say;
 						break;
 					case 'timer':
-						objvar.botusers[`${'#'+userstate.username}`].channelcommands[definecommand[1]].timer = parseInt(say);
+						appvar.botusers[`${'#'+userstate.username}`].channelcommands[definecommand[1]].timer = parseInt(say);
 						break;
 					default:
 						break;
@@ -238,23 +238,23 @@ module.exports = {
 
 				}
 
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 
 			}
 
 			if (command.startsWith('!removecommand')) {
 				let removecommand = command.split(' ');
-				if (removecommand[1] in objvar.botusers[`${'#'+userstate.username}`].channelcommands) {
-					delete objvar.botusers['#' + userstate.username].channelcommands[removecommand[1]];
+				if (removecommand[1] in appvar.botusers[`${'#'+userstate.username}`].channelcommands) {
+					delete appvar.botusers['#' + userstate.username].channelcommands[removecommand[1]];
 
 				}
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
 			if (command === '!removekrummi') {
-				delete objvar.botusers['#' + userstate.username];
+				delete appvar.botusers['#' + userstate.username];
 
 
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(objvar.botusers, null, '\t'));
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
 			if (command === '!restart') {
 				bot.say(channel, 'Ich starte kurz neu...Bitte warten');
