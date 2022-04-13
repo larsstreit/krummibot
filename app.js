@@ -80,11 +80,10 @@ app.get("/auth/twitch/callback", async (req,res)=>{
   
 
   var temp={
-    email:  login.data.email,
+    email:  login.data.data[0].email,
     name:   login.data.data[0].login,
     id:   login.data.data[0].id
   }
-  console.log(login.data)
 
   users.push(temp)
   if (!(`${'#'+login.data.data[0].login}` in appvar.botusers)){
@@ -115,6 +114,9 @@ app.get("/auth/twitch/callback", async (req,res)=>{
       filepath.botuserspath,
       JSON.stringify(appvar.botusers, null, "\t")
     );
+    setTimeout(async () => {
+      await bot.say(`${'#'+login.data.data[0].login}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
+    }, 2000);
   }
   else{
     console.log("bereits im symstem")
