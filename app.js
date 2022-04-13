@@ -102,11 +102,32 @@ app.get("/loggers", (req, res)=>{
     res.send("you are not permitted")
   }
 })
+app.post("/account", (req, res)=>{
+  if(req.body.activatebot){
+    channelname = users.find(obj => obj.email === req.session.email).name.toLowerCase()
+  
+  if(req.body.activatebot === "Remove Bot"){
+  appvar.botusers["#"+channelname].joined = false;
+  bot.part("#"+channelname)
+  }
+  else{
+    appvar.botusers["#"+channelname].joined = true;
+    bot.join("#"+channelname)
+
+  }
+  }
+  fs.writeFileSync(
+    filepath.botuserspath,
+    JSON.stringify(appvar.botusers, null, "\t")
+  );
+  res.redirect("account")
+})
 app.get("/account", (req, res) => {
   if(req.session.loggedin){
     res.render("account", {
       name: users.find(obj => obj.email === req.session.email).name,
-      title: "Account"
+      title: "Account",
+      value: appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name.toLowerCase()].joined === true ? "Remove Bot" : "Add Bot"
     })
   }
   else{
@@ -271,7 +292,6 @@ function startbot() {
   bot.on("message", messageHandler);
   bot.on("raided", raidHandler);
   bot.on("subscription", subscriptionHandler);
-  bot.on("anonsubmysterygift", subscriptionHandler);
 }
 
 function subscriptionHandler(channel, username, method, message, userstate) {
