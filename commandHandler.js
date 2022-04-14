@@ -116,7 +116,7 @@ module.exports = {
 						/**
 						 * check if there is "help" in command
 						 */
-						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1] && alluse[1] === 'help')) {
 							bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !pokemon catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !pokemon index siehst du wie viele und welche Pokemons du bereits gefangen hast');
 						} else {
 							if(alluse[1] === 'catch'){
