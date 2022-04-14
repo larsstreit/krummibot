@@ -15,15 +15,30 @@ const escape = require('escape-html');
 const app = express();
 const session = require('express-session');
 const cors = require('cors');
-const passport       = require("passport");
 const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibot.de/auth/twitch/callback"
+const scanallusecommands = [
+  "!help",
+  "!channelcommands",
+  "!channelcommands help",
+  "!krummi",
+  "!so",
+  "!pokemon",
+  "!pokemon catch",
+  "!pokemon index",
+  "!pokemon help",
+  "!commands",
+  "!love",
+  "!games",
+  "!coin",
+  "!würfel",
+  "!miesmuschel",
+  "!hug"
+]
 //app settings
 app.set('./views')
 app.set("view engine", "ejs");
 app.use("/styles",express.static(__dirname + "/styles"));
 
-
-app.use(passport.initialize());
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -64,7 +79,7 @@ app.get("/auth/twitch/callback", async (req,res)=>{
     method: "post",
     url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
   })
-  //console.log(response);
+
   var login = await axios({
     url: 'https://api.twitch.tv/helix/users',
     method: 'GET',
@@ -155,7 +170,8 @@ app.post("/account", (req, res)=>{
             '!games',	
             '!coin',	 //TODO: can be disabled 
             '!würfel',	 //TODO: can be disabled 
-            '!miesmuschel' //TODO: can be disabled 
+            '!miesmuschel', //TODO: can be disabled 
+            '!hug'
           ]
         }
         setTimeout(async () => {
@@ -219,33 +235,7 @@ app.get("/users/", (req, res) => {
     res.render("login")
   }
 });
-app.get("/messages/:channel", (req, res) => {
-  if(req.session.loggedin){
-    var params = escape(req.params.channel)
-    // TODO: using twitch api to check if channel is online otherwise to much data in arrays 'element'
-    if (bot.getChannels().includes("#" + req.params.channel)) {
-      let element = [];
-      if (appvar.messages.length == 0) {
-        res.send(element);
-      } else {
-        for (let i = 0; i < appvar.messages.length; i++) {
-          if (appvar.messages[i].channel == "#" + req.params.channel) {
-            element.push({
-              username: appvar.messages[i].user,
-              message: appvar.messages[i].message,
-            });
-          }
-        }
-        res.send(element);
-      }
-    } else {
-      res.send("Not listening to channel " + params);
-    }
-  }
-  else{
-    res.render("login")
-  }
-});
+
 
 
 startapp();
@@ -327,6 +317,14 @@ function startbot() {
       for (const [key, value] of Object.entries(appvar.botusers)) {
         // shows the value of botusers[key] console.log(appvar.botusers[key]) does the same as console.log(value);
         // key => #channelname etc. console.log(key)
+        if(value.allusecommands != scanallusecommands){
+          appvar.botusers[key].allusecommands = scanallusecommands
+          fs.writeFileSync(
+            filepath.botuserspath,
+            JSON.stringify(appvar.botusers, null, "\t")
+          );
+  
+        }
         if (value.joined === true) {
           bot
             .join(key)

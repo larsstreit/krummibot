@@ -45,7 +45,8 @@ module.exports = {
 							'!games',	
 							'!coin',	 //TODO: can be disabled 
 							'!würfel',	 //TODO: can be disabled 
-							'!miesmuschel' //TODO: can be disabled 
+							'!miesmuschel', //TODO: can be disabled 
+							'!hug'
 						]
 
 					};
@@ -137,8 +138,10 @@ module.exports = {
 							for (const key in appvar.botusers[channel].channelcommands) {
 								s += key + ', ';
 							}
+
 							s = s.slice(0, (s.lastIndexOf(',')));
-							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games ' + s);
+							s = s.length !== 0 ? ", " +s : ""
+							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games'+s);
 						})();
 
 						break;
@@ -159,6 +162,11 @@ module.exports = {
 					case '!miesmuschel':
 						if (command.slice(0, message.indexOf(' ')) === '!miesmuschel') {
 							bot.say(channel, `@${userstate.username} ${botfunctions.selectRandomQuote()}`);
+						}
+						break;
+					case '!hug':
+						if (command.slice(0, message.indexOf(' ')) === '!hug') {
+							bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
 						}
 						break;
 					default:
