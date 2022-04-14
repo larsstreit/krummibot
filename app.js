@@ -155,24 +155,8 @@ app.post("/account", (req, res)=>{
           channelcommands: {
     
           },
-          allusecommands: [
-            '!help',
-            '!channelcommands',
-            '!channelcommands help',
-            '!krummi',
-            '!so',
-            '!pokemon', //TODO: can be disabled 
-            '!pokemon catch',
-            '!pokemon index',
-            '!pokemon help',
-            '!commands',
-            '!love', //TODO: can be disabled 
-            '!games',	
-            '!coin',	 //TODO: can be disabled 
-            '!würfel',	 //TODO: can be disabled 
-            '!miesmuschel', //TODO: can be disabled 
-            '!hug'
-          ]
+          allusecommands: scanallusecommands
+          
         }
         setTimeout(async () => {
           await bot.say(`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
