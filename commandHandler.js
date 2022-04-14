@@ -250,7 +250,7 @@ module.exports = {
 				}
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
-			if (command === '!removekrummi') {
+			if(command === '!removekrummi') {
 				delete appvar.botusers['#' + userstate.username];
 
 

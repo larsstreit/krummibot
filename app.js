@@ -86,41 +86,6 @@ app.get("/auth/twitch/callback", async (req,res)=>{
   }
 
   users.push(temp)
-  if (!(`${'#'+login.data.data[0].login}` in appvar.botusers)){
-    appvar.botusers[`${'#'+login.data.data[0].login}`] = {
-      joined: false,
-      channelcommands: {
-
-      },
-      allusecommands: [
-        '!help',
-        '!channelcommands',
-        '!channelcommands help',
-        '!krummi',
-        '!so',
-        '!pokemon', //TODO: can be disabled 
-        '!pokemon catch',
-        '!pokemon index',
-        '!pokemon help',
-        '!commands',
-        '!love', //TODO: can be disabled 
-        '!games',	
-        '!coin',	 //TODO: can be disabled 
-        '!würfel',	 //TODO: can be disabled 
-        '!miesmuschel' //TODO: can be disabled 
-      ]
-    }
-    fs.writeFileSync(
-      filepath.botuserspath,
-      JSON.stringify(appvar.botusers, null, "\t")
-    );
-    setTimeout(async () => {
-      await bot.say(`${'#'+login.data.data[0].login}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
-    }, 2000);
-  }
-  else{
-    console.log("bereits im symstem")
-  }
   res.redirect("../../account")
 })
 app.get("/impressum",(req, res)=>{
@@ -160,22 +125,60 @@ app.get("/loggers", (req, res)=>{
 })
 app.post("/account", (req, res)=>{
   channelname = users.find(obj => obj.email == req.session.email).name
+  
 
   if(req.body.activatebot){  
-  if(req.body.activatebot === "Remove Bot"){
-  appvar.botusers["#"+channelname].joined = false;
-  bot.part("#"+channelname).then().catch(err => console.log(err))
-  }
-  else{
-    appvar.botusers["#"+channelname].joined = true;
-    bot.join("#"+channelname).then().catch(err => console.log(err))
+    if(req.body.activatebot === "Remove Bot"){
+      appvar.botusers["#"+channelname].joined = false;
+      bot.part("#"+channelname).then().catch(err => console.log(err))
+    }
+    else if(req.body.activatebot === "Add Bot"){
+      if (!(`${'#'+users.find(obj => obj.email === req.session.email).name}` in appvar.botusers)){
+        appvar.botusers[`${'#'+users.find(obj => obj.email === req.session.email).name}`] = {
+          joined: true,
+          channelcommands: {
+    
+          },
+          allusecommands: [
+            '!help',
+            '!channelcommands',
+            '!channelcommands help',
+            '!krummi',
+            '!so',
+            '!pokemon', //TODO: can be disabled 
+            '!pokemon catch',
+            '!pokemon index',
+            '!pokemon help',
+            '!commands',
+            '!love', //TODO: can be disabled 
+            '!games',	
+            '!coin',	 //TODO: can be disabled 
+            '!würfel',	 //TODO: can be disabled 
+            '!miesmuschel' //TODO: can be disabled 
+          ]
+        }
+        setTimeout(async () => {
+          await bot.say(`${'#'+users.find(obj => obj.email === req.session.email).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
+        }, 2000);
+      }
+      else {
+        appvar.botusers["#"+channelname].joined = true;
+        bot.join("#"+channelname).then().catch(err => console.log(err))
 
+      }
+    }
+    else{
+        appvar.botusers["#"+channelname].joined = true;
+        bot.join("#"+channelname).then().catch(err => console.log(err))
+
+      }
+      fs.writeFileSync(
+        filepath.botuserspath,
+        JSON.stringify(appvar.botusers, null, "\t")
+      );
+  
+  
   }
-  }
-  fs.writeFileSync(
-    filepath.botuserspath,
-    JSON.stringify(appvar.botusers, null, "\t")
-  );
   res.redirect("account")
 })
 app.get("/account", (req, res) => {
@@ -184,7 +187,7 @@ app.get("/account", (req, res) => {
     res.render("account", {
       name: users.find(obj => obj.email === req.session.email).name,
       title: "Account",
-      value: appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name].joined === true ? "Remove Bot" : "Add Bot"
+      value: !("#"+users.find(obj => obj.email === req.session.email).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name].joined === true ? "Remove Bot" : "Add Bot"
     })
   }
   else{
