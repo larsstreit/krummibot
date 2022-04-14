@@ -1,6 +1,6 @@
 {
   "name": "krummibot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Chatbot made with Node.js. Can be manged by chat or Webpage. Free to use for all",
   "main": "app.js",
   "scripts": {
