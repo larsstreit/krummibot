@@ -76,7 +76,7 @@ app.get("/auth/twitch/callback", async (req,res)=>{
   })
 
   req.session.loggedin = true;
-  req.session.email =  login.data.data[0].email
+  req.session.id =  login.data.data[0].id
   
 
   var temp={
@@ -116,7 +116,7 @@ app.get("/logout", (req,res)=>{
   }
 })
 app.get("/loggers", (req, res)=>{
-  if(req.session.loggedin && req.session.email == "ls.larsstreit@t-online.de"){
+  if(req.session.loggedin && req.session.id == "536841246"){
     res.send(users)
   }
   else{
@@ -124,7 +124,7 @@ app.get("/loggers", (req, res)=>{
   }
 })
 app.post("/account", (req, res)=>{
-  channelname = users.find(obj => obj.email == req.session.email).name
+  channelname = users.find(obj => obj.id == req.session.id).name
   
 
   if(req.body.activatebot){  
@@ -133,8 +133,8 @@ app.post("/account", (req, res)=>{
       bot.part("#"+channelname).then().catch(err => console.log(err))
     }
     else if(req.body.activatebot === "Add Bot"){
-      if (!(`${'#'+users.find(obj => obj.email === req.session.email).name}` in appvar.botusers)){
-        appvar.botusers[`${'#'+users.find(obj => obj.email === req.session.email).name}`] = {
+      if (!(`${'#'+users.find(obj => obj.id === req.session.id).name}` in appvar.botusers)){
+        appvar.botusers[`${'#'+users.find(obj => obj.id === req.session.id).name}`] = {
           joined: true,
           channelcommands: {
     
@@ -158,7 +158,7 @@ app.post("/account", (req, res)=>{
           ]
         }
         setTimeout(async () => {
-          await bot.say(`${'#'+users.find(obj => obj.email === req.session.email).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
+          await bot.say(`${'#'+users.find(obj => obj.id === req.session.id).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
         }, 2000);
       }
       else {
@@ -185,9 +185,9 @@ app.get("/account", (req, res) => {
   // when first register user is not in botuser.json
   if(req.session.loggedin){
     res.render("account", {
-      name: users.find(obj => obj.email === req.session.email).name,
+      name: users.find(obj => obj.id === req.session.id).name,
       title: "Account",
-      value: !("#"+users.find(obj => obj.email === req.session.email).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.email === req.session.email).name].joined === true ? "Remove Bot" : "Add Bot"
+      value: !("#"+users.find(obj => obj.id === req.session.id).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.id === req.session.id).name].joined === true ? "Remove Bot" : "Add Bot"
     })
   }
   else{
