@@ -142,7 +142,7 @@ module.exports = {
 
 							s = s.slice(0, (s.lastIndexOf(',')));
 							s = s.length !== 0 ? ", " +s : ""
-							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug'+s);
+							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug'+s);
 						})();
 
 						break;
