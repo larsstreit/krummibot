@@ -285,7 +285,7 @@ function startbot() {
         // shows the value of botusers[key] console.log(appvar.botusers[key]) does the same as console.log(value);
         // key => #channelname etc. console.log(key)
         if(value.allusecommands != scanallusecommands){
-          appvar.botusers[key].allusecommands = scanallusecommands
+          appvar.botusers[key].allusecommands = scanallusecommands.allusecommands
           fs.writeFileSync(
             filepath.botuserspath,
             JSON.stringify(appvar.botusers, null, "\t")
