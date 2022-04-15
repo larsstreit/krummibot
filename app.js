@@ -324,17 +324,14 @@ function subscriptionHandler(channel, username, method, message, userstate) {
   console.log(channel, username, method, message, userstate);
 }
 function raidHandler(channel, raider, viewers) {
-  bot.say(channel, `${raider}, raidet mit ${viewers} Flamingos`);
+  bot.say(channel, `${raider}, raidet mit ${viewers} Menschen oder Maschninen`);
   setTimeout(async () => {
     await bot.say(
       channel, `Schaut mal bei ${raider} vorbei. https://www.twitch.tv/${raider.replace("@", "")}`)
   }, 2000);
 }
 function messageHandler(channel, userstate, message, self) {  
-  if (
-    self ||
-    userstate.username === "streamelements" 
-  )
+  if ( self)
     return;
   if (appvar.botusers[channel]) {
     if (!appvar.botusers[channel][userstate["user-id"]]) {
