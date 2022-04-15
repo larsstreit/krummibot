@@ -5,24 +5,7 @@ const botfunctions = require('./functions');
 const bannedwords = [
 	'simp'
 ];
-const scanallusecommands = [
-	"!help",
-	"!channelcommands",
-	"!channelcommands help",
-	"!krummi",
-	"!so",
-	"!pokemon",
-	"!pokemon catch",
-	"!pokemon index",
-	"!pokemon help",
-	"!commands",
-	"!love",
-	"!games",
-	"!coin",
-	"!würfel",
-	"!miesmuschel",
-	"!hug"
-  ]
+const scanallusecommands =require('./allusecommands')
 module.exports = {
 	commandHandler: function (channel, message, userstate, bot, fs) {
 		const checklove = message.split(' ');
@@ -47,7 +30,7 @@ module.exports = {
 						channelcommands: {
 
 						},
-						allusecommands: scanallusecommands
+						allusecommands: scanallusecommands.allusecommands
 					
 
 					};

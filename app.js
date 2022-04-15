@@ -16,24 +16,7 @@ const app = express();
 const session = require('express-session');
 const cors = require('cors');
 const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibot.de/auth/twitch/callback"
-const scanallusecommands = [
-  "!help",
-  "!channelcommands",
-  "!channelcommands help",
-  "!krummi",
-  "!so",
-  "!pokemon",
-  "!pokemon catch",
-  "!pokemon index",
-  "!pokemon help",
-  "!commands",
-  "!love",
-  "!games",
-  "!coin",
-  "!würfel",
-  "!miesmuschel",
-  "!hug"
-]
+const scanallusecommands = require('./allusecommands')
 //app settings
 app.set('./views')
 app.set("view engine", "ejs");
@@ -155,7 +138,7 @@ app.post("/account", (req, res)=>{
           channelcommands: {
     
           },
-          allusecommands: scanallusecommands
+          allusecommands: scanallusecommands.allusecommands
           
         }
         setTimeout(async () => {
