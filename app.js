@@ -348,10 +348,13 @@ function messageHandler(channel, userstate, message, self) {
           runningRound: false,
           lvl: "",
         },
-        schnabelcoins: 0,
+        coins: 0,
       };
     } else {
       appvar.botusers[channel][userstate["user-id"]].login = userstate.username;
+      appvar.botusers[channel][userstate["user-id"]].coins  += 1;
+      ;
+
     }
     commandHandler.commandHandler(channel, message, userstate, bot, fs);
   } else {
