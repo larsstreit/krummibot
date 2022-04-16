@@ -15,7 +15,8 @@
 - Roll Dice Function ✔️
 - Add / remove your own comments ✔️
 - Bannedwords List ✔️
-- ..
+- Coins ✔️ 
+    - cant be used yet
 
 
 ## Setup for Own Usage:
