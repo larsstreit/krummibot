@@ -63,7 +63,13 @@ module.exports = {
 			console.log('check if channel exist in botuser');
 			if (appvar.botusers[`${channel}`].channelcommands[command]) {
 				console.log('check if command exist in botuser');
-				bot.say(channel, appvar.botusers[`${channel}`].channelcommands[command].say);
+				if(command === '!lurk'){
+					bot.say(channel, `@${userstate.username} `+appvar.botusers[`${channel}`].channelcommands[command].say)
+				}
+				else{
+					bot.say(channel, appvar.botusers[`${channel}`].channelcommands[command].say);
+			
+				}
 			}
 			/**
 			 * Check for commands useable for all
