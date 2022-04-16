@@ -18,7 +18,7 @@ const cors = require('cors');
 const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibot.de/auth/twitch/callback"
 const scanallusecommands = require('./allusecommands')
 const RateLimit = require('express-rate-limit');
-const limiter =  rateLimit({
+const limiter =  RateLimit({
   windowMs: 15*60*1000, // 1 minute
   max: 100
 });
