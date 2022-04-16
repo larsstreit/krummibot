@@ -17,11 +17,18 @@ const session = require('express-session');
 const cors = require('cors');
 const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibot.de/auth/twitch/callback"
 const scanallusecommands = require('./allusecommands')
+const RateLimit = require('express-rate-limit');
+const limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
 //app settings
+
 app.set('./views')
 app.set("view engine", "ejs");
 app.use("/styles",express.static(__dirname + "/styles"));
 
+app.use(limiter);
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -135,9 +142,7 @@ app.post("/account", (req, res)=>{
       if (!(`${'#'+users.find(obj => obj.id ===  req.session.userid).name}` in appvar.botusers)){
         appvar.botusers[`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`] = {
           joined: true,
-          channelcommands: {
-    
-          },
+          channelcommands: {},
           allusecommands: scanallusecommands.allusecommands
           
         }
