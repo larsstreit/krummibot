@@ -49,4 +49,4 @@ Needs tmi.js till I work on doing the same with own code
 
 - only in german, i hope i did not forget to mention something or named something thats not true 
 - comming soon
-https://www.krummibot.de/impressum
+- https://www.krummibot.de/impressum
