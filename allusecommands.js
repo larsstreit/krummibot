@@ -15,6 +15,7 @@ module.exports =  {
   "!coin",
   "!würfel",
   "!miesmuschel",
-  "!hug"
+  "!hug",
+  "!coins"
 ]
 }

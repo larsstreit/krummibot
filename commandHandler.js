@@ -12,45 +12,7 @@ module.exports = {
 		const command = message;
 
 
-		/**
-		 * Check for channel // only these two let bot join to channel
-		 */
-		if (channel === '#krummibot' || channel === '#mrkrummschnabel') {
-			console.log(channel, true);
-			
-			if (command === '!joinchannel') {
-				if (!(`${'#'+userstate.username}` in appvar.botusers)) {
-					console.log('user not exist');
-					setTimeout(async () => {
-						await bot.say(`${'#'+userstate.username}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
-					}, 2000);
-				
-						appvar.botusers[`${'#'+userstate.username}`] = {
-						joined: true,
-						channelcommands: {
-
-						},
-						allusecommands: scanallusecommands.allusecommands
-					
-
-					};
-				} else {
-					if (appvar.botusers[`${'#'+userstate.username}`].joined === false) {
-						appvar.botusers[`${'#'+userstate.username}`].joined = true;
-
-					} else {
-						bot.say(`${'#'+userstate.username}`, 'du hast mich bereits aktiviert');
-					}
-				}
-				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
-				bot.join(userstate.username)
-					.then((data) => {
-						console.log(data);
-					}).catch((err) => {
-						console.log(err);
-					});
-			}
-		}
+	
 
 
 
@@ -159,6 +121,8 @@ module.exports = {
 							bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
 						}
 						break;
+					case '!coins':
+						bot.say(channel,  appvar.botusers[channel][userstate["user-id"]].coins === 1 ? `Du hast einen Coin`: `Du hast ${appvar.botusers[channel][userstate["user-id"]].coins} Coins`) 
 					default:
 						break;
 					}
@@ -174,7 +138,12 @@ module.exports = {
 				}
 
 			}
-
+			if(command != '!coins'){
+				appvar.botusers[channel][userstate["user-id"]].coins +=1;
+			}
+			else{
+				return
+			}
 		} else {
 			console.log('User not exist in botuser');
 		}
@@ -183,15 +152,15 @@ module.exports = {
 		if (userstate.username === 'mrkrummschnabel') {
 			if (command === '!shutdown') {
 				//eventueller fehler beim "no rsponse from twitch"
-				botfunctions.shutdownbot().then(setTimeout(() => {
+				botfunctions.shutdownbot(bot).then(setTimeout(() => {
 					process.exit(0);
 				}, 3000)).catch(err => {
-					console.log.error(err);
+					console.error(err);
 				});
 
 			}
-			if (command === '!getchannels') {
-				bot.say(channel, bot.getChannels())
+			else if (command === '!getchannels') {
+				bot.say(channel, bot.getChannels().toString())
 			}
 		}
 

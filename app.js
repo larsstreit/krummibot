@@ -158,6 +158,7 @@ app.post("/account", (req, res)=>{
         setTimeout(async () => {
           await bot.say(`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
         }, 2000);
+        bot.join("#"+channelname).then().catch(err => console.log(err))
       }
       else {
         appvar.botusers["#"+channelname].joined = true;
@@ -185,6 +186,7 @@ app.get("/account", (req, res) => {
     res.render("account", {
       name: users.find(obj => obj.id === req.session.userid).name,
       title: "Account",
+      csrfToken: req.csrfToken(),
       value: !("#"+users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.id ===  req.session.userid).name].joined === true ? "Remove Bot" : "Add Bot"
     })
   }
@@ -331,12 +333,8 @@ function startbot() {
 
   bot.on("message", messageHandler);
   bot.on("raided", raidHandler);
-  bot.on("subscription", subscriptionHandler);
 }
 
-function subscriptionHandler(channel, username, method, message, userstate) {
-  console.log(channel, username, method, message, userstate);
-}
 function raidHandler(channel, raider, viewers) {
   bot.say(channel, `${raider}, raidet mit ${viewers} Menschen oder Maschninen`);
   setTimeout(async () => {
@@ -345,10 +343,9 @@ function raidHandler(channel, raider, viewers) {
   }, 2000);
 }
 function messageHandler(channel, userstate, message, self) {  
-  if ( self)
-    return;
+  if (self) {return};
   if (appvar.botusers[channel]) {
-    if (!appvar.botusers[channel][userstate["user-id"]]) {
+    if (!appvar.botusers[channel][userstate["user-id"]] ) {
       console.log("user not exist");
       appvar.botusers[channel][userstate["user-id"]] = {
         login: userstate["username"],
@@ -365,9 +362,7 @@ function messageHandler(channel, userstate, message, self) {
         coins: 0,
       };
     } else {
-      appvar.botusers[channel][userstate["user-id"]].login = userstate.username;
-      appvar.botusers[channel][userstate["user-id"]].coins  += 1;
-      ;
+      appvar.botusers[channel][userstate["user-id"]].login = userstate.username;   
 
     }
     commandHandler.commandHandler(channel, message, userstate, bot, fs);

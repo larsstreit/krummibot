@@ -10,6 +10,8 @@
 <body>
     <h1>Hallo <%=name%></h1>
     <form action="/account" method="post">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+
         <input type="submit" name="activatebot" value="<%=value%>">
     </form>
     <a href="/impressum">Impressum</a>
