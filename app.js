@@ -19,16 +19,20 @@ const redUri = "https://localhost/auth/twitch/callback" || "https://www.krummibo
 const scanallusecommands = require('./allusecommands')
 const RateLimit = require('express-rate-limit');
 const limiter =  RateLimit({
-  windowMs: 15*60*1000, // 1 minute
+  windowMs: 15*60*1000, // 15 minute
   max: 100
 });
+const csrf = require('csurf');
 //app settings
 
 app.set('./views')
 app.set("view engine", "ejs");
+
 app.use("/styles",express.static(__dirname + "/styles"));
 
 app.use(limiter);
+app.use(cookieParser());
+
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -38,7 +42,9 @@ app.use(session({
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+app.use(csrf({ cookie: true }));
+
 app.use(morgan('tiny'));
 app.use(helmet());
 app.use(function (req, res, next) {
@@ -65,21 +71,21 @@ app.get("/auth/twitch", async (req,res)=>{
 })
 app.get("/auth/twitch/callback", async (req,res)=>{
   code = req.query.code
-  var response = await axios({
-    method: "post",
-    url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
-  })
-
-  var login = await axios({
-    url: 'https://api.twitch.tv/helix/users',
-    method: 'GET',
-    headers: {
-      'Client-ID': process.env.CLIENT_ID,
-      'Accept': 'application/vnd.twitchtv.v5+json',
-      'Authorization': 'Bearer ' + response.data.access_token
-    }
-  })
-
+  try {
+    var response = await axios({
+      method: "post",
+      url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
+    })
+  
+    var login = await axios({
+      url: 'https://api.twitch.tv/helix/users',
+      method: 'GET',
+      headers: {
+        'Client-ID': process.env.CLIENT_ID,
+        'Accept': 'application/vnd.twitchtv.v5+json',
+        'Authorization': 'Bearer ' + response.data.access_token
+      }
+    })
   req.session.loggedin = true;
   req.session.userid = login.data.data[0].id
   
@@ -93,6 +99,9 @@ app.get("/auth/twitch/callback", async (req,res)=>{
   users.push(temp)
   console.log(users.find(obj => obj.id ==  req.session.userid).name)
   res.redirect("../../account")
+  } catch (error) {
+    res.redirect("../../?error="+error)
+  }
 })
 app.get("/impressum",(req, res)=>{
   res.render("impressum")
@@ -105,7 +114,7 @@ app.get("/login", (req, res) => {
     res.redirect("/account")
   }
   else
-    res.render("login");
+    res.render("login", { csrfToken: req.csrfToken() });
 });
 app.post("/login" , (req, res) => {
   res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email`)
@@ -254,7 +263,7 @@ function startserver(){
           );
 
           httpsServer.listen(443, () => {
-            console.log("HTTPS Server running on port 443");
+            console.log("HTTPS Server running on port 443 https://localhost");
           });
         }
       } catch (error) {
