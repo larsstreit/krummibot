@@ -22,8 +22,8 @@
 ## Setup for Own Usage:
 
 - Download the latest Version from Github
-- After downloading create and edit the .env file (e.g .envSample) with your own login details or use !joinchannel in Channels #krummibot or #mrkrummschnabel when bot is online to use bot in your channel, last mentioned is to use the bot with my server
-- for https cert go to letsencrypt
+- After downloading create and edit the .env file (e.g .envSample) with your own login details or got to https://krummibot.de/login and login in with TwitchApi, last mentioned is to use the bot with my server
+- for https cert go to letsencrypt ( for local hosting ) or use certbot 
 - After this Step you're done and u can enjoy all Features from the Bot
 
 ## Supported Versions
@@ -40,7 +40,7 @@ Needs tmi.js till I work on doing the same with own code
 
 ## Developer ##
 
-- The current Developer is larsstreit so if u have Questions just contact him via Github or directly
+- The current Developer is larsstreit so if u have Questions just contact him via Github, Twitch or Discord
 
 ## Twitch Livestream ##
 
