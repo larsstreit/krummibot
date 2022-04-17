@@ -152,9 +152,23 @@ app.post("/account", (req, res)=>{
         appvar.botusers[`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`] = {
           joined: true,
           channelcommands: {},
-          allusecommands: scanallusecommands.allusecommands
-          
+          allusecommands: scanallusecommands.allusecommands,
+          commandconfig:{
+            allusecommands: {
+
+            }
+          }
         }
+        appvar.botusers[`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`].commandconfig.allusecommands[[scanallusecommands.allusecommands].forEach(element =>{
+          console.log(element);
+          for (let i = 0; i < element.length; i++) {
+            if(!appvar.botusers[`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`].commandconfig.allusecommands[element[i]]) {
+              appvar.botusers[`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`].commandconfig.allusecommands[element[i]] = {
+                "active": true
+              }
+            }
+          }})]
+
         setTimeout(async () => {
           await bot.say(`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
         }, 2000);
@@ -178,6 +192,19 @@ app.post("/account", (req, res)=>{
   
   
   }
+  if(req.body.shoutout){
+    if(req.body.shoutout === "deactive"){
+     appvar.botusers["#"+channelname].commandconfig.allusecommands["!so"].active = false
+    }
+    else if(req.body.shoutout === "active"){
+      appvar.botusers["#"+channelname].commandconfig.allusecommands["!so"].active = true
+    
+    }
+    fs.writeFileSync(
+      filepath.botuserspath,
+      JSON.stringify(appvar.botusers, null, "\t")
+    );
+  }
   res.redirect("account")
 })
 app.get("/account", (req, res) => {
@@ -187,12 +214,14 @@ app.get("/account", (req, res) => {
       name: users.find(obj => obj.id === req.session.userid).name,
       title: "Account",
       csrfToken: req.csrfToken(),
-      value: !("#"+users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.id ===  req.session.userid).name].joined === true ? "Remove Bot" : "Add Bot"
+      value: !("#"+users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? "Add Bot" : appvar.botusers["#"+users.find(obj => obj.id ===  req.session.userid).name].joined === true ? "Remove Bot" : "Add Bot",
+      shoutout: !(appvar.botusers[`#${users.find(obj => obj.id === req.session.userid).name}`]) ? "activate Bot first" : appvar.botusers[`#${users.find(obj => obj.id === req.session.userid).name}`].commandconfig.allusecommands["!so"].active === true ? "deactive" : "active"
     })
   }
   else{
     res.redirect("login")
   }
+  
 });
 app.get("/user/:channel", (req, res) => {
   if(req.session.loggedin){
@@ -308,6 +337,35 @@ function startbot() {
           );
   
         }
+        if(!value.commandconfig){
+          appvar.botusers[key].commandconfig = {
+          
+          }
+          fs.writeFileSync(
+            filepath.botuserspath,
+            JSON.stringify(appvar.botusers, null, "\t")
+          );
+        }
+        if(!appvar.botusers[key].commandconfig.allusecommands){
+          appvar.botusers[key].commandconfig.allusecommands = {
+
+          }
+        }
+          if(!appvar.botusers[key].commandconfig.allusecommands[[scanallusecommands.allusecommands].forEach(element =>{
+            console.log(element);
+            for (let i = 0; i < element.length; i++) {
+              if(!appvar.botusers[key].commandconfig.allusecommands[element[i]]) {
+                appvar.botusers[key].commandconfig.allusecommands[element[i]] = {
+                  "active": true
+                }
+              }
+            }
+          })]);
+          fs.writeFileSync(
+            filepath.botuserspath,
+            JSON.stringify(appvar.botusers, null, "\t")
+          );
+        
         if (value.joined === true) {
           bot
             .join(key)
@@ -362,7 +420,7 @@ function messageHandler(channel, userstate, message, self) {
         coins: 0,
       };
     } else {
-      appvar.botusers[channel][userstate["user-id"]].login = userstate.username;   
+      appvar.botusers[channel][userstate["user-id"]].login = userstate.username;  
 
     }
     commandHandler.commandHandler(channel, message, userstate, bot, fs);

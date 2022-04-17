@@ -38,95 +38,99 @@ module.exports = {
 			 */
 			else {
 				if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
-					console.log(alluse);
-					switch (alluse[0]) {
-					case '!help':
-						bot.say(channel, 'Wobei brauchst du Hilfe?...')
-						break;
-					case '!channelcommands':
-						/**
-						 * check if there is "help" in command
-						 */
-						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
-							bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
-						} else {
-							return;
-						}
-						break;
-					case '!krummi':
-						bot.say(channel, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei');
-						break;
-					case '!so':
-						if (userstate['mod'] || userstate['user-id'] === userstate['room-id']) {
-							if (alluse.length > 1) {
-								bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace('@', '')}`);
-							}
-						} else {
-							bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}`);
-						}
-						break;
-					case '!pokemon':
-						/**
-						 * check if there is "help" in command
-						 */
-						if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
-							if(alluse[1] === 'help'){
-								bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !pokemon catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !pokemon index siehst du wie viele und welche Pokemons du bereits gefangen hast');
-							}
-							else if(alluse[1] === 'catch'){
-								pokeMethods.catchpokemon(channel, userstate, bot);	
-							}
-							else if(alluse[1] === 'index'){
-								pokeMethods.pokeindex(channel, userstate, bot);
-							}
-							
-						} 
-						else
-								pokeMethods.startpokemongame(channel, userstate, bot);
-						break;
-					case '!commands':
-						(() => {
-							let s = ' ';
-							for (const key in appvar.botusers[channel].channelcommands) {
-								s += key + ', ';
-							}
+					if(appvar.botusers[channel].commandconfig.allusecommands[alluse[0]].active === true){
 
-							s = s.slice(0, (s.lastIndexOf(',')));
-							s = s.length !== 0 ? ", " +s : ""
-							bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug'+s);
-						})();
+						console.log(alluse);
+						switch (alluse[0]) {
+						
+						case '!help':
+							bot.say(channel, 'Wobei brauchst du Hilfe?...')
+							break;
+						case '!channelcommands':
+							/**
+							 * check if there is "help" in command
+							 */
+							if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+								bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
+							} else {
+								return;
+							}
+							break;
+						case '!krummi':
+							bot.say(channel, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei');
+							break;
+						case '!so':
+							if (userstate['mod'] || userstate['user-id'] === userstate['room-id']) {
+								if (alluse.length > 1) {
+									bot.say(channel, `Schaut mal bei ${alluse[1]} vorbei. twitch.tv/${alluse[1].replace('@', '')}`);
+								}
+							} else {
+								bot.say(channel, `Dafür hast du keine Berechtigung  @${userstate.username}`);
+							}
+							break;
+						case '!pokemon':
+							/**
+							 * check if there is "help" in command
+							 */
+							if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+								if(alluse[1] === 'help'){
+									bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !pokemon catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !pokemon index siehst du wie viele und welche Pokemons du bereits gefangen hast');
+								}
+								else if(alluse[1] === 'catch'){
+									pokeMethods.catchpokemon(channel, userstate, bot);	
+								}
+								else if(alluse[1] === 'index'){
+									pokeMethods.pokeindex(channel, userstate, bot);
+								}
+								
+							} 
+							else
+									pokeMethods.startpokemongame(channel, userstate, bot);
+							break;
+						case '!commands':
+							(() => {
+								let s = ' ';
+								for (const key in appvar.botusers[channel].channelcommands) {
+									s += key + ', ';
+								}
 
-						break;
-					case '!love':
-						if (command.slice(0, message.indexOf(' ')) === '!love') {
-							botfunctions.makelove(userstate, channel, checklove, bot);
+								s = s.slice(0, (s.lastIndexOf(',')));
+								s = s.length !== 0 ? ", " +s : ""
+								bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug'+s);
+							})();
+
+							break;
+						case '!love':
+							if (command.slice(0, message.indexOf(' ')) === '!love') {
+								botfunctions.makelove(userstate, channel, checklove, bot);
+							}
+							break;
+						case '!games':
+							bot.say(channel, 'Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help');
+							break;
+						case '!würfel':
+							botfunctions.rollDice(channel, bot);
+							break;
+						case '!coin':
+							botfunctions.throwCoin(channel, bot);
+							break;
+						case '!miesmuschel':
+							if (command.slice(0, message.indexOf(' ')) === '!miesmuschel') {
+								bot.say(channel, `@${userstate.username} ${botfunctions.selectRandomQuote()}`);
+							}
+							break;
+						case '!hug':
+							if (command.slice(0, message.indexOf(' ')) === '!hug') {
+								bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
+							}
+							break;
+						case '!coins':
+							bot.say(channel,  appvar.botusers[channel][userstate["user-id"]].coins === 1 ? `Du hast einen Coin`: `Du hast ${appvar.botusers[channel][userstate["user-id"]].coins} Coins`) 
+						default:
+							break;
 						}
-						break;
-					case '!games':
-						bot.say(channel, 'Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help');
-						break;
-					case '!würfel':
-						botfunctions.rollDice(channel, bot);
-						break;
-					case '!coin':
-						botfunctions.throwCoin(channel, bot);
-						break;
-					case '!miesmuschel':
-						if (command.slice(0, message.indexOf(' ')) === '!miesmuschel') {
-							bot.say(channel, `@${userstate.username} ${botfunctions.selectRandomQuote()}`);
 						}
-						break;
-					case '!hug':
-						if (command.slice(0, message.indexOf(' ')) === '!hug') {
-							bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
-						}
-						break;
-					case '!coins':
-						bot.say(channel,  appvar.botusers[channel][userstate["user-id"]].coins === 1 ? `Du hast einen Coin`: `Du hast ${appvar.botusers[channel][userstate["user-id"]].coins} Coins`) 
-					default:
-						break;
 					}
-				}
 				/**
 				 * Check for blocked words // These words are not allowed
 				 */
@@ -224,14 +228,6 @@ module.exports = {
 
 
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
-			}
-			if (command === '!restart') {
-				bot.say(channel, 'Ich starte kurz neu...Bitte warten');
-				bot.part(channel).then(setTimeout(() => {
-					bot.join(channel).then(log => (console.log(log))).catch(err => (console.log(err)));
-					bot.say(channel, 'ich habe einen Neustart durchgerführt');
-				}, 10000)).catch(err => (console.error(err)));
-
 			}
 		}
 
