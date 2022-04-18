@@ -352,7 +352,7 @@ function startbot() {
           }
         }
           if(!appvar.botusers[key].commandconfig.allusecommands[[scanallusecommands.allusecommands].forEach(element =>{
-            console.log(element);
+            //console.log(element);
             for (let i = 0; i < element.length; i++) {
               if(!appvar.botusers[key].commandconfig.allusecommands[element[i]]) {
                 appvar.botusers[key].commandconfig.allusecommands[element[i]] = {
