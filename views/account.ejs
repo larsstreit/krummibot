@@ -12,9 +12,20 @@
     <form action="/account" method="post">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
 
-        <input type="submit" name="activatebot" value="<%=value%>">
-        <label>shoutout /only for testing</label>
-        <input type="submit" name="shoutout" value="<%=shoutout%>">
+        <input type="submit" name="activatebot" value="<%=activatebot%>">        
+        <% if (test.length) { %>
+            <% test.forEach((index)=>{ %>
+               
+                    
+                      
+                           <label><%=index.commandname%></label>
+                           <input type="submit" class="command" name="<%=index.commandname%>" value="<%=index.value%>">
+          
+                   
+               
+
+            <% }) %>
+        <% } %>
     </form>
     <a href="/impressum">Impressum</a>
 <!--<a href="/dsgvo">dsgvo</a>-->

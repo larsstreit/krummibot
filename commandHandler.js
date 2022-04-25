@@ -5,51 +5,44 @@ const botfunctions = require('./functions');
 const bannedwords = [
 	'simp'
 ];
-const scanallusecommands =require('./allusecommands')
+//const scanallusecommands = require('./allusecommands');
 module.exports = {
 	commandHandler: function (channel, message, userstate, bot, fs) {
-		const checklove = message.split(' ');
 		const command = message;
-
-
-	
-
-
-
 		/**
 		 * Check for exisiting channel // every channel might have his own commands
 		 */
 		if (`${channel}` in appvar.botusers) {
 			let alluse = command.split(' ');
-
 			console.log('check if channel exist in botuser');
+			/**
+			 * Check for commands useabel channelcommands
+			 */
 			if (appvar.botusers[`${channel}`].channelcommands[command]) {
-				console.log('check if command exist in botuser');
-				if(command === '!lurk'){
-					bot.say(channel, `@${userstate.username} `+appvar.botusers[`${channel}`].channelcommands[command].say)
-				}
-				else{
+				if (command === '!lurk') {
+					bot.say(channel, `@${userstate.username} ` + appvar.botusers[`${channel}`].channelcommands[command].say);
+				} else {
 					bot.say(channel, appvar.botusers[`${channel}`].channelcommands[command].say);
-			
+
 				}
 			}
 			/**
-			 * Check for commands useable for all
+			 * Check for useable for allusecommands
 			 */
 			else {
 				if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0])) {
-					if(appvar.botusers[channel].commandconfig.allusecommands[alluse[0]].active === true){
+					if (appvar.botusers[channel].commandconfig.allusecommands[alluse[0]].active === true) {
 
 						console.log(alluse);
 						switch (alluse[0]) {
-						
+
 						case '!help':
-							bot.say(channel, 'Wobei brauchst du Hilfe?...')
+							bot.say(channel, 'Wobei brauchst du Hilfe?...');
 							break;
 						case '!channelcommands':
 							/**
-							 * check if there is "help" in command
-							 */
+								 * check if there is "help" in command
+								 */
 							if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 								bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
 							} else {
@@ -70,22 +63,19 @@ module.exports = {
 							break;
 						case '!pokemon':
 							/**
-							 * check if there is "help" in command
-							 */
+								 * check if there is "help" in command
+								 */
 							if (appvar.botusers[`${channel}`].allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
-								if(alluse[1] === 'help'){
+								if (alluse[1] === 'help') {
 									bot.say(channel, 'Mit !pokemon startest du eine Runde. Verwende !pokemon catch um das Pokemon zu fangen Das Pokemon muss zuerst gefangen werden oder verschwinden bevor du eine neue Runde starten kannst Mit !pokemon index siehst du wie viele und welche Pokemons du bereits gefangen hast');
-								}
-								else if(alluse[1] === 'catch'){
-									pokeMethods.catchpokemon(channel, userstate, bot);	
-								}
-								else if(alluse[1] === 'index'){
+								} else if (alluse[1] === 'catch') {
+									pokeMethods.catchpokemon(channel, userstate, bot);
+								} else if (alluse[1] === 'index') {
 									pokeMethods.pokeindex(channel, userstate, bot);
 								}
-								
-							} 
-							else
-									pokeMethods.startpokemongame(channel, userstate, bot);
+
+							} else
+								pokeMethods.startpokemongame(channel, userstate, bot);
 							break;
 						case '!commands':
 							(() => {
@@ -95,14 +85,14 @@ module.exports = {
 								}
 
 								s = s.slice(0, (s.lastIndexOf(',')));
-								s = s.length !== 0 ? ", " +s : ""
-								bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug'+s);
+								s = s.length !== 0 ? ', ' + s : '';
+								bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !miesmuschel <Frage>, !commands, !love <Username>, !würfel, !coin, !games, !hug' + s);
 							})();
 
 							break;
 						case '!love':
 							if (command.slice(0, message.indexOf(' ')) === '!love') {
-								botfunctions.makelove(userstate, channel, checklove, bot);
+								botfunctions.makelove(userstate, channel, command.split, bot);
 							}
 							break;
 						case '!games':
@@ -121,70 +111,48 @@ module.exports = {
 							break;
 						case '!hug':
 							if (command.slice(0, message.indexOf(' ')) === '!hug') {
-								bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
+								bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === '@' ? alluse[1].toLowerCase() : '@'+alluse[1].toLowerCase()} <3 <3`);
 							}
 							break;
 						case '!coins':
-							bot.say(channel,  appvar.botusers[channel][userstate["user-id"]].coins === 1 ? `Du hast einen Coin`: `Du hast ${appvar.botusers[channel][userstate["user-id"]].coins} Coins`) 
+							bot.say(channel, appvar.botusers[channel][userstate['user-id']].coins === 1 ? 'Du hast einen Coin' : `Du hast ${appvar.botusers[channel][userstate['user-id']].coins} Coins`);
+							break;
 						default:
 							break;
 						}
-						}
 					}
+				}
 				/**
 				 * Check for blocked words // These words are not allowed
 				 */
 				else if (bannedwords.includes(command.toLowerCase()) || bannedwords.includes(command)) {
 					bot.deletemessage(channel, userstate.id);
 					bot.say(channel, 'das Wort darfst du nicht verwenden');
-					
-					
 				}
-
 			}
-			if(command != '!coins'){
-				appvar.botusers[channel][userstate["user-id"]].coins +=1;
-			}
-			else{
-				return
+			if (command != '!coins') {
+				appvar.botusers[channel][userstate['user-id']].coins += 1;
+			} else {
+				return;
 			}
 		} else {
 			console.log('User not exist in botuser');
 		}
-
 		//can be used in everychannel only by mrkrummschnabel
 		if (userstate.username === 'mrkrummschnabel') {
 			if (command === '!shutdown') {
-				//eventueller fehler beim "no rsponse from twitch"
+				//eventueller fehler wenn "no rsponse from twitch"
 				botfunctions.shutdownbot(bot).then(setTimeout(() => {
 					process.exit(0);
 				}, 3000)).catch(err => {
 					console.error(err);
 				});
-
-			}
-			else if (command === '!getchannels') {
-				bot.say(channel, bot.getChannels().toString())
+			} else if (command === '!getchannels') {
+				bot.say(channel, bot.getChannels().toString());
 			}
 		}
-
 		//can only be used by channelowner / broadcaster
 		if (userstate['user-id'] === userstate['room-id']) {
-			if (command === '!leavechannel') {
-				if (appvar.botusers['#' + userstate.username].joined === true) {
-					appvar.botusers['#' + userstate.username].joined = false;
-					fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
-				}
-				for (const key in appvar.botusers) {
-					if (appvar.botusers[key].joined === false) {
-						bot.part(channel).then((data) => {
-							console.log(data);
-						}).catch((err) => {
-							console.error(err);
-						});
-					}
-				}
-			}
 			if (command.startsWith('!addcommand')) {
 				let addcommand = command.split(' ');
 				appvar.botusers[`${'#'+userstate.username}`].channelcommands[addcommand[1]] = {
@@ -206,15 +174,10 @@ module.exports = {
 						break;
 					default:
 						break;
-
 					}
-
 				}
-
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
-
 			}
-
 			if (command.startsWith('!removecommand')) {
 				let removecommand = command.split(' ');
 				if (removecommand[1] in appvar.botusers[`${'#'+userstate.username}`].channelcommands) {
@@ -223,10 +186,8 @@ module.exports = {
 				}
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
-			if(command === '!removekrummi') {
+			if (command === '!removekrummi') {
 				delete appvar.botusers['#' + userstate.username];
-
-
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
 		}

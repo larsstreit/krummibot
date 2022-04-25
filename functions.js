@@ -1,8 +1,8 @@
-const objvar = require('./var');
+const appvar = require('./var');
 
 module.exports = {
 	shutdownbot: async function(bot) {
-		objvar.joinedchannel.forEach(channel => {
+		appvar.joinedchannel.forEach(channel => {
 			console.log(channel);
 			bot.say(channel, 'Bot wird ausgeschaltet');
 			bot.part(channel);
