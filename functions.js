@@ -1,4 +1,6 @@
 const appvar = require('./var');
+const filepath = require('./path');
+
 
 module.exports = {
 	shutdownbot: async function(bot) {
@@ -11,19 +13,31 @@ module.exports = {
     
     
     
-	throwCoin: function (channel, bot) {
+	throwCoin: function (channel, bot, guess, channel, userstate, fs) {
+		//if guess => add coins
 		const sides = 2;
 		const kante = 1;
 		const fall = Math.floor(Math.random() * sides + Math.random() * kante / Math.PI);
-		if (fall == 0) {
-			bot.say(channel, 'Du hast Kopf geworfen');
+		if(guess){
+			if (fall == 0 && guess === "head") {
+				bot.say(channel, 'Du hast Kopf geworfen');
+				appvar.botusers[channel][userstate['user-id']].coins += 1
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
+			}
+			if (fall == 1 && guess === "tail")  {
+				bot.say(channel, 'Du hast Zahl geworfen');
+				appvar.botusers[channel][userstate['user-id']].coins += 1
+				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
+
+			}
+			if (fall == 2) {
+				bot.say(channel, 'Du hast die Münze im Gras versenkt');
+			}
+		}else
+		{
+			console.log("no guess");
 		}
-		if (fall == 1) {
-			bot.say(channel, 'Du hast Zahl geworfen');
-		}
-		if (fall == 2) {
-			bot.say(channel, 'Du hast die Kante im Gras versenkt');
-		}
+
 	},
     
 	makelove: function (userstate, channel, checklove, bot ) {
@@ -47,9 +61,15 @@ module.exports = {
 	},
     
 	// Function called when the "dice" command is issued
-	rollDice: function (channel, bot) {
-		const sides = 6;
-		bot.say(channel, `Du hast eine ${Math.floor(Math.random() * sides) + 1} gewürfelt`);
+	rollDice: function (channel, bot, num, channel, userstate, fs) {
+		const sides = 1;
+		ranNum = Math.floor(Math.random() * sides) + 1
+		bot.say(channel, `Du hast eine ${ranNum} gewürfelt`);
+		if(num === ranNum.toString()){
+			console.log(true);
+			appvar.botusers[channel][userstate['user-id']].coins += 1
+			fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
+		}
 	},
     
 	//remove to miesmuschel.js then export and import 

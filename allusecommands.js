@@ -13,8 +13,8 @@ module.exports =  {
 		'!love',
 		'!games',
 		'!coin',
-		'!würfel',
-		'!miesmuschel',
+		'!dice',
+		'!eightball',
 		'!hug',
 		'!coins'
 	]
