@@ -137,6 +137,15 @@ app.get('/loggers', (req, res)=>{
 		res.send('you are not permitted');
 	}
 });
+app.get('/:channel/:user/pokemon',  (req, res)=>{
+	let botusersfile = fs.readFileSync(filepath.botuserspath);
+	appvar.botusers = JSON.parse(botusersfile);
+	console.log(req.params);
+	if(appvar.botusers['#'+req.params.channel]){
+		let user = Object.values(appvar.botusers['#'+req.params.channel]).filter(x=> x.login === req.params.user);
+		res.send(user[0].poke.list);
+	}
+});
 app.post('/account', (req, res)=>{
 	const channelname = users.find(obj => obj.id ==  req.session.userid).name;
   

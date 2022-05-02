@@ -13,20 +13,20 @@ module.exports = {
     
     
     
-	throwCoin: function (channel, bot, guess, channel, userstate, fs) {
+	throwCoin: function (channel, bot, guess, userstate, fs) {
 		//if guess => add coins
 		const sides = 2;
 		const kante = 1;
 		const fall = Math.floor(Math.random() * sides + Math.random() * kante / Math.PI);
 		if(guess){
-			if (fall == 0 && guess === "head") {
+			if (fall == 0 && guess === 'head') {
 				bot.say(channel, 'Du hast Kopf geworfen');
-				appvar.botusers[channel][userstate['user-id']].coins += 1
+				appvar.botusers[channel][userstate['user-id']].coins += 1;
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
-			if (fall == 1 && guess === "tail")  {
+			if (fall == 1 && guess === 'tail')  {
 				bot.say(channel, 'Du hast Zahl geworfen');
-				appvar.botusers[channel][userstate['user-id']].coins += 1
+				appvar.botusers[channel][userstate['user-id']].coins += 1;
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 
 			}
@@ -35,7 +35,7 @@ module.exports = {
 			}
 		}else
 		{
-			console.log("no guess");
+			console.log('no guess');
 		}
 
 	},
@@ -61,13 +61,13 @@ module.exports = {
 	},
     
 	// Function called when the "dice" command is issued
-	rollDice: function (channel, bot, num, channel, userstate, fs) {
+	rollDice: function (channel, bot, num, userstate, fs) {
 		const sides = 1;
-		ranNum = Math.floor(Math.random() * sides) + 1
+		let ranNum = Math.floor(Math.random() * sides) + 1;
 		bot.say(channel, `Du hast eine ${ranNum} gewürfelt`);
 		if(num === ranNum.toString()){
 			console.log(true);
-			appvar.botusers[channel][userstate['user-id']].coins += 1
+			appvar.botusers[channel][userstate['user-id']].coins += 1;
 			fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 		}
 	},
@@ -114,4 +114,5 @@ module.exports = {
 			return 'something went wrong';
 		}
 	},
+	
 };

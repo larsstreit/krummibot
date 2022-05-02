@@ -1,9 +1,9 @@
 const pokemon = require('pokemon');
-const objvar = require('./var');
+const appvar = require('./var');
 module.exports ={
 	startpokemongame: function(channel, userstate, bot) {
 		let randomPook = pokemon.random('de');
-		let player = objvar.botusers[channel][userstate['user-id']];
+		let player = appvar.botusers[channel][userstate['user-id']];
 		
 
 		if (player.poke.runningRound == false) {
@@ -37,7 +37,7 @@ module.exports ={
 	},
     
 	catchpokemon: function(channel, userstate, bot) {
-		let player = objvar.botusers[channel][userstate['user-id']];
+		let player = appvar.botusers[channel][userstate['user-id']];
 
 		if (player.poke.catchable) {
 			// can try a catch            
@@ -97,14 +97,14 @@ module.exports ={
 	},
     
 	pokeindex: function(channel, userstate, bot) {
-		let player = objvar.botusers[channel][userstate['user-id']];
+		let player = appvar.botusers[channel][userstate['user-id']];
 		let pokedex = player.poke.list;
 		let counter = 0;
 		let actualpok = [];
 		for (let t in pokedex) {
 			counter++;
 			actualpok.push(pokedex[t]);	
-		}		
-		bot.say(channel, `@${userstate.username} du hast ${counter + ' Pokemon(s) und zwar ' + actualpok } `);
+		}
+		bot.say(channel, `@${userstate.username} deine Pokemeons siehst du hier www.krummibot.de/${channel.replace('#', '')}/${userstate.username}/pokemon} `);
 	}
 };

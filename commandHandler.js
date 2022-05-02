@@ -12,16 +12,11 @@ module.exports = {
 		const command = message;
 		const databasechannel = appvar.botusers[channel];
 
-	
-
-
-
 		/**
 		 * Check for exisiting channel // every channel might have his own commands
 		 */
 		if (`${channel}` in appvar.botusers) {
 			let alluse = command.split(' ');
-
 			console.log('check if channel exist in botuser');
 			if (databasechannel.channelcommands[command]) {
 				console.log('check if command exist in botuser');
@@ -124,11 +119,11 @@ module.exports = {
 							break;
 						case '!dice':
 							let num = alluse[1];
-							botfunctions.rollDice(channel, bot, num, channel, userstate, fs);
+							botfunctions.rollDice(channel, bot, num, userstate, fs);
 							break;
 						case '!coin':
 							let guess = alluse[1];
-							botfunctions.throwCoin(channel, bot, guess, channel, userstate, fs);
+							botfunctions.throwCoin(channel, bot, guess, userstate, fs);
 
 							break;
 						case '!eightball':
