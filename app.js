@@ -370,6 +370,7 @@ function startbot() {
                 //console.log(Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index])
                 if(element[i] === Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]){
                   console.log(element[i], Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]);
+                  
                 }
                 else{
                   delete appvar.botusers[key].commandconfig.allusecommands
