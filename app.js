@@ -359,15 +359,27 @@ function startbot() {
           }
         }
           if(!appvar.botusers[key].commandconfig.allusecommands[[scanallusecommands.allusecommands].forEach(element =>{
-            //console.log(element);
-            for (let i = 0; i < element.length; i++) {
+              for (let i = 0; i < element.length; i++) {
+              //console.log(element[i]);
               if(!appvar.botusers[key].commandconfig.allusecommands[element[i]]) {
                 appvar.botusers[key].commandconfig.allusecommands[element[i]] = {
                   "active": true
                 }
               }
+              for (let index = 0; index < Object.keys(appvar.botusers[key].commandconfig.allusecommands).length; index++) {
+                //console.log(Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index])
+                if(element[i] === Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]){
+                  console.log(element[i], Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]);
+                }
+                else{
+                  delete appvar.botusers[key].commandconfig.allusecommands
+                }
+              }
             }
+
           })]);
+          
+
           fs.writeFileSync(
             filepath.botuserspath,
             JSON.stringify(appvar.botusers, null, "\t")
