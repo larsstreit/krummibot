@@ -132,7 +132,7 @@ module.exports = {
 
 							break;
 						case '!eightball':
-							if (command.slice(0, message.indexOf(' ')) === '!miesmuschel') {
+							if (command.slice(0, message.indexOf(' ')) === '!eightball') {
 								bot.say(channel, `@${userstate.username} ${botfunctions.selectRandomQuote()}`);
 							}
 							break;
