@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const filepath = require('./path');
 const appvar = require('./var');
 const pokeMethods = require('./pokegame');
@@ -9,7 +10,7 @@ module.exports = {
 	commandHandler: function (channel, message, userstate, bot, fs) {
 		const checklove = message.split(' ');
 		const command = message;
-		const databasechannel = appvar.botusers[channel]
+		const databasechannel = appvar.botusers[channel];
 
 	
 
@@ -25,7 +26,7 @@ module.exports = {
 			if (databasechannel.channelcommands[command]) {
 				console.log('check if command exist in botuser');
 				if(command === '!lurk'){
-					bot.say(channel, `@${userstate.username} `+databasechannel.channelcommands[command].say)
+					bot.say(channel, `@${userstate.username} `+databasechannel.channelcommands[command].say);
 				}
 				else{
 					bot.say(channel, databasechannel.channelcommands[command].say);
@@ -43,17 +44,31 @@ module.exports = {
 						switch (alluse[0]) {
 						
 						case '!help':
-							bot.say(channel, 'Wobei brauchst du Hilfe?...')
+							bot.say(channel, 'Wobei brauchst du Hilfe?...');
 							break;
 						case '!channelcommands':
+							if(databasechannel.allusecommands.includes(alluse[0])){
+								(() => {
+									let s = ' ';
+									for (const key in databasechannel.channelcommands) {
+										s += key + ', ';
+									}
+	
+									s = s.slice(0, (s.lastIndexOf(',')));
+									if(s != ' '){
+										bot.say(channel, s);
+									}
+									else{
+										return;
+									}
+								})();
+							}
 							/**
 							 * check if there is "help" in command
 							 */
-							if (databasechannel.allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+							else if (databasechannel.allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
 								bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
-							} else {
-								return;
-							}
+							} 
 							break;
 						case '!krummi':
 							bot.say(channel, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei');
@@ -84,7 +99,7 @@ module.exports = {
 								
 							} 
 							else
-									pokeMethods.startpokemongame(channel, userstate, bot);
+								pokeMethods.startpokemongame(channel, userstate, bot);
 							break;
 						case '!commands':
 							(() => {
@@ -94,7 +109,7 @@ module.exports = {
 								}
 
 								s = s.slice(0, (s.lastIndexOf(',')));
-								s = s.length !== 0 ? ", " +s : ""
+								s = s.length !== 0 ? ', ' +s : '';
 								bot.say(channel, 'Folgende Kommandos funktionieren: !krummi, !pokemon help !eightball <Frage>, !commands, !love <Username>, !dice <Zahl 1-6>, !coin <head / tail>, !games, !hug'+s);
 							})();
 
@@ -108,11 +123,11 @@ module.exports = {
 							bot.say(channel, 'Folgende Spiele stehen zur Verfügung: Pokemon. Um mehr zu erfahren verwende !pokemon help');
 							break;
 						case '!dice':
-							let num = alluse[1]
+							let num = alluse[1];
 							botfunctions.rollDice(channel, bot, num, channel, userstate, fs);
 							break;
 						case '!coin':
-							let guess = alluse[1]
+							let guess = alluse[1];
 							botfunctions.throwCoin(channel, bot, guess, channel, userstate, fs);
 
 							break;
@@ -123,17 +138,17 @@ module.exports = {
 							break;
 						case '!hug':
 							if (command.slice(0, message.indexOf(' ')) === '!hug') {
-								bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === "@" ? alluse[1].toLowerCase() : "@"+alluse[1].toLowerCase()} <3 <3`)
+								bot.say(channel, `@${userstate.username} umarmt ${alluse[1].charAt(0) === '@' ? alluse[1].toLowerCase() : '@'+alluse[1].toLowerCase()} <3 <3`);
 							}
 							break;
 						case '!coins':
-							bot.say(channel,  databasechannel[userstate["user-id"]].coins === 1 ? `Du hast einen Coin`: `Du hast ${databasechannel[userstate["user-id"]].coins} Coins`) 
-							break
+							bot.say(channel,  databasechannel[userstate['user-id']].coins === 1 ? 'Du hast einen Coin': `Du hast ${databasechannel[userstate['user-id']].coins} Coins`); 
+							break;
 						default:
 							break;
 						}
-						}
 					}
+				}
 				/**
 				 * Check for blocked words // These words are not allowed
 				 */
@@ -146,10 +161,10 @@ module.exports = {
 
 			}
 			if(command != '!coins'){
-				databasechannel[userstate["user-id"]].coins +=1;
+				databasechannel[userstate['user-id']].coins +=1;
 			}
 			else{
-				return
+				return;
 			}
 		} else {
 			console.log('User not exist in botuser');
@@ -167,7 +182,7 @@ module.exports = {
 
 			}
 			else if (command === '!getchannels') {
-				bot.say(channel, bot.getChannels().toString())
+				bot.say(channel, bot.getChannels().toString());
 			}
 		}
 
