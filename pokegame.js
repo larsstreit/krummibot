@@ -97,14 +97,6 @@ module.exports ={
 	},
     
 	pokeindex: function(channel, userstate, bot) {
-		let player = appvar.botusers[channel][userstate['user-id']];
-		let pokedex = player.poke.list;
-		let counter = 0;
-		let actualpok = [];
-		for (let t in pokedex) {
-			counter++;
-			actualpok.push(pokedex[t]);	
-		}
-		bot.say(channel, `@${userstate.username} deine Pokemeons siehst du hier www.krummibot.de/${channel.replace('#', '')}/${userstate.username}/pokemon} `);
+		bot.say(channel, `@${userstate.username} deine Pokemeons siehst du hier www.krummibot.de/${channel.replace('#', '')}/${userstate.username}/pokemon `);
 	}
 };
