@@ -10,6 +10,7 @@
   "author": "MrKrummschnabel",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.4",
     "axios": "^0.26.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

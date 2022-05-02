@@ -24,7 +24,8 @@
 - Download the latest Version from Github
 - After downloading create and edit the .env file (e.g .envSample) with your own login details or got to https://krummibot.de/login and login in with TwitchApi, last mentioned is to use the bot with my server
 - for https cert go to letsencrypt ( for local hosting ) or use certbot 
-- After this Step you're done and u can enjoy all Features from the Bot
+- After this step you're done and u can enjoy all Features from the Bot
+- Set redUri to your own callback URI so you can use your own TwitchApp 
 
 ## Supported Versions
 
