@@ -52,5 +52,5 @@ Needs tmi.js till I work on doing the same with own code
 ## imprint and privacy policy
 
 - only in german, i hope i did not forget to mention something or named something thats not true 
-- comming soon
+    - comming soon
 - https://www.krummibot.de/impressum
