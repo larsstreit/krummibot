@@ -38,7 +38,7 @@ client.on('connect', function(connection) {
 	connection.sendUTF(`PASS ${process.env.BOT_OAUTH}`);
 	connection.sendUTF('NICK krummibot');
 	connection.sendUTF(`JOIN ${wsschannel}`);
-	connection.send(`PRIVMSG ${wsschannel} : WEBSOCKET CONNECTION ESTABLISHED`);
+	//connection.send(`PRIVMSG ${wsschannel} : WEBSOCKET CONNECTION ESTABLISHED`);
 	connection.on('message',function(message){
 		// Parses an IRC message and returns a JSON object with the message's 
 		// component parts (tags, source (nick and host), command, parameters). 
@@ -434,12 +434,6 @@ app.use(csrf({ cookie: true }));
 
 app.use(morgan('tiny'));
 app.use(helmet());
-app.use(function (req, res, next) {
-	res.setHeader(
-		'Content-Security-Policy', 'default-src \'self\'; script-src \'self\'; style-src \'self\'; font-src \'self\'; img-src \'self\'; frame-src \'self\''
-	);
-	next();
-});
 
 const login = {
 	email: '',
@@ -536,6 +530,40 @@ app.get('/loggers', (req, res)=>{
 		res.send('you are not permitted');
 	}
 });
+app.get('/:channel',  (req, res)=>{
+	let botusersfile = fs.readFileSync(filepath.botuserspath);
+	appvar.botusers = JSON.parse(botusersfile);
+	console.log(req.params);
+	if(appvar.botusers['#'+req.params.channel]){
+		res.send(`
+		  <!-- Add a placeholder for the Twitch embed -->
+		  <div id="twitch-embed"></div>
+	  
+		  <!-- Load the Twitch embed script -->
+		  <script src="https://embed.twitch.tv/embed/v1.js"></script>
+	  
+		  <!-- Create a Twitch.Embed object that will render within the "twitch-embed" element. -->
+		  <script type="text/javascript">
+			var embed = new Twitch.Embed("twitch-embed", {
+			  width: 854,
+			  height: 480,
+			  channel: "mrkrummschnabel",
+			  layout: "video-with-chat",
+			  autoplay: true,
+			  allowfullscreen: true,
+			  theme: "dark"
+			  // Only needed if this page is going to be embedded on other websites
+			  parent: ["localhost", "https://localhost", "www.krummibot.de"]
+			});
+	  
+			embed.addEventListener(Twitch.Embed.VIDEO_READY, () => {
+			  var player = embed.getPlayer();
+			  player.play();
+			});
+		  </script>`);
+	}
+});
+
 app.get('/:channel/:user/pokemon',  (req, res)=>{
 	let botusersfile = fs.readFileSync(filepath.botuserspath);
 	appvar.botusers = JSON.parse(botusersfile);
@@ -545,6 +573,8 @@ app.get('/:channel/:user/pokemon',  (req, res)=>{
 		res.send(`<p>${user[0].poke.list}</p>`);
 	}
 });
+
+
 app.post('/account', (req, res)=>{
 	const channelname = users.find(obj => obj.id ==  req.session.userid).name;
   
