@@ -15,6 +15,7 @@
 - Roll Dice Function ✔️
 - Add / remove your own comments ✔️
 - Bannedwords List ✔️
+- Channel can be seen under /user/*channelname*
 - Coins ✔️ 
     - cant be used yet
 
