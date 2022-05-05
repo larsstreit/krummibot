@@ -97,6 +97,6 @@ module.exports ={
 	},
     
 	pokeindex: function(channel, userstate, bot) {
-		bot.say(channel, `@${userstate.username} deine Pokemeons siehst du hier www.krummibot.de/${channel.replace('#', '')}/${userstate.username}/pokemon `);
+		bot.say(channel, `@${userstate.username} deine Pokemeons siehst du hier www.krummibot.de/user/${channel.replace('#', '')}/${userstate.username}/pokemon `);
 	}
 };
