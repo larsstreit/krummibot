@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const tmi = require('tmi.js');
 const fs = require('fs');
 const appvar = require('./var');
@@ -22,6 +23,393 @@ const limiter =  RateLimit({
 	max: 100
 });
 const csrf = require('csurf');
+
+const WebSocketClient = require('websocket').client;
+const client = new WebSocketClient();
+const wsschannel = '#mrkrummschnabel';
+
+client.on('connectFailed', function(error) {
+	console.log('Connect Error: ' + error.toString());
+});
+
+client.on('connect', function(connection) {
+	console.log('WebSocket Client Connected');
+	connection.sendUTF('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands');
+	connection.sendUTF(`PASS ${process.env.BOT_OAUTH}`);
+	connection.sendUTF('NICK krummibot');
+	connection.sendUTF(`JOIN ${wsschannel}`);
+	connection.send(`PRIVMSG ${wsschannel} : WEBSOCKET CONNECTION ESTABLISHED`);
+	connection.on('message',function(message){
+		// Parses an IRC message and returns a JSON object with the message's 
+		// component parts (tags, source (nick and host), command, parameters). 
+		// Expects the caller to pass a single message. (Remember, the Twitch 
+		// IRC server may send one or more IRC messages in a single message.)
+		if (message.type === 'utf8') {
+			let rawMessage = message.utf8Data.trimEnd();
+			console.log(`Message received (${new Date().toISOString()}): '${rawMessage}'\n`);
+
+			let messages = rawMessage.split('\r\n');  // The IRC message may contain one or more messages.
+			messages.forEach(message => {
+				let parsedMessage = parseMessage(message, rawMessage);
+            
+				if (parsedMessage) {
+					//console.log(`Message command: ${parsedMessage.command.command}`);
+					console.log(`\n${JSON.stringify(parsedMessage, null, 3)}`);
+
+					switch (parsedMessage.command.command) {
+					case 'PRIVMSG':
+						//console.log(parsedMessage.command.botCommand);
+						
+                            
+						break;
+					case 'CLEARMSG':
+						//what for?
+				
+							
+						break;
+					case 'WHISPER':
+						//what for?
+				
+							
+						break;
+					case 'PING':
+						connection.sendUTF('PONG ' + parsedMessage.parameters);
+						break;
+					case '001':
+						// Successfully logged in, so join the channel.
+						connection.sendUTF(`JOIN ${wsschannel}`); 
+						break; 
+					case 'JOIN':				
+						break;
+					case 'PART':
+						console.log('The channel must have banned (/ban) the bot.');
+						break;
+					case 'NOTICE': 
+						// If the authentication failed, leave the channel.
+						// The server will close the connection.
+						if ('Login authentication failed' === parsedMessage.parameters) {
+							console.log(`Authentication failed; left ${wsschannel}`);
+							connection.sendUTF(`PART ${wsschannel}`);
+						}
+						else if ('You don’t have permission to perform that action' === parsedMessage.parameters) {
+							console.log(`No permission. Check if the access token is still valid. Left ${wsschannel}`);
+							connection.sendUTF(`PART ${wsschannel}`);
+						}
+						break;
+					default:
+						break; // Ignore all other IRC messages.
+					}
+				}
+			});
+		}
+
+	});
+	connection.on('close', function() {
+		console.log('Connection Closed');
+		console.log(`close description: ${connection.closeDescription}`);
+		console.log(`close reason code: ${connection.closeReasonCode}`);
+	});
+});
+
+function parseMessage(message, rawMessage) {
+
+	let parsedMessage = {  // Contains the component parts.
+		raw: rawMessage,
+		tags: null,
+		source: null,
+		command: null,
+		parameters: null
+	};
+
+	// The start index. Increments as we parse the IRC message.
+
+	let idx = 0; 
+
+	// The raw components of the IRC message.
+
+	let rawTagsComponent = null;
+	let rawSourceComponent = null; 
+	let rawCommandComponent = null;
+	let rawParametersComponent = null;
+
+	// If the message includes tags, get the tags component of the IRC message.
+
+	if (message[idx] === '@') {  // The message includes tags.
+		let endIdx = message.indexOf(' ');
+		rawTagsComponent = message.slice(1, endIdx);
+		idx = endIdx + 1; // Should now point to source colon (:).
+	}
+
+	// Get the source component (nick and host) of the IRC message.
+	// The idx should point to the source part; otherwise, it's a PING command.
+
+	if (message[idx] === ':') {
+		idx += 1;
+		let endIdx = message.indexOf(' ', idx);
+		rawSourceComponent = message.slice(idx, endIdx);
+		idx = endIdx + 1;  // Should point to the command part of the message.
+	}
+
+	// Get the command component of the IRC message.
+
+	let endIdx = message.indexOf(':', idx);  // Looking for the parameters part of the message.
+	if (-1 == endIdx) {                      // But not all messages include the parameters part.
+		endIdx = message.length;                 
+	}
+
+	rawCommandComponent = message.slice(idx, endIdx).trim();
+
+	// Get the parameters component of the IRC message.
+
+	if (endIdx != message.length) {  // Check if the IRC message contains a parameters component.
+		idx = endIdx + 1;            // Should point to the parameters part of the message.
+		rawParametersComponent = message.slice(idx);
+	}
+
+	// Parse the command component of the IRC message.
+
+	parsedMessage.command = parseCommand(rawCommandComponent);
+
+	// Only parse the rest of the components if it's a command
+	// we care about; we ignore some messages.
+
+	if (null == parsedMessage.command) {  // Is null if it's a message we don't care about.
+		return null; 
+	}
+	else {
+		if (null != rawTagsComponent) {  // The IRC message contains tags.
+			parsedMessage.tags = parseTags(rawTagsComponent);
+		}
+
+		parsedMessage.source = parseSource(rawSourceComponent);
+
+		parsedMessage.parameters = rawParametersComponent;
+		//if starts with 
+		/*if (rawParametersComponent && rawParametersComponent[0] === '!') {  
+			// The user entered a bot command in the chat window.            
+			parsedMessage.command = parseParameters(rawParametersComponent, parsedMessage.command);
+		}*/
+	}
+
+	return parsedMessage;
+}
+
+// Parses the tags component of the IRC message.
+
+function parseTags(tags) {
+	// badge-info=;badges=broadcaster/1;color=#0000FF;...
+
+	const tagsToIgnore = {  // List of tags to ignore.
+		'client-nonce': null,
+		'flags': null
+	};
+
+	let dictParsedTags = {};  // Holds the parsed list of tags.
+	// The key is the tag's name (e.g., color).
+	let parsedTags = tags.split(';'); 
+
+	parsedTags.forEach(tag => {
+		let parsedTag = tag.split('=');  // Tags are key/value pairs.
+		let tagValue = (parsedTag[1] === '') ? null : parsedTag[1];
+
+		switch (parsedTag[0]) {  // Switch on tag name
+		case 'badges':
+		case 'badge-info':
+			// badges=staff/1,broadcaster/1,turbo/1;
+
+			if (tagValue) {
+				let dict = {};  // Holds the list of badge objects.
+				// The key is the badge's name (e.g., subscriber).
+				let badges = tagValue.split(','); 
+				badges.forEach(pair => {
+					let badgeParts = pair.split('/');
+					dict[badgeParts[0]] = badgeParts[1];
+				});
+				dictParsedTags[parsedTag[0]] = dict;
+			}
+			else {
+				dictParsedTags[parsedTag[0]] = null;
+			}
+			break;
+		case 'emotes':
+			// emotes=25:0-4,12-16/1902:6-10
+
+			if (tagValue) {
+				let dictEmotes = {};  // Holds a list of emote objects.
+				// The key is the emote's ID.
+				let emotes = tagValue.split('/');
+				emotes.forEach(emote => {
+					let emoteParts = emote.split(':');
+
+					let textPositions = [];  // The list of position objects that identify
+					// the location of the emote in the chat message.
+					let positions = emoteParts[1].split(',');
+					positions.forEach(position => {
+						let positionParts = position.split('-');
+						textPositions.push({
+							startPosition: positionParts[0],
+							endPosition: positionParts[1]    
+						});
+					});
+
+					dictEmotes[emoteParts[0]] = textPositions;
+				});
+
+				dictParsedTags[parsedTag[0]] = dictEmotes;
+			}
+			else {
+				dictParsedTags[parsedTag[0]] = null;
+			}
+
+			break;
+		case 'emote-sets':
+			// emote-sets=0,33,50,237
+
+			let emoteSetIds = tagValue.split(',');  // Array of emote set IDs.
+			dictParsedTags[parsedTag[0]] = emoteSetIds;
+			break;
+		default:
+			// If the tag is in the list of tags to ignore, ignore
+			// it; otherwise, add it.
+
+			// eslint-disable-next-line no-prototype-builtins
+			if (tagsToIgnore.hasOwnProperty(parsedTag[0])) { 
+				return;
+			}
+			else {
+				dictParsedTags[parsedTag[0]] = tagValue;
+			}
+		} 
+	});
+
+	return dictParsedTags;
+}
+
+// Parses the command component of the IRC message.
+
+function parseCommand(rawCommandComponent) {
+	let parsedCommand = null;
+	let commandParts = rawCommandComponent.split(' ');
+
+	switch (commandParts[0]) {
+	case 'JOIN':
+	case 'PART':
+	case 'NOTICE':
+	case 'CLEARCHAT':
+	case 'HOSTTARGET':
+	case 'PRIVMSG':
+	case 'CLEARMSG':
+	case 'WHISPER':
+
+		parsedCommand = {
+			command: commandParts[0],
+			channel: commandParts[1]
+		};
+		break;
+	case 'PING':
+		parsedCommand = {
+			command: commandParts[0]
+		};
+		break;
+	case 'CAP':
+		parsedCommand = {
+			command: commandParts[0],
+			isCapRequestEnabled: (commandParts[2] === 'ACK') ? true : false,
+			// The parameters part of the messages contains the 
+			// enabled capabilities.
+		};
+		break;
+	case 'GLOBALUSERSTATE':  // Included only if you request the /commands capability.
+		// But it has no meaning without also including the /tags capability.
+		parsedCommand = {
+			command: commandParts[0]
+		};
+		break;               
+	case 'USERSTATE':   // Included only if you request the /commands capability.
+	case 'ROOMSTATE':   // But it has no meaning without also including the /tags capabilities.
+		parsedCommand = {
+			command: commandParts[0],
+			channel: commandParts[1]
+		};
+		break;
+	case 'USERNOTICE':
+		parsedCommand = {
+			command: commandParts[0],
+			channel: commandParts[1]
+		};
+		break;
+	case 'RECONNECT':  
+		console.log('The Twitch IRC server is about to terminate the connection for maintenance.');
+		parsedCommand = {
+			command: commandParts[0]
+		};
+		break;
+	case '421':
+		console.log(`Unsupported IRC command: ${commandParts[2]}`);
+		return null;
+	case '001':  // Logged in (successfully authenticated). 
+		parsedCommand = {
+			command: commandParts[0],
+			channel: commandParts[1]
+		};
+		break;
+	case '002':  // Ignoring all other numeric messages.
+	case '003':
+	case '004':
+	case '353':  // Tells you who else is in the chat room you're joining.
+	case '366':
+	case '372':
+	case '375':
+	case '376':
+		console.log(`numeric message: ${commandParts[0]}`);
+		return null;
+	default:
+		console.log(`\nUnexpected command: ${commandParts[0]}\n`);
+		return null;
+	}
+
+	return parsedCommand;
+}
+
+// Parses the source (nick and host) components of the IRC message.
+
+function parseSource(rawSourceComponent) {
+	if (null == rawSourceComponent) {  // Not all messages contain a source
+		return null;
+	}
+	else {
+		let sourceParts = rawSourceComponent.split('!');
+		return {
+			nick: (sourceParts.length == 2) ? sourceParts[0] : null,
+			host: (sourceParts.length == 2) ? sourceParts[1] : sourceParts[0]
+		};
+	}
+}
+
+// Parsing the IRC parameters component if it contains a command (e.g., !dice).
+
+/*function parseParameters(rawParametersComponent, command) {
+	let idx = 0;
+	let commandParts = rawParametersComponent.slice(idx + 1).trim(); 
+	let paramsIdx = commandParts.indexOf(' ');
+
+	if (-1 == paramsIdx) { // no parameters
+		command.botCommand = commandParts.slice(0); 
+	}
+	else {
+		command.botCommand = commandParts.slice(0, paramsIdx); 
+		command.botCommandParams = commandParts.slice(paramsIdx).trim();
+		// TODO: remove extra spaces in parameters string
+	}
+
+	return command;
+}*/
+
+
+
+client.connect('wss://irc-ws.chat.twitch.tv:443');
+
+
 //app settings
 
 app.set('./views');
@@ -64,6 +452,9 @@ app.get('/', (req, res) => {
 	res.render('home');
 
 });
+
+
+
 app.get('/faq', (req, res) => {
 	res.render('faq');
 
@@ -99,13 +490,13 @@ app.get('/auth/twitch/callback', async (req,res)=>{
 			name:   login.data.data[0].login
 		};
 		
-	if(users.find(obj => obj.id ==  req.session.userid)){
-		console.log(users.find(obj => obj.id ==  req.session.userid));
-	}
-	else{
-		users.push(temp);
-	}
-	console.log(users);
+		if(users.find(obj => obj.id ==  req.session.userid)){
+			console.log(users.find(obj => obj.id ==  req.session.userid));
+		}
+		else{
+			users.push(temp);
+		}
+		console.log(users);
 		res.redirect('../../account');
 	} catch (error) {
 		res.redirect('../../?error='+error);
@@ -130,12 +521,11 @@ app.post('/login' , (req, res) => {
 app.get('/logout', (req,res)=>{
 	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		req.session.loggedin = null;
-		//if logged in in more than 1 browser loggers will still work
 		users = [login];
-		res.redirect('/?loggedout=true&message=succesfull&logout')
+		res.redirect('/?loggedout=true&message=succesfull&logout');
 	}
 	else{
-		res.redirect('/?loggedin=false&message=you&are%not%loggedin')
+		res.redirect('/?loggedin=false&message=you&are%not%loggedin');
 	}
 });
 app.get('/loggers', (req, res)=>{
@@ -396,8 +786,8 @@ function startbot() {
 						for (let index = 0; index < Object.keys(appvar.botusers[key].commandconfig.allusecommands).length; index++) {
 							//console.log(Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index])
 							if(element[i] === Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]){
-								console.log(element[i],Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]);
-                  
+								//console.log(element[i],Object.keys(appvar.botusers[key].commandconfig.allusecommands)[index]);
+								return;
 							}
 						}
 					}

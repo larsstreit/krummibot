@@ -25,7 +25,8 @@
     "helmet": "^5.0.2",
     "morgan": "^1.10.0",
     "pokemon": "^2.3.0",
-    "tmi.js": "^1.8.5"
+    "tmi.js": "^1.8.5",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
