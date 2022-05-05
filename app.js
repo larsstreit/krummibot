@@ -433,7 +433,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(csrf({ cookie: true }));
 
 app.use(morgan('tiny'));
-app.use(helmet());
+app.use(helmet({
+	crossOriginEmbedderPolicy: false
+}));
+app.use(function (req, res, next) {
+	res.setHeader(
+		'Content-Security-Policy', 'default-src \'self\'; script-src \'self\' https://* \'unsafe-inline\'; style-src \'self\'; font-src \'self\'; img-src \'self\'; frame-src \'self\' https://* \'unsafe-inline\';',
+	);
+	next();
+});
 
 const login = {
 	email: '',
@@ -530,41 +538,20 @@ app.get('/loggers', (req, res)=>{
 		res.send('you are not permitted');
 	}
 });
-app.get('/:channel',  (req, res)=>{
+app.get('/user/:channel',(req, res)=>{
 	let botusersfile = fs.readFileSync(filepath.botuserspath);
 	appvar.botusers = JSON.parse(botusersfile);
 	console.log(req.params);
 	if(appvar.botusers['#'+req.params.channel]){
-		res.send(`
-		  <!-- Add a placeholder for the Twitch embed -->
-		  <div id="twitch-embed"></div>
-	  
-		  <!-- Load the Twitch embed script -->
-		  <script src="https://embed.twitch.tv/embed/v1.js"></script>
-	  
-		  <!-- Create a Twitch.Embed object that will render within the "twitch-embed" element. -->
-		  <script type="text/javascript">
-			var embed = new Twitch.Embed("twitch-embed", {
-			  width: 854,
-			  height: 480,
-			  channel: "mrkrummschnabel",
-			  layout: "video-with-chat",
-			  autoplay: true,
-			  allowfullscreen: true,
-			  theme: "dark"
-			  // Only needed if this page is going to be embedded on other websites
-			  parent: ["localhost", "https://localhost", "www.krummibot.de"]
-			});
-	  
-			embed.addEventListener(Twitch.Embed.VIDEO_READY, () => {
-			  var player = embed.getPlayer();
-			  player.play();
-			});
-		  </script>`);
+		res.render('channel',{
+			channel: req.params.channel
+		});
+	}else{
+		res.redirect('../users');
 	}
 });
 
-app.get('/:channel/:user/pokemon',  (req, res)=>{
+app.get('/user/:channel/:user/pokemon',  (req, res)=>{
 	let botusersfile = fs.readFileSync(filepath.botuserspath);
 	appvar.botusers = JSON.parse(botusersfile);
 	console.log(req.params);
@@ -692,13 +679,13 @@ app.get('/user/:channel', (req, res) => {
 		res.render('login');
 	}
 });
-app.get('/users/', (req, res) => {
+app.get('/users', (req, res) => {
 	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		res.json(Object.keys(appvar.botusers));
 		res.end();
 	}
 	else{
-		res.render('login');
+		res.render('login', { csrfToken: req.csrfToken() });
 	}
 });
 
