@@ -92,16 +92,20 @@ app.get('/auth/twitch/callback', async (req,res)=>{
 		});
 		req.session.loggedin = true;
 		req.session.userid = login.data.data[0].id;
-  
 
 		var temp={ 
 			id:   login.data.data[0].id,
 			email:  login.data.data[0].email,
 			name:   login.data.data[0].login
 		};
-
+		
+	if(users.find(obj => obj.id ==  req.session.userid)){
+		console.log(users.find(obj => obj.id ==  req.session.userid));
+	}
+	else{
 		users.push(temp);
-		console.log(users.find(obj => obj.id ==  req.session.userid).name);
+	}
+	console.log(users);
 		res.redirect('../../account');
 	} catch (error) {
 		res.redirect('../../?error='+error);
@@ -114,7 +118,7 @@ app.get('/dsgvo',(req, res)=>{
 	res.render('dsgvo');
 });
 app.get('/login', (req, res) => {
-	if(req.session.loggedin){
+	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		res.redirect('/account');
 	}
 	else
@@ -124,18 +128,18 @@ app.post('/login' , (req, res) => {
 	res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email`);
 });
 app.get('/logout', (req,res)=>{
-	if(req.session.loggedin){
+	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		req.session.loggedin = null;
-		res.send('loged out');
+		//if logged in in more than 1 browser loggers will still work
 		users = [login];
-		res.end();
+		res.redirect('/?loggedout=true&message=succesfull&logout')
 	}
 	else{
-		res.send('you are not logged in');
+		res.redirect('/?loggedin=false&message=you&are%not%loggedin')
 	}
 });
 app.get('/loggers', (req, res)=>{
-	if(req.session.loggedin &&  req.session.userid == '536841246'){
+	if(req.session.loggedin && req.session.userid == '536841246' && users.find(obj => obj.id ==  req.session.userid)){
 		res.send(users);
 	}
 	else{
@@ -148,7 +152,7 @@ app.get('/:channel/:user/pokemon',  (req, res)=>{
 	console.log(req.params);
 	if(appvar.botusers['#'+req.params.channel]){
 		let user = Object.values(appvar.botusers['#'+req.params.channel]).filter(x=> x.login === req.params.user);
-		res.send(user[0].poke.list);
+		res.send(`<p>${user[0].poke.list}</p>`);
 	}
 });
 app.post('/account', (req, res)=>{
@@ -230,7 +234,7 @@ app.post('/account', (req, res)=>{
 app.get('/account', (req, res) => {
 	let test = [];
 	// when first register user is not in botuser.json
-	if (req.session.loggedin) {
+	if (req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		try {
 			for (let index = 0; index < scanallusecommands.allusecommands.length; index++) {
 				test.push({
@@ -254,7 +258,7 @@ app.get('/account', (req, res) => {
 
 });
 app.get('/user/:channel', (req, res) => {
-	if(req.session.loggedin){
+	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		req.params;
 		console.log(req.params.channel);
 		if ('#' + req.params.channel in appvar.botusers) {
@@ -269,7 +273,7 @@ app.get('/user/:channel', (req, res) => {
 	}
 });
 app.get('/users/', (req, res) => {
-	if(req.session.loggedin){
+	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		res.json(Object.keys(appvar.botusers));
 		res.end();
 	}
