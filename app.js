@@ -26,99 +26,6 @@ const limiter =  RateLimit({
 const csrf = require('csurf');
 
 
-const WebSocketClient = require('websocket').client;
-const client = new WebSocketClient();
-const wsschannel = '#mrkrummschnabel';
-
-client.on('connectFailed', function(error) {
-	console.log('Connect Error: ' + error.toString());
-});
-
-client.on('connect', function(connection) {
-	console.log('WebSocket Client Connected');
-	connection.sendUTF('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands');
-	connection.sendUTF(`PASS ${process.env.BOT_OAUTH}`);
-	connection.sendUTF('NICK krummibot');
-	connection.sendUTF(`JOIN ${wsschannel}`);
-	//connection.send(`PRIVMSG ${wsschannel} : WEBSOCKET CONNECTION ESTABLISHED`);
-	connection.on('message',function(message){
-		// Parses an IRC message and returns a JSON object with the message's 
-		// component parts (tags, source (nick and host), command, parameters). 
-		// Expects the caller to pass a single message. (Remember, the Twitch 
-		// IRC server may send one or more IRC messages in a single message.)
-		if (message.type === 'utf8') {
-			let rawMessage = message.utf8Data.trimEnd();
-			console.log(`Message received (${new Date().toISOString()}): '${rawMessage}'\n`);
-
-			let messages = rawMessage.split('\r\n');  // The IRC message may contain one or more messages.
-			messages.forEach(message => {
-				let parsedMessage = parser.parseMessage(message, rawMessage);
-            
-				if (parsedMessage) {
-					//console.log(`Message command: ${parsedMessage.command.command}`);
-					console.log(`\n${JSON.stringify(parsedMessage, null, 3)}`);
-
-					switch (parsedMessage.command.command) {
-					case 'PRIVMSG':
-						//console.log(parsedMessage.command.botCommand);
-						
-                            
-						break;
-					case 'CLEARMSG':
-						//what for?
-				
-							
-						break;
-					case 'WHISPER':
-						//what for?
-				
-							
-						break;
-					case 'PING':
-						connection.sendUTF('PONG ' + parsedMessage.parameters);
-						break;
-					case '001':
-						// Successfully logged in, so join the channel.
-						connection.sendUTF(`JOIN ${wsschannel}`); 
-						break; 
-					case 'JOIN':				
-						break;
-					case 'PART':
-						console.log('The channel must have banned (/ban) the bot.');
-						break;
-					case 'NOTICE': 
-						// If the authentication failed, leave the channel.
-						// The server will close the connection.
-						if ('Login authentication failed' === parsedMessage.parameters) {
-							console.log(`Authentication failed; left ${wsschannel}`);
-							connection.sendUTF(`PART ${wsschannel}`);
-						}
-						else if ('You don’t have permission to perform that action' === parsedMessage.parameters) {
-							console.log(`No permission. Check if the access token is still valid. Left ${wsschannel}`);
-							connection.sendUTF(`PART ${wsschannel}`);
-						}
-						break;
-					default:
-						break; // Ignore all other IRC messages.
-					}
-				}
-			});
-		}
-
-	});
-	connection.on('close', function() {
-		console.log('Connection Closed');
-		console.log(`close description: ${connection.closeDescription}`);
-		console.log(`close reason code: ${connection.closeReasonCode}`);
-	});
-});
-
-
-
-
-client.connect('wss://irc-ws.chat.twitch.tv:443');
-
-
 //app settings
 
 app.set('./views');
@@ -404,7 +311,7 @@ startapp();
 
 function startapp() {
 	startserver();
-	startbot();
+	//startbot();
 }
 function startserver(){
 	try {

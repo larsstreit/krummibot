@@ -188,7 +188,6 @@ module.exports = {
         case 'PRIVMSG':
         case 'CLEARMSG':
         case 'WHISPER':
-    
             parsedCommand = {
                 command: commandParts[0],
                 channel: commandParts[1]
@@ -271,11 +270,11 @@ parseSource: function(rawSourceComponent) {
 			host: (sourceParts.length == 2) ? sourceParts[1] : sourceParts[0]
 		};
 	}
-}
+},
 
 // Parsing the IRC parameters component if it contains a command (e.g., !dice).
 
-/*function parseParameters(rawParametersComponent, command) {
+ parseParameters: function(rawParametersComponent, command) {
 	let idx = 0;
 	let commandParts = rawParametersComponent.slice(idx + 1).trim(); 
 	let paramsIdx = commandParts.indexOf(' ');
@@ -290,5 +289,5 @@ parseSource: function(rawSourceComponent) {
 	}
 
 	return command;
-}*/
+}
 }
