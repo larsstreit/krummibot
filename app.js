@@ -311,7 +311,7 @@ startapp();
 
 function startapp() {
 	startserver();
-	//startbot();
+	startbot();
 }
 function startserver(){
 	try {

@@ -27,6 +27,7 @@
 - for https cert go to letsencrypt ( for local hosting ) or use certbot 
 - After this step you're done and u can enjoy all Features from the Bot
 - Set redUri to your own callback URI so you can use your own TwitchApp 
+- make bot moderator otherwise there are problems sending messages 
 
 ## Supported Versions
 
