@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable no-case-declarations */
 const tmi = require('tmi.js');
 const fs = require('fs');
@@ -6,7 +7,6 @@ const filepath = require('./path');
 const opts = require('./botconfig');
 const commandHandler = require('./commandHandler');
 const bot = new tmi.client(opts);
-const parser = require('./parser')
 const express = require('express');
 const axios = require('axios');
 const morgan = require('morgan');
@@ -68,7 +68,6 @@ let users = [login];
 
 app.get('/', (req, res) => {
 	res.render('home');
-
 });
 
 
@@ -78,19 +77,41 @@ app.get('/faq', (req, res) => {
 
 	
 });
+
+
 app.get('/auth/twitch', async (req,res)=>{
-	res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email&state=`);
+	if(!req.session.callTwitchAuth === true || req.session.loggedin === true){
+		res.redirect('../../login');
+	}
+	else{
+		let state = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		let statetext = '';
+		for (let i = 0; i < 30; i++){
+  			 statetext += state.charAt(Math.floor(Math.random() * state.length));  
+		}
+		//get user-acces token (Authorization code grant flow)
+		res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email&state=${statetext}`);
+	}
 
 });
 app.get('/auth/twitch/callback', async (req,res)=>{
-	const code = req.query.code;
 	try {
-		var response = await axios({
+		const code = req.query.code;
+		//gives back accesstoken data
+		let response = await axios({
 			method: 'post',
 			url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
 		});
-  
-		var login = await axios({
+		let validate = await axios({
+			method: 'get',
+			url: 'https://id.twitch.tv/oauth2/validate',
+			headers: {
+				'Authorization': 'Bearer ' + response.data.access_token
+			}
+		});
+		console.log(validate.data);
+
+		let login = await axios({
 			url: 'https://api.twitch.tv/helix/users',
 			method: 'GET',
 			headers: {
@@ -115,7 +136,9 @@ app.get('/auth/twitch/callback', async (req,res)=>{
 			users.push(temp);
 		}
 		console.log(users);
+		req.session.callTwitchAuth = null;
 		res.redirect('../../account');
+
 	} catch (error) {
 		res.redirect('../../?error='+error);
 	}
@@ -126,15 +149,17 @@ app.get('/impressum',(req, res)=>{
 app.get('/dsgvo',(req, res)=>{
 	res.render('dsgvo');
 });
-app.get('/login', (req, res) => {
+app.get('/login', (req, res) => {//provisorische Abfrage ob users exist, da user pushed in array
 	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		res.redirect('/account');
 	}
-	else
+	else{
 		res.render('login', { csrfToken: req.csrfToken() });
+	}
 });
 app.post('/login' , (req, res) => {
-	res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email`);
+	req.session.callTwitchAuth = true;
+	res.redirect('../auth/twitch');
 });
 app.get('/logout', (req,res)=>{
 	if(req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){

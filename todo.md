@@ -17,9 +17,9 @@
 ## login/registrationsystem
 - login with twitch 
 - accountsettings
-    - (de)activate bot
-    - (de)activate commands
-    - (de)activate mini games
+    - (de)activate bot ✔️ 
+    - (de)activate commands ✔️ 
+    - (de)activate mini games ✔️ 
     - add paypalaccount ?
     - 
 
@@ -46,3 +46,4 @@
             return
         }
         }
+- Boomerraid command
