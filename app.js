@@ -71,16 +71,11 @@ app.get('/', (req, res) => {
 
 });
 
-
-
 app.get('/faq', (req, res) => {
-	res.render('faq');
-
-	
+	res.render('faq');	
 });
 app.get('/auth/twitch', async (req,res)=>{
 	res.redirect(`https://id.twitch.tv/oauth2/authorize?response_type=code&force_verify=true&client_id=${process.env.CLIENT_ID}&redirect_uri=${redUri}&scope=user:read:email&state=`);
-
 });
 app.get('/auth/twitch/callback', async (req,res)=>{
 	const code = req.query.code;
