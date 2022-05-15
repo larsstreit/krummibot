@@ -67,7 +67,7 @@ class client {
 		});
 
     }
-	promiseDelay=  function( time ){ return new Promise(resolve => setTimeout(resolve, time))}
+	promiseDelay =  function( time ){ return new Promise(resolve => setTimeout(resolve, time))}
 	getPromiseDelay() {
 		return 600; 
 	};
