@@ -5,7 +5,7 @@ const fs = require('fs');
 const appvar = require('../var');
 const filepath = require('../path');
 const scanallusecommands = require('../allusecommands');
-let redUri = 'https://localhost/auth/twitch/callback' || 'https://www.krummibot.de/auth/twitch/callback';
+let redUri = 'https://localhost/auth/twitch/callback' || 'https://krummibot.de/auth/twitch/callback';
 
 
 const login = {
