@@ -1,8 +1,48 @@
 const appvar = require('./var');
 const filepath = require('./path');
+const axios = require('axios');
 
 
 module.exports = {
+	getTwitchApiData: async function(args){
+		let [data, type, bot] = args
+		switch(type){
+			case "RAID":
+				let accesstoken = await axios({
+					url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&grant_type=client_credentials`,
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				});
+				let logindata = await axios({
+					url: `https://api.twitch.tv/helix/users?login=${data.raider}`,
+					method: 'GET',
+					headers: {
+						'Client-ID': process.env.CLIENT_ID,
+						'Authorization': 'Bearer ' + accesstoken.data.access_token
+					}
+				});
+				//console.log(logindata.data);
+				let raiddata = await axios({
+					url: `https://api.twitch.tv/helix/channels?broadcaster_id=${logindata.data.data[0].id}`,
+					method: 'GET',
+					headers: {
+						'Client-ID': process.env.CLIENT_ID,
+						'Authorization': 'Bearer ' + accesstoken.data.access_token
+					}
+				});
+				console.log(raiddata.data);
+				await bot.say(data.channel, `Schaut mal bei ${raiddata.data.data[0].broadcaster_name} vorbei. 
+					https://www.twitch.tv/${raiddata.data.data[0].broadcaster_login}. 
+					Zu letzt wurde: ${(raiddata.data.data[0].game_name != "" ? raiddata.data.data[0].game_name : 'Nichts')} ${(raiddata.data.data[0].title != "" ? raiddata.data.data[0].title: "")} 
+					gestreamt`);
+				break;
+			default:
+				break
+		}
+	},
+
 	shutdownbot: async function(bot) {
 		appvar.joinedchannel.forEach(channel => {
 			console.log(channel);
