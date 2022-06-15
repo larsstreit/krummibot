@@ -8,6 +8,7 @@ const scanallusecommands = require('../allusecommands');
 let redUri = 'https://localhost/auth/twitch/callback' || 'https://krummibot.de/auth/twitch/callback';
 
 
+
 const login = {
 	email: '',
 	name: '',
@@ -18,7 +19,6 @@ let users = [login];
 router.get('/', (req, res) => {
 	res.render('home');
 });
-
 router.get('/faq', (req, res) => {
 	res.render('faq');	
 });

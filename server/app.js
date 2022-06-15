@@ -1,5 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable no-case-declarations */
+const axios = require('axios');
 const tmi = require('tmi.js');
 const fs = require('fs');
 const appvar = require('./var');
@@ -133,8 +134,7 @@ function startbot() {
 		startbot();
 	}
   
-	bot
-		.connect()
+	bot.connect()
 		.then(() => {
 			for (const [key, value] of Object.entries(appvar.botusers)) {
 				// shows the value of botusers[key] console.log(appvar.botusers[key]) does the same as console.log(value);
@@ -221,11 +221,12 @@ function startbot() {
 }
 
 function raidHandler(channel, raider, viewers) {
-	bot.say(channel, `${raider}, raidet mit ${viewers} Menschen oder Maschninen`);
+	console.log(raider);
+	bot.say(channel, `${raider}, raidet mit ${viewers} Viewern ?`);
 	setTimeout(async () => {
-		await bot.say(
-			channel, `Schaut mal bei ${raider} vorbei. https://www.twitch.tv/${raider.replace('@', '')}`);
+		await getTwitchApiData([{channel},'RAID'])	
 	}, 2000);
+
 }
 function messageHandler(channel, userstate, message, self) {
 	//id of krummibot // self => for instance
@@ -261,4 +262,44 @@ function messageHandler(channel, userstate, message, self) {
 		filepath.botuserspath,
 		JSON.stringify(appvar.botusers, null, '\t')
 	);
+}
+
+async function getTwitchApiData(args){
+	let [data, type] = args
+	switch(type){
+		case "RAID":
+			let accesstoken = await axios({
+				url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&grant_type=client_credentials`,
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			//console.log(accesstoken.data);
+			let logindata = await axios({
+				url: `https://api.twitch.tv/helix/users?login=mrkrummschnabel`,
+				method: 'GET',
+				headers: {
+					'Client-ID': process.env.CLIENT_ID,
+					'Authorization': 'Bearer ' + accesstoken.data.access_token
+				}
+			});
+			//console.log(logindata.data);
+			let raiddata = await axios({
+				url: `https://api.twitch.tv/helix/channels?broadcaster_id=${logindata.data.data[0].id}`,
+				method: 'GET',
+				headers: {
+					'Client-ID': process.env.CLIENT_ID,
+					'Authorization': 'Bearer ' + accesstoken.data.access_token
+				}
+			});
+			//console.log(raiddata.data);
+			await bot.say(data.channel, `Schaut mal bei ${raiddata.data.data[0].broadcaster_name} vorbei. 
+				https://www.twitch.tv/${raiddata.data.data[0].broadcaster_login}. 
+				Zu letzt wurde: ${raiddata.data.data[0].game_name} ${raiddata.data.data[0].title} 
+				gestreamt`);
+			break;
+		default:
+			break
+	}
 }
