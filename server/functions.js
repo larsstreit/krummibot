@@ -1,7 +1,7 @@
 const appvar = require('./var');
 const filepath = require('./path');
 const axios = require('axios');
-
+const bot = require('./app')
 
 module.exports = {
 	getTwitchApiData: async function(args){
