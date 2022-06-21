@@ -265,5 +265,3 @@ function messageHandler(channel, userstate, message, self) {
 		JSON.stringify(appvar.botusers, null, '\t')
 	);
 }
-
-

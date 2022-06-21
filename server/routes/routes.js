@@ -7,7 +7,8 @@ const filepath = require('../path');
 const scanallusecommands = require('../allusecommands');
 let redUri = 'https://localhost/auth/twitch/callback' || 'https://krummibot.de/auth/twitch/callback';
 
-
+const tmi = require('tmi.js');
+const bot = new tmi.Client()
 
 const login = {
 	email: '',
