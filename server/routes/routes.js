@@ -43,11 +43,11 @@ router.get('/auth/twitch/callback', async (req,res)=>{
 		const code = req.query.code;
 		//gives back accesstoken data
 		let response = await axios({
-			method: 'post',
+			method: 'POST',
 			url: `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_TOKEN}&code=${code}&grant_type=authorization_code&redirect_uri=${redUri}`
 		});
 		let validate = await axios({
-			method: 'get',
+			method: 'GET',
 			url: 'https://id.twitch.tv/oauth2/validate',
 			headers: {
 				'Authorization': 'Bearer ' + response.data.access_token

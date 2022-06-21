@@ -13,11 +13,14 @@ module.exports = {
 		const databasechannel = appvar.botusers[channel];
 
 		/**
-		 * Check for exisiting channel // every channel might have his own commands
+		 * Check for exisiting channel 
 		 */
 		if (`${channel}` in appvar.botusers) {
 			let alluse = command.split(' ');
 			console.log('check if channel exist in botuser');
+			/**
+			 * every channel might have his own commands
+			 */
 			if (databasechannel.channelcommands[command]) {
 				console.log('check if command exist in botuser');
 				if(command === '!lurk'){
@@ -34,7 +37,6 @@ module.exports = {
 			else {
 				if (databasechannel.allusecommands.includes(alluse[0])) {
 					if(databasechannel.commandconfig.allusecommands[alluse[0]].active === true){
-
 						console.log(alluse);
 						switch (alluse[0]) {
 						
@@ -167,6 +169,7 @@ module.exports = {
 
 		//can be used in everychannel only by mrkrummschnabel
 		if (userstate.username === 'mrkrummschnabel') {
+			let alluse = command.split(' ')
 			if (command === '!shutdown') {
 				//eventueller fehler beim "no rsponse from twitch"
 				botfunctions.shutdownbot(bot).then(setTimeout(() => {
@@ -176,8 +179,8 @@ module.exports = {
 				});
 
 			}
-			else if (command === '!getchannels') {
-				bot.say(channel, bot.getChannels().toString());
+			else if (alluse[0] === '!getchannel') {
+				botfunctions.getTwitchApiData([{channel: channel, name: alluse[1]}, 'TEST', bot])
 			}
 		}
 
