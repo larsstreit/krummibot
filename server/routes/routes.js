@@ -5,10 +5,10 @@ const fs = require('fs');
 const appvar = require('../var');
 const filepath = require('../path');
 const scanallusecommands = require('../allusecommands');
-const opts = require('../botconfig')
 let redUri = 'https://localhost/auth/twitch/callback' || 'https://krummibot.de/auth/twitch/callback';
 
-
+const tmi = require('tmi.js');
+const bot = new tmi.Client()
 
 const login = {
 	email: '',

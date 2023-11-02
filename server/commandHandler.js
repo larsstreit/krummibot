@@ -3,16 +3,10 @@ const filepath = require('./path');
 const appvar = require('./var');
 const pokeMethods = require('./pokegame');
 const botfunctions = require('./functions');
-
-
 const bannedwords = [
 	'simp'
 ];
 module.exports = {
-
-
-
-
 	commandHandler: function (channel, message, userstate, bot, fs) {
 		const checklove = message.split(' ');
 		const command = message;
