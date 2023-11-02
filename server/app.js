@@ -7,7 +7,6 @@ const fs = require('fs');
 const appvar = require('./var');
 const filepath = require('./path');
 const opts = require('./botconfig');
-const commandHandler = require('./commandHandler');
 const bot = new tmi.client(opts);
 const express = require('express');
 const morgan = require('morgan');
@@ -24,7 +23,8 @@ const limiter =  RateLimit({
 	max: 100
 });
 const csrf = require('csurf');
-const routes = require('./routes/routes')
+const routes = require('./routes/routes');
+const { time } = require('console');
 
 //app settings
 
@@ -218,50 +218,47 @@ function startbot() {
 			startbot();
 		});
 
-	bot.on('message', messageHandler);
-	bot.on('raided', raidHandler);
+	bot.on('message', botfunctions.messageHandler);
+	bot.on('raided', botfunctions.raidHandler);
+	//bot.on('join', onJoin)
+	//bot.on('part', onPart)
 }
-
-function raidHandler(channel, raider, viewers) {
-	console.log(raider);
-	bot.say(channel, `${raider}, raidet mit ${viewers} Viewern`);
-	setTimeout(async () => {
-		await botfunctions.getTwitchApiData([{channel,raider},'RAID',bot])	
-	}, 2000);
-
-}
-function messageHandler(channel, userstate, message, self) {
-	//id of krummibot // self => for instance
-	if(self || userstate['user-id']=== '675332182'){
-		return;
-	}  
-	if (appvar.botusers[channel]) {
-		if (!appvar.botusers[channel][userstate['user-id']] ) {
-			console.log('user not exist');
-			appvar.botusers[channel][userstate['user-id']] = {
-				login: userstate['username'],
-				poke: {
-					list: [],
-					catchable: false,
-					current: '',
-					tries: '',
-					actualpoints: '',
-					pointstocatch: '',
-					runningRound: false,
-					lvl: '',
-				},
-				coins: 0,
-			};
-		} else {
-			appvar.botusers[channel][userstate['user-id']].login = userstate.username;  
-
-		}
-		commandHandler.commandHandler(channel, message, userstate, bot, fs);
-	} else {
-		//commandHandler.commandHandler(channel, message, userstate, bot, fs);
+let hasJoined = [];
+/*function onPart(channel, username, self){
+	console.log("parted" ,username);
+	if(hasJoined.find(obj => obj.name == username)){
+		delete hasJoined.find(obj => obj.name == username)
 	}
-	fs.writeFileSync(
-		filepath.botuserspath,
-		JSON.stringify(appvar.botusers, null, '\t')
-	);
+	console.log(hasJoined);
 }
+function onJoin(channel, username, self){
+	if(!hasJoined.find(obj => obj.name == username)){
+		hasJoined.push({name: username, joined: true})
+		console.log(hasJoined);
+	}
+	if(hasJoined.find(obj => obj.joined == true)){
+	let databasechannel = appvar.botusers[channel];
+	let arr = Object.values(databasechannel)
+	let key = Object.keys(databasechannel)
+	let test = arr.find(obj => obj.login == username)
+	key.forEach(element => {
+		if(databasechannel[element] === test){
+			console.log(element, test);
+			let timer = setInterval(() => {
+				
+				databasechannel[element].coins +=1;
+				fs.writeFileSync(
+					filepath.botuserspath,
+					JSON.stringify(appvar.botusers, null, '\t')
+				);
+				
+			}, 300000);
+	
+		}
+	});
+	
+	}
+	
+}*/
+
+

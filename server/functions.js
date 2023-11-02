@@ -1,9 +1,58 @@
 const appvar = require('./var');
 const filepath = require('./path');
 const axios = require('axios');
-const bot = require('./app')
+const tmi = require('tmi.js');
+const fs = require('fs');
 
+const commandHandler = require('./commandHandler');
+const opts = require('./botconfig');
+const bot = new tmi.client(opts);
+bot.connect()
 module.exports = {
+	raidHandler: function(channel, raider, viewers) {
+		console.log(raider);
+		bot.say(channel, `${raider}, raidet mit ${viewers} Viewern`);
+		setTimeout(async () => {
+			await botfunctions.getTwitchApiData([{channel,raider},'RAID',bot])	
+		}, 2000);
+	
+	},
+
+	messageHandler: function(channel, userstate, message, self) {
+		//id of krummibot // self => for instance
+		if(self || userstate['user-id']=== '675332182'){
+			return;
+		}  
+		if (appvar.botusers[channel]) {
+			if (!appvar.botusers[channel][userstate['user-id']] ) {
+				console.log('user not exist');
+				appvar.botusers[channel][userstate['user-id']] = {
+					login: userstate['username'],
+					poke: {
+						list: [],
+						catchable: false,
+						current: '',
+						tries: '',
+						actualpoints: '',
+						pointstocatch: '',
+						runningRound: false,
+						lvl: '',
+					},
+					coins: 0,
+				};
+			} else {
+				appvar.botusers[channel][userstate['user-id']].login = userstate.username;  
+	
+			}
+			commandHandler.commandHandler(channel, message, userstate, bot, fs);
+		} else {
+			//commandHandler.commandHandler(channel, message, userstate, bot, fs);
+		}
+		fs.writeFileSync(
+			filepath.botuserspath,
+			JSON.stringify(appvar.botusers, null, '\t')
+		);
+	},
 	getTwitchApiData: async function(args){
 		let [data, type, bot] = args
 		this.accesstoken = await axios({
