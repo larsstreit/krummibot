@@ -95,19 +95,23 @@ module.exports = {
 		const kante = 1;
 		const fall = Math.floor(Math.random() * sides + Math.random() * kante / Math.PI);
 		if(guess){
+			console.log(fall);
 			if (fall == 0 && guess === 'head') {
 				bot.say(channel, 'Du hast Kopf geworfen');
 				appvar.botusers[channel][userstate['user-id']].coins += 1;
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 			}
-			if (fall == 1 && guess === 'tail')  {
+			else if (fall == 1 && guess === 'tail')  {
 				bot.say(channel, 'Du hast Zahl geworfen');
 				appvar.botusers[channel][userstate['user-id']].coins += 1;
 				fs.writeFileSync(filepath.botuserspath, JSON.stringify(appvar.botusers, null, '\t'));
 
 			}
-			if (fall == 2) {
+			else if (fall == 2) {
 				bot.say(channel, 'Du hast die Münze im Gras versenkt');
+			}
+			else{
+				bot.say(channel, 'Ein Satz mit x');
 			}
 		}else
 		{
