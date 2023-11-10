@@ -44,7 +44,14 @@ module.exports = {
 							bot.say(channel, 'Wobei brauchst du Hilfe?...');
 							break;
 						case '!channelcommands':
-							if(databasechannel.allusecommands.includes(alluse[0])){
+							/**
+							 * check if there is "help" in command
+							 */
+							if (databasechannel.allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
+								bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
+							}
+							 
+							else if(databasechannel.allusecommands.includes(alluse[0])){
 								(() => {
 									let s = ' ';
 									for (const key in databasechannel.channelcommands) {
@@ -60,12 +67,6 @@ module.exports = {
 									}
 								})();
 							}
-							/**
-							 * check if there is "help" in command
-							 */
-							else if (databasechannel.allusecommands.includes(alluse[0] + ' ' + alluse[1])) {
-								bot.say(channel, 'Mit !addcommand <\'!\'+commandname> kannst du einen Command hinzufügen. Mit Mit !definecommand <\'!\'+commandname> say > <Nachricht> fügst du eine Nachricht hinzu. Mit !definecommand <\'!\'+commandname> timer > <Zahl in Min> fügst du ein Timer zu wann der Command automatisch ausgeführt werden soll (WICHTIG: Timer komplett weglassen, wenn Command nur durch manuelle Eingabe ausgeführt werden soll');
-							} 
 							break;
 						case '!krummi':
 							bot.say(channel, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei');

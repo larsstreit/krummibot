@@ -148,7 +148,8 @@ function startbot() {
 						JSON.stringify(appvar.botusers, null, '\t')
 					);
   
-				}
+				} 
+				//tewrfsd
 				if(!value.vips){
 					appvar.botusers[key].vips = []
 					fs.writeFileSync(

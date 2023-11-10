@@ -25,6 +25,7 @@ module.exports = {
 							'Authorization': 'Bearer ' + this.accesstoken.data.access_token
 						}
 					});
+					console.log(data)
 					//console.log(this.logindata.data)
 					this.raiddata = await axios({
 						url: `https://api.twitch.tv/helix/channels?broadcaster_id=${this.logindata.data.data[0].id}`,
