@@ -65,7 +65,7 @@ module.exports = {
 					method: 'GET',
 					headers: {
 						'Client-ID': process.env.CLIENT_ID,
-						'Authorization': 'Bearer ' + accesstoken.data.access_token
+						'Authorization': 'Bearer ' + this.accesstoken.data.access_token
 					}
 				});
 				console.log(this.raiddata.data);

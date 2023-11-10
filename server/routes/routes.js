@@ -42,6 +42,7 @@ router.get('/auth/twitch', async (req,res)=>{
 });
 router.get('/auth/twitch/callback', async (req,res)=>{
 	try {
+		//console.log	(req.query.code)
 		const code = req.query.code;
 		//gives back accesstoken data
 		let response = await axios({
@@ -55,7 +56,7 @@ router.get('/auth/twitch/callback', async (req,res)=>{
 				'Authorization': 'Bearer ' + response.data.access_token
 			}
 		});
-		console.log(validate.data);
+		console.log(validate.data, "VALIDATEDATA");
 
 		let login = await axios({
 			url: 'https://api.twitch.tv/helix/users',
@@ -81,7 +82,7 @@ router.get('/auth/twitch/callback', async (req,res)=>{
 		else{
 			users.push(temp);
 		}
-		console.log(users);
+		console.log(users, "LOGIN");
 		req.session.callTwitchAuth = null;
 		res.redirect('../../account');
 
@@ -240,14 +241,14 @@ router.get('/account', (req, res) => {
 			}
 		} catch (error) {
 			console.log(error);
-			res.render('account', {
-				name: users.find(obj => obj.id === req.session.userid).name,
-				title: 'Account',
-				csrfToken: req.csrfToken(),
-				activatebot: !('#' + users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? 'Add Bot' : appvar.botusers['#' + users.find(obj => obj.id === req.session.userid).name].joined === true ? 'Remove Bot' : 'Add Bot',
-				commandlist: commandlist
-			});
 		}
+		res.render('account', {
+			name: users.find(obj => obj.id === req.session.userid).name,
+			title: 'Account',
+			csrfToken: req.csrfToken(),
+			activatebot: !('#' + users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? 'Add Bot' : appvar.botusers['#' + users.find(obj => obj.id === req.session.userid).name].joined === true ? 'Remove Bot' : 'Add Bot',
+			commandlist: commandlist
+		});
 	} else {
 		res.redirect('login');
 	}
