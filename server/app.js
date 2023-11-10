@@ -116,18 +116,19 @@ function startserver(){
 	}
 }
 
-function startbot() {
+ function startbot() {
 	try {
 		if (
 		//path to json database
 			fs.existsSync(filepath.botuserspath) &&
-      fs.existsSync(filepath.packagepath)
+      		fs.existsSync(filepath.packagepath)
 		) {
 			let botusersfile = fs.readFileSync(filepath.botuserspath);
 			appvar.botusers = JSON.parse(botusersfile);
 			let packagefile = fs.readFileSync(filepath.packagepath);
 			appvar.package = JSON.parse(packagefile);
-		}else {
+		}
+		else {
 			fs.writeFileSync('botusers.json', '{}');
 			startbot();
 		}
@@ -136,7 +137,7 @@ function startbot() {
 		startbot();
 	}
   
-	bot.connect()
+ bot.connect()
 		.then(() => {
 			for (const [key, value] of Object.entries(appvar.botusers)) {
 				// shows the value of botusers[key] console.log(appvar.botusers[key]) does the same as console.log(value);
@@ -149,7 +150,7 @@ function startbot() {
 					);
   
 				} 
-				//tewrfsd
+				
 				if(!value.vips){
 					appvar.botusers[key].vips = []
 					fs.writeFileSync(
@@ -201,10 +202,10 @@ function startbot() {
 						.join(key)
 						.then((data) => {
 							//shows which channel was joined
-							console.log(data);
-							setTimeout(() => {
+							console.log(data, "Joined Channel after Starting bot");
+							setInterval(() => {
 								bot.say(key, 'Ich bin der von @MrKrummschnabel programmierte Bot! Wenn du mehr darüber erfahren willst schau unter: twitch.tv/mrkrummschnabel vorbei');
-							}, 60000*10*4);
+							}, 60000*10*6*3);
 						})
 						.catch((err) => {
 							console.log(err);
@@ -214,13 +215,14 @@ function startbot() {
 				}
 			}
 		})
-		.catch(()=>{
-			console.error;
+		.catch((error)=>{
+			console.log(error, "error bei botstart");
 			startbot();
 		});
 
 	bot.on('message', messageHandler);
 	bot.on('raided', raidHandler);
+	bot.on('connected', (address,port)=>console.log(address+ " "+ port + "connected Bot"))
 }
 
 function raidHandler(channel, raider, viewers) {

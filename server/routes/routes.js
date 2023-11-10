@@ -8,6 +8,7 @@ const scanallusecommands = require('../allusecommands');
 let redUri = 'https://localhost/auth/twitch/callback' || 'https://krummibot.de/auth/twitch/callback';
 
 const tmi = require('tmi.js');
+const { log } = require('console');
 const bot = new tmi.Client()
 
 const login = {
@@ -180,10 +181,11 @@ router.post('/account', (req, res)=>{
 						}
 					}})];
 
-				setTimeout(async () => {
+				/*setTimeout(async () => {
 					await bot.say(`${'#'+users.find(obj => obj.id ===  req.session.userid).name}`, 'Ist es für dich okay, das mit !krummi für @MrKrummschnabel und nach 40min Werbung für den Bot gemacht wird? Wenn nicht verwende !removekrummi in deinem Chat um den Bot zu entfernen! Vielen Dank für deine Unterstützung');
 				}, 2000);
-				bot.join('#'+channelname).then().catch(err => console.log(err));
+				bot.join('#'+channelname).then().catch(err => console.log(err));*/
+				
 			}
 			else {
 				appvar.botusers['#'+channelname].joined = true;
@@ -226,26 +228,26 @@ router.post('/account', (req, res)=>{
 	res.redirect('account');
 });
 router.get('/account', (req, res) => {
-	let test = [];
+	let commandlist = [];
 	// when first register user is not in botuser.json
 	if (req.session.loggedin && users.find(obj => obj.id ==  req.session.userid)){
 		try {
 			for (let index = 0; index < scanallusecommands.allusecommands.length; index++) {
-				test.push({
+				commandlist.push({
 					commandname: scanallusecommands.allusecommands[index],
 					value: appvar.botusers['#' + users.find(obj => obj.id === req.session.userid).name].commandconfig.allusecommands[scanallusecommands.allusecommands[index]].active === true ? 'active' : 'deactive'
 				});
 			}
 		} catch (error) {
 			console.log(error);
+			res.render('account', {
+				name: users.find(obj => obj.id === req.session.userid).name,
+				title: 'Account',
+				csrfToken: req.csrfToken(),
+				activatebot: !('#' + users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? 'Add Bot' : appvar.botusers['#' + users.find(obj => obj.id === req.session.userid).name].joined === true ? 'Remove Bot' : 'Add Bot',
+				commandlist: commandlist
+			});
 		}
-		res.render('account', {
-			name: users.find(obj => obj.id === req.session.userid).name,
-			title: 'Account',
-			csrfToken: req.csrfToken(),
-			activatebot: !('#' + users.find(obj => obj.id === req.session.userid).name in appvar.botusers) ? 'Add Bot' : appvar.botusers['#' + users.find(obj => obj.id === req.session.userid).name].joined === true ? 'Remove Bot' : 'Add Bot',
-			test: test
-		});
 	} else {
 		res.redirect('login');
 	}
